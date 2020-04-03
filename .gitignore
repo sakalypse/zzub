@@ -1,2 +1,3 @@
 # ignore .env
 .env
+ormconfig.json
