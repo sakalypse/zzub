@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  back:
+    build: ./back
+    volumes:
+    - ./back/:/usr/src/back
+    - /usr/src/back/node_modules
+    ports:
+    - "3000:3000"
+    expose:
+    - "3000"
+    networks:
+    - net
+    depends_on:
+    - sqldb
+  front:
+    build: ./front
+    volumes:
+      - ./front:/usr/src/front
+      - /usr/src/front/node_modules
+    ports:
+      - "80:80"
+    expose:
+      - '80'
+  sqldb:
+    image: mysql:5.7
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - '3306'
+    expose:
+      - '3306'
+    networks:
+    - net
+networks:
+  net:
+    driver: bridge
