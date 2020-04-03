@@ -5,7 +5,6 @@ services:
     build: ./back
     volumes:
     - ./back/:/usr/src/back
-    - /usr/src/back/node_modules
     ports:
     - "3000:3000"
     expose:
@@ -18,7 +17,6 @@ services:
     build: ./front
     volumes:
       - ./front:/usr/src/front
-      - /usr/src/front/node_modules
     ports:
       - "80:80"
     expose:
