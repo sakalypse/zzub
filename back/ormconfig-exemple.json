@@ -1,0 +1,10 @@
+{
+    "type": "",
+    "host": "",
+    "port": "",
+    "username": "",
+    "password": "",
+    "database": "",
+    "entities": ["back/src/**/**.entity{.ts,.js}"],
+    "synchronize": true
+  }

@@ -1,6 +1,6 @@
-import {Length, IsEmail, IsDate} from "class-validator";
 import {Entity, PrimaryGeneratedColumn,
         Column, Unique} from 'typeorm';
+import {Length, IsEmail, IsDate} from "class-validator";
 
 @Entity()
 @Unique(["username"])
