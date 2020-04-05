@@ -44,7 +44,7 @@ export class UserService {
             return savedUser;
         }
     }
-
+  
     /*
     * Get all users
     * @return   All saved users
