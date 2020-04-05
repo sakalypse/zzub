@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDTO } from './user.dto';
 import * as bcrypt from "bcryptjs";
@@ -15,7 +15,7 @@ export class UserService {
 
     /*
     * Create a new User with the data received
-    * @param  dto   Contains user's data
+    * @param  dto : Contains user's data
     * @return       the saved user
     */
     async createUser(dto: CreateUserDTO): Promise<User>{
@@ -43,5 +43,47 @@ export class UserService {
             const savedUser = await this.userRepository.save(newUser);
             return savedUser;
         }
+    }
+  
+    /*
+    * Get all users
+    * @return   All saved users
+    */
+    async getAllUsers(): Promise<User[]>{
+        return await this.userRepository.find();
+    }
+
+    /*
+    * Get a single user by the id given
+    * @param  userId
+    * @return one user
+    */
+    async getUserById(userId): Promise<User>{
+        return await this.userRepository.findOne(userId);
+    }
+
+    /*
+    * Update a user by the id and dto given
+    * @param  userId
+    * @param  dto : data to update
+    * @return the UpdateResult
+    */
+    async updateUser(userId, dto): Promise<UpdateResult>{
+        let userToUpdate = await this.userRepository.findOne(userId);
+        
+        userToUpdate.username = dto.username;
+        userToUpdate.email = dto.email;
+        userToUpdate.password = dto.password;
+
+        return await this.userRepository.update(userId, userToUpdate);
+    }
+
+    /*
+    * Delete a user by the id given
+    * @param  userId
+    * @return the DeleteResult
+    */
+    async deleteUser(userId): Promise<DeleteResult>{
+        return await this.userRepository.delete(userId);
     }
 }
