@@ -63,6 +63,15 @@ export class UserService {
     }
 
     /*
+    * Get a single user by the id given
+    * @param  userId
+    * @return one user
+    */
+   async getUserByUsername(username): Promise<User>{
+    return await this.userRepository.findOne({username: username});
+}
+
+    /*
     * Update a user by the id and dto given
     * @param  userId
     * @param  dto : data to update
