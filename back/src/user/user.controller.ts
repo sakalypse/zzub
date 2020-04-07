@@ -1,6 +1,7 @@
-import { Controller, Post, Res, Body, HttpStatus, Get, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Res, Body, HttpStatus, Get, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO, UpdateUserDTO } from './user.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -19,7 +20,7 @@ export class UserController {
         const users = await this.userService.getAllUsers();
         return res.status(HttpStatus.OK).json(users);
     }
-
+    
     @Get('/:id')
     async getUser(@Res() res, @Param('id') userId){
         const user = await this.userService.getUserById(userId);
