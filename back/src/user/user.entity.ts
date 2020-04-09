@@ -1,13 +1,14 @@
 import {Entity, PrimaryGeneratedColumn,
-        Column, Unique} from 'typeorm';
+        Column, Unique, OneToMany, JoinColumn} from 'typeorm';
 import {Length, IsEmail, IsDate} from "class-validator";
+import { Category } from 'src/category/category.entity';
 
 @Entity()
 @Unique(["username"])
 @Unique(["email"])
 export class User {
     @PrimaryGeneratedColumn()
-    userId: string;
+    userId: number;
 
     @Column({ length: 25})
     username:string;
@@ -17,4 +18,8 @@ export class User {
 
     @Column() 
     password:string;
+
+    @OneToMany(type => Category, category => category.author)
+    @JoinColumn()
+    categories:Category[];
 }

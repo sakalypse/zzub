@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDTO } from './user.dto';
 import * as bcrypt from "bcryptjs";
@@ -75,16 +75,16 @@ export class UserService {
     * Update a user by the id and dto given
     * @param  userId
     * @param  dto : data to update
-    * @return the UpdateResult
+    * @return the user updated
     */
-    async updateUser(userId, dto): Promise<UpdateResult>{
+    async updateUser(userId, dto): Promise<User>{
         let userToUpdate = await this.userRepository.findOne(userId);
         
         userToUpdate.username = dto.username;
         userToUpdate.email = dto.email;
         userToUpdate.password = dto.password;
 
-        return await this.userRepository.update(userId, userToUpdate);
+        return await this.userRepository.save(userToUpdate);
     }
 
     /*
