@@ -118,7 +118,52 @@ ion-item.selected {
   --color: var(--ion-color-primary);
 }
 
-.main-menu{
+ion-header{
+  z-index:100;
+}
+
+.main-menu--mobile--toggle{
+  padding: 0 15px;
+
+  @media screen and (min-width: 720px) {
+    display: none;
+  }
+}
+
+.main-menu--mobile{
+  z-index: 10;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  transition: all 0.3s ease-out;
+
+  .menu-link{
+    padding: 20px 0 20px 20px;
+    text-align: left;
+    border-bottom: 1px solid #dedede;
+  }
+
+  ion-icon{
+    margin-right: 5px;
+
+    &.arrow-right{
+      float: right;
+      margin-right: 20px;
+    }
+  }
+
+  @media screen and (min-width: 720px) {
+    display: none;
+  }
+
+  &.closed{
+    transform: translateX(-100%);
+  }
+}
+
+.main-menu--desktop{
   display: none;
 
   @media screen and (min-width: 720px) {
