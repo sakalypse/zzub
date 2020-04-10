@@ -15,8 +15,7 @@ export class AuthService {
 
   constructor(
     private handler: HttpBackend, 
-    private http: HttpClient,
-    private storage: Storage) {
+    private http: HttpClient) {
     this.http = new HttpClient(handler);
     this.helper = new JwtHelperService();
   }

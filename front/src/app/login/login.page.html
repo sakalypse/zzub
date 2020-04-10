@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>LOGIN</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content (keyup.enter)="login()">
+  <form [formGroup]="userForm" padding-right>
+    <ion-item>
+      <ion-label position="floating">Username</ion-label>
+      <ion-input type="text" formControlName="username" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" formControlName="password" required></ion-input>
+    </ion-item>
+
+    <ion-button 
+      color="primary" 
+      expand="block" 
+      [disabled]="!userForm.valid" 
+      (click)="login()">Login</ion-button>
+</form>
+</ion-content>

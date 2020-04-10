@@ -21,6 +21,16 @@ export class AppComponent implements OnInit {
       title: 'Fun',
       url: 'fun',
       icon: 'body'
+    },
+    {
+      title: 'Sign',
+      url: 'sign',
+      icon: 'body'
+    },
+    {
+      title: 'Login',
+      url: 'login',
+      icon: 'body'
     }
   ];
 
