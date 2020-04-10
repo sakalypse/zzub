@@ -1,22 +1,21 @@
 <ion-app>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Menu</ion-title>
+          <ion-title>ZZUB</ion-title>
 
-
-          <ion-list>
-            <button menuClose ion-item *ngFor="let p of appPages">
-              <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
+          <ion-list class="main-menu" slot="end">
+            <div menuClose ion-item *ngFor="let p of appPages">
+              <div class="menu-link" [routerDirection]="'root'" [routerLink]="[p.url]">
                 <ion-icon slot="start" [name]="p.icon"></ion-icon>
-                <ion-label>
+                <span>
                   {{p.title}}
-                </ion-label>
-              </ion-item>
-            </button>
+                </span>
+              </div>
+            </div>
           </ion-list>            
-
-          <ion-title slot="end">oui</ion-title>
         </ion-toolbar>
       </ion-header>
+      <ion-content>
     <ion-router-outlet id="main-content"></ion-router-outlet>
+    </ion-content>
 </ion-app>

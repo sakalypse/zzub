@@ -117,3 +117,26 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
+
+.main-menu{
+  display: none;
+
+  @media screen and (min-width: 720px) {
+    display: flex;
+
+    .menu-link{
+      display: flex;
+      cursor: pointer;
+      //border: 1px solid black;
+      margin-right: 20px;
+      font-size: 20px;
+    }
+
+    ion-icon{
+      display: none;
+      height: 24px;
+      margin-right: 5px;
+    }
+  }
+  
+}
