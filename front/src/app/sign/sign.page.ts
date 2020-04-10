@@ -65,7 +65,7 @@ export class SignPage implements OnInit {
         },
         () => {
           this.toastController.create({
-            message: 'Sign in successful',
+            message: 'Sign up successful',
             duration: 2000
           }).then(toast=>toast.present());
           this.router.navigateByUrl("/");

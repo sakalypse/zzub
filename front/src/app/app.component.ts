@@ -18,19 +18,24 @@ export class AppComponent implements OnInit {
       icon: 'home'
     },
     {
-      title: 'Fun',
-      url: 'fun',
-      icon: 'body'
-    },
-    {
-      title: 'Sign',
-      url: 'sign',
-      icon: 'body'
-    },
-    {
       title: 'Login',
       url: 'login',
-      icon: 'body'
+      icon: 'log-in'
+    },
+    {
+      title: 'Sign-up',
+      url: 'sign',
+      icon: 'pencil'
+    },
+    {
+      title: 'How to play',
+      url: 'fun',
+      icon: 'information'
+    },
+    {
+      title: 'Question packs',
+      url: 'fun',
+      icon: 'help'
     }
   ];
 
