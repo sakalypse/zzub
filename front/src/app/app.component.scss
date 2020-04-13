@@ -185,3 +185,10 @@ ion-header{
   }
   
 }
+
+ion-content{
+  max-width: 1200px;
+  margin: 0 auto;
+  transform: translateX(-50%);
+  left: 50%;
+}
