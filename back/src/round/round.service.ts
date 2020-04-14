@@ -18,11 +18,11 @@ export class RoundService {
     * @return       the saved round
     */
     async createRound(dto: CreateRoundDTO): Promise<Round>{
-        const { category, question } = dto;
+        const { pack, question } = dto;
 
         // create new round
         let newRound = new Round();
-        newRound.category = category;
+        newRound.pack = pack;
         newRound.question = question;
         newRound.choices = [];
         newRound.extras = [];

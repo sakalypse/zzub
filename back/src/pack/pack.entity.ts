@@ -7,11 +7,11 @@ import { User } from 'src/user/user.entity';
 
 @Entity()
 @Unique(["name"])
-export class Category {
+export class Pack {
     @PrimaryGeneratedColumn()
-    categoryId: number;
+    packId: number;
 
-    @ManyToOne(type => User, user => user.categories,
+    @ManyToOne(type => User, user => user.packs,
         {onDelete:"CASCADE"})
     author: User;
 
@@ -20,13 +20,13 @@ export class Category {
 
     @ManyToMany(type => Tag)
     @JoinTable({
-        name: 'tag_of_category',
-        joinColumn: { name: 'categoryId', referencedColumnName: 'categoryId'},
+        name: 'tag_of_pack',
+        joinColumn: { name: 'packId', referencedColumnName: 'packId'},
         inverseJoinColumn: { name: 'tagId', referencedColumnName: 'tagId'},
     })
     tags:Tag[];
 
-    @OneToMany(type => Round, round => round.category)
+    @OneToMany(type => Round, round => round.pack)
     @JoinColumn()
     rounds:Round[];
 }

@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn,
         Column, ManyToMany, JoinTable, JoinColumn, OneToMany, ManyToOne} from 'typeorm';
 import {Length, IsEmail, IsDate} from "class-validator";
-import { Category } from 'src/category/category.entity';
+import { Pack } from 'src/pack/pack.entity';
 import { Choice } from 'src/choice/choice.entity';
 import { Extra } from 'src/extra/extra.entity';
 
@@ -10,9 +10,9 @@ export class Round {
     @PrimaryGeneratedColumn()
     roundId: number;
 
-    @ManyToOne(type => Category, category => category.rounds,
+    @ManyToOne(type => Pack, pack => pack.rounds,
                 {onDelete:"CASCADE"})
-    category: Category;
+    pack: Pack;
 
     @Column({ length: 255})
     question:string;
