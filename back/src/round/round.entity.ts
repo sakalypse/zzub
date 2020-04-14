@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn,
-        Column, ManyToMany, JoinTable, JoinColumn, OneToMany, ManyToOne} from 'typeorm';
+        Column, ManyToMany, JoinTable, JoinColumn, OneToMany, ManyToOne, OneToOne} from 'typeorm';
 import {Length, IsEmail, IsDate} from "class-validator";
 import { Pack } from 'src/pack/pack.entity';
 import { Choice } from 'src/choice/choice.entity';
@@ -16,6 +16,12 @@ export class Round {
 
     @Column({ length: 255})
     question:string;
+
+    @Column()
+    isMultipleChoice:boolean;
+    
+    @Column({nullable:true})
+    answerSingleChoice:string;
 
     @OneToMany(type => Choice, choice => choice.round)
     @JoinColumn()

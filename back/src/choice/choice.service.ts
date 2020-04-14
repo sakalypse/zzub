@@ -18,12 +18,13 @@ export class ChoiceService {
     * @return       the saved choice
     */
     async createChoice(dto: CreateChoiceDTO): Promise<Choice>{
-        const { round, choice } = dto;
+        const { round, choice, isAnswer } = dto;
 
         // create new choice
         let newChoice = new Choice();
         newChoice.round = round;
         newChoice.choice = choice;
+        newChoice.isAnswer = isAnswer;
 
         const errors = await validate(newChoice);
         if (errors.length > 0) {
@@ -60,6 +61,7 @@ export class ChoiceService {
     async updateChoice(choiceId, dto: UpdateChoiceDTO): Promise<Choice>{
         let choiceToUpdate = await this.choiceRepository.findOne(choiceId);
         choiceToUpdate.choice = dto.choice;
+        choiceToUpdate.isAnswer = dto.isAnswer;
         return await this.choiceRepository.save(choiceToUpdate);
     }
 
