@@ -21,7 +21,7 @@ export class PackService {
     * @return       the saved pack
     */
     async createPack(dto: CreatePackDTO): Promise<Pack>{
-        const { name, author, tags } = dto;
+        const { name, author, tag } = dto;
 
         // check uniqueness of name
         const packSearched = await this.packRepository.
@@ -36,18 +36,7 @@ export class PackService {
         newPack.name = name;
         newPack.author = author;
         newPack.rounds = [];
-
-        if(tags!=null){
-            newPack.tags = [];
-            await this.tagRepository.find({tagId: In(tags)}).
-            then(tagsFound => {
-                for(const tag of tagsFound){
-                    newPack.tags.push(tag);
-                }
-            })
-        }
-        else   
-            newPack.tags = [];
+        newPack.tag = tag;
 
         const errors = await validate(newPack);
         if (errors.length > 0) {
@@ -63,7 +52,7 @@ export class PackService {
     * @return   All saved packs
     */
     async getAllPacks(): Promise<Pack[]>{
-        return await this.packRepository.find({relations: ["author", "tags"]});
+        return await this.packRepository.find({relations: ["author", "tag"]});
     }
 
     /*
@@ -72,7 +61,7 @@ export class PackService {
     * @return one pack
     */
     async getPackById(packId): Promise<Pack>{
-        return await this.packRepository.findOne(packId, {relations: ["author", "tags"]});
+        return await this.packRepository.findOne(packId, {relations: ["author", "tag"]});
     }
 
     /*
@@ -81,7 +70,7 @@ export class PackService {
     * @return one pack
     */
     async getPackByName(name): Promise<Pack>{
-        return await this.packRepository.findOne({name: name}, {relations: ["author", "tags"]});
+        return await this.packRepository.findOne({name: name}, {relations: ["author", "tag"]});
     }
 
     /*
@@ -94,15 +83,7 @@ export class PackService {
         let packToUpdate = await this.packRepository.findOne(packId);
         
         packToUpdate.name = dto.name;
-        if(dto.tags!=null){
-            packToUpdate.tags = [];
-            await this.tagRepository.find({tagId: In(dto.tags)}).
-            then(tagsFound => {
-                for(const tag of tagsFound){
-                    packToUpdate.tags.push(tag);
-                }
-            })
-        }
+        packToUpdate.tag = dto.tag;
 
         return await this.packRepository.save(packToUpdate);
     }

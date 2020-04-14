@@ -18,13 +18,10 @@ export class Pack {
     @Column({ length: 25 })
     name:string;
 
-    @ManyToMany(type => Tag)
-    @JoinTable({
-        name: 'tag_of_pack',
-        joinColumn: { name: 'packId', referencedColumnName: 'packId'},
-        inverseJoinColumn: { name: 'tagId', referencedColumnName: 'tagId'},
-    })
-    tags:Tag[];
+    @ManyToOne(type => Tag, tag => tag.packs,
+        {onDelete:"CASCADE"})
+    @JoinColumn()
+    tag:Tag;
 
     @OneToMany(type => Round, round => round.pack)
     @JoinColumn()
