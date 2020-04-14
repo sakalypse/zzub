@@ -19,7 +19,7 @@
         
       </ion-header>
       <ion-content>
-        <ion-list (click)="toggleMobileMenu()" class="main-menu--mobile closed">
+        <ion-list (swipeleft)="toggleMobileMenu()" (click)="toggleMobileMenu()" class="main-menu--mobile closed">
           <div *ngFor="let p of appPages">
             <div class="menu-link" [routerDirection]="'root'" [routerLink]="[p.url]">
               <ion-icon slot="start" [name]="p.icon"></ion-icon>
