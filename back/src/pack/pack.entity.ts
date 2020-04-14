@@ -18,6 +18,9 @@ export class Pack {
     @Column({ length: 25 })
     name:string;
 
+    @Column()
+    isPublic:boolean;
+    
     @ManyToOne(type => Tag, tag => tag.packs,
         {onDelete:"CASCADE"})
     @JoinColumn()

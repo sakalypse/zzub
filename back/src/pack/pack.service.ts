@@ -21,7 +21,7 @@ export class PackService {
     * @return       the saved pack
     */
     async createPack(dto: CreatePackDTO): Promise<Pack>{
-        const { name, author, tag } = dto;
+        const { name, author, tag, isPublic } = dto;
 
         // check uniqueness of name
         const packSearched = await this.packRepository.
@@ -35,8 +35,10 @@ export class PackService {
         let newPack = new Pack();
         newPack.name = name;
         newPack.author = author;
+        newPack.isPublic = isPublic;
         newPack.rounds = [];
         newPack.tag = tag;
+        
 
         const errors = await validate(newPack);
         if (errors.length > 0) {
@@ -84,6 +86,7 @@ export class PackService {
         
         packToUpdate.name = dto.name;
         packToUpdate.tag = dto.tag;
+        packToUpdate.isPublic = dto.isPublic;
 
         return await this.packRepository.save(packToUpdate);
     }
