@@ -5,7 +5,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { CategoryModule } from './category/category.module';
+import { PackModule } from './pack/pack.module';
 import { TagModule } from './tag/tag.module';
 import { RoundModule } from './round/round.module';
 import { ChoiceModule } from './choice/choice.module';
@@ -17,7 +17,7 @@ import { ExtraModule } from './extra/extra.module';
     TypeOrmModule.forRoot(),
     UserModule,
     AuthModule,
-    CategoryModule,
+    PackModule,
     TagModule,
     RoundModule,
     ChoiceModule,

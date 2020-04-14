@@ -12,6 +12,9 @@ export class Choice {
                 {onDelete:"CASCADE"})
     round: Round;
 
-    @Column({ length: 255})
+    @Column({ length: 255 })
     choice:string;
+
+    @Column()
+    isAnswer:boolean;
 }
