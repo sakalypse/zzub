@@ -31,6 +31,7 @@ export class TagService {
         // create new tag
         let newTag = new Tag();
         newTag.name = name;
+        newTag.packs = [];
 
         const errors = await validate(newTag);
         if (errors.length > 0) {

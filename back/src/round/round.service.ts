@@ -18,12 +18,15 @@ export class RoundService {
     * @return       the saved round
     */
     async createRound(dto: CreateRoundDTO): Promise<Round>{
-        const { category, question } = dto;
+        const { pack, question, isMultipleChoice, answerSingleChoice } = dto;
 
         // create new round
         let newRound = new Round();
-        newRound.category = category;
+        newRound.pack = pack;
         newRound.question = question;
+        newRound.isMultipleChoice = isMultipleChoice;
+        if(!newRound.isMultipleChoice && answerSingleChoice)
+            newRound.answerSingleChoice = answerSingleChoice;
         newRound.choices = [];
         newRound.extras = [];
 
@@ -63,6 +66,9 @@ export class RoundService {
     async updateRound(roundId, dto: UpdateRoundDTO): Promise<Round>{
         let roundToUpdate = await this.roundRepository.findOne(roundId);
         roundToUpdate.question = dto.question;
+        roundToUpdate.isMultipleChoice = dto.isMultipleChoice;
+        if(!roundToUpdate.isMultipleChoice && dto.answerSingleChoice)
+            roundToUpdate.answerSingleChoice = dto.answerSingleChoice;
         return await this.roundRepository.save(roundToUpdate);
     }
 

@@ -7,26 +7,26 @@ import { User } from 'src/user/user.entity';
 
 @Entity()
 @Unique(["name"])
-export class Category {
+export class Pack {
     @PrimaryGeneratedColumn()
-    categoryId: number;
+    packId: number;
 
-    @ManyToOne(type => User, user => user.categories,
+    @ManyToOne(type => User, user => user.packs,
         {onDelete:"CASCADE"})
     author: User;
 
     @Column({ length: 25 })
     name:string;
 
-    @ManyToMany(type => Tag)
-    @JoinTable({
-        name: 'tag_of_category',
-        joinColumn: { name: 'categoryId', referencedColumnName: 'categoryId'},
-        inverseJoinColumn: { name: 'tagId', referencedColumnName: 'tagId'},
-    })
-    tags:Tag[];
+    @Column()
+    isPublic:boolean;
+    
+    @ManyToOne(type => Tag, tag => tag.packs,
+        {onDelete:"CASCADE"})
+    @JoinColumn()
+    tag:Tag;
 
-    @OneToMany(type => Round, round => round.category)
+    @OneToMany(type => Round, round => round.pack)
     @JoinColumn()
     rounds:Round[];
 }
