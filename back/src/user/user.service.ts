@@ -5,12 +5,15 @@ import { User } from './user.entity';
 import { CreateUserDTO } from './user.dto';
 import * as bcrypt from "bcryptjs";
 import { validate } from 'class-validator';
+import { Pack } from 'src/pack/pack.entity';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
-        private userRepository : Repository<User>
+        private userRepository : Repository<User>,
+        @InjectRepository(Pack)
+        private packRepository : Repository<Pack>
     ) {}
 
     /*
@@ -67,9 +70,9 @@ export class UserService {
     * @param  userId
     * @return one user
     */
-   async getUserByUsername(username): Promise<User>{
-    return await this.userRepository.findOne({username: username});
-}
+    async getUserByUsername(username): Promise<User>{
+        return await this.userRepository.findOne({username: username});
+    }
 
     /*
     * Update a user by the id and dto given
@@ -94,5 +97,17 @@ export class UserService {
     */
     async deleteUser(userId): Promise<DeleteResult>{
         return await this.userRepository.delete(userId);
+    }
+
+
+    /*
+    * Get all packs of a user
+    * @param  userId
+    * @return All saved packs of user
+    */
+    async getPacksOfUser(userId): Promise<Pack[]>{
+        return await this.packRepository.find({
+            relations: ["author", "rounds"],
+            where:{author:{userId: userId}}});
     }
 }

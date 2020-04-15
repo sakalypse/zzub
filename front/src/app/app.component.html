@@ -13,6 +13,30 @@
                 </span>
               </div>
             </div>
+            <div class="menu-link" [routerDirection]="'root'"
+                  [routerLink]="'login'"
+                  *ngIf="!this.authService.isConnected()">
+              <ion-icon slot="start" [name]="log-in"></ion-icon>
+              <span>
+                Login
+              </span>
+            </div>
+            <div class="menu-link" [routerDirection]="'root'"
+                 [routerLink]="'sign'"
+                  *ngIf="!this.authService.isConnected()">
+              <ion-icon slot="start" [name]="pencil"></ion-icon>
+              <span>
+                Sign-up
+              </span>
+            </div>
+            <div class="menu-link" [routerDirection]="'root'"
+            [routerLink]="" (click)="logout()"
+            *ngIf="this.authService.isConnected()">
+              <ion-icon slot="start" [name]="exit-outline"></ion-icon>
+              <span>
+                Logout
+              </span>
+            </div>
           </ion-list>    
         </ion-toolbar>
 
@@ -28,6 +52,33 @@
               </span>
               <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
             </div>
+          </div>
+          <div *ngIf="!this.authService.isConnected()">
+            <div class="menu-link" [routerDirection]="'root'"
+                 [routerLink]="'login'">
+              <ion-icon slot="start" name="log-in"></ion-icon>
+              <span>
+                Login
+              </span>
+              <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
+            </div>
+            <div class="menu-link" [routerDirection]="'root'"
+                 [routerLink]="'sign'">
+              <ion-icon slot="start" name="pencil"></ion-icon>
+              <span>
+                Sign up
+              </span>
+              <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
+            </div>
+          </div>
+          <div class="menu-link" [routerDirection]="'root'"
+               [routerLink]="" (click)="logout()"
+               *ngIf="this.authService.isConnected()">
+            <ion-icon slot="start" name="exit-outline"></ion-icon>
+            <span>
+              Logout
+            </span>
+            <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
           </div>
         </ion-list>    
     <ion-router-outlet id="main-content"></ion-router-outlet>

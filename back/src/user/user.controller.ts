@@ -38,4 +38,10 @@ export class UserController {
         const deleteResult = await this.userService.deleteUser(userId);
         return res.status(HttpStatus.OK).json(deleteResult);
     }
+
+    @Get('/:id/pack')
+    async getPacksOfUser(@Res() res, @Param('id') userId){
+        const packs = await this.userService.getPacksOfUser(userId);
+        return res.status(HttpStatus.OK).json(packs);
+    }
 }
