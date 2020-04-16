@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpBackend } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-pack',
@@ -16,7 +17,8 @@ export class ListPackPage implements OnInit {
     @Inject(AuthService)
     public authService: AuthService,
     public http: HttpClient,
-    handler: HttpBackend
+    handler: HttpBackend,
+    public router: Router
   ){ 
     this.http = new HttpClient(handler);
   }
@@ -34,6 +36,10 @@ export class ListPackPage implements OnInit {
       result => {
         this.packs = result;
       });
+  }
+
+  edit(packId){
+    this.router.navigate(["/edit-pack/"+packId]);
   }
 
 }
