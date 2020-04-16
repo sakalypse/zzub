@@ -1,0 +1,46 @@
+ion-content{
+    --background: var(--custom-color-gradient) !important;
+}
+
+.login-page{
+    margin: 0;
+    padding: 0;
+
+    .login-container{
+        height: calc(100vh - 100px);
+        margin: 0;
+    
+        .login-form{
+            //margin: 20px 10px;
+            background: white;
+            margin: auto;
+            padding: 20px 40px;
+            box-shadow: 6px 5px 13px 0px rgba(90, 90, 90, 0.22);
+            max-width: 500px !important;
+        
+            .login-icon{
+                padding: 20px;
+                text-align: center;
+                font-size: 80px;
+                color: var(--ion-color-primary);
+                left: 50%;
+                transform: translateX(-50%);
+                position: relative;
+            }
+        
+            .login-title{
+                text-align: center;
+                text-transform: uppercase;
+            }
+        
+            ion-item{
+                padding: 10px;
+            }
+        }
+    }
+}
+
+
+
+
+
