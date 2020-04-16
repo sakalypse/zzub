@@ -22,8 +22,9 @@ export class UserService {
     * @return       the saved user
     */
     async createUser(dto: CreateUserDTO): Promise<ReturnedUserDTO>{
-        const { username, email, password } = dto;
-
+        let { username, email, password } = dto;
+        username = username.toLowerCase();
+        email = email.toLowerCase();
         // check uniqueness of username/email
         const userSearched = await this.userRepository.
                     findOne({ username: username, email: email });
