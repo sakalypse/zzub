@@ -8,7 +8,7 @@ git clone https://github.com/sakalypse/zzub.git
 ```
 ## 2 - Setup environnement file 
 - Rename .env.sample into .env and complete it<br/>
-- Rename .ormconfig-sample.json into .ormconfig.json and complete it<br/>
+- Rename back/.ormconfig-sample.json into back/.ormconfig.json and complete it<br/>
 - Rename back/.env-sample into back/.env and complete it
 ## 3 - Start 
 On each directory : front/ and back/
