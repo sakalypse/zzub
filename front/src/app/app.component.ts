@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { Platform, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { sharedStylesheetJitUrl } from '@angular/compiler';
+import { AuthService } from './auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -18,23 +21,13 @@ export class AppComponent implements OnInit {
       icon: 'home'
     },
     {
-      title: 'Login',
-      url: 'login',
-      icon: 'log-in'
-    },
-    {
-      title: 'Sign-up',
-      url: 'sign',
-      icon: 'pencil'
-    },
-    {
       title: 'How to play',
-      url: 'fun',
+      url: 'homepage',
       icon: 'information'
     },
     {
       title: 'Question packs',
-      url: 'fun',
+      url: 'list-pack',
       icon: 'help'
     }
   ];
@@ -42,7 +35,11 @@ export class AppComponent implements OnInit {
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    public route: Router,
+    public toastController: ToastController,
+    @Inject(AuthService)
+    public authService: AuthService
   ) {
     this.initializeApp();
   }
@@ -59,5 +56,14 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  async logout(){
+    this.authService.clearStorage();
+    await this.route.navigateByUrl('/');
+    this.toastController.create({
+      message: 'Logout successful',
+      duration: 2000
+    }).then(toast=>toast.present());
   }
 }
