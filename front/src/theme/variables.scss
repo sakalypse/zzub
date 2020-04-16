@@ -227,3 +227,8 @@
     --color: white;
   }
 }
+
+//Custom colors
+:root{
+  --custom-color-gradient: linear-gradient(145deg, rgba(112,26,197,1) 0%, rgba(26,123,197,1) 100%);
+}

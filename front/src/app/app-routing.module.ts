@@ -1,15 +1,34 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuardService } from './auth/auth-guard.service';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'folder/Inbox',
+    redirectTo: 'homepage',
     pathMatch: 'full'
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
+    path: 'homepage',
+    loadChildren: () => import('./homepage/homepage.module').then( m => m.HomepagePageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+  },
+  {
+    path: 'sign',
+    loadChildren: () => import('./sign/sign.module').then( m => m.SignPageModule)
+  },
+  {
+    path: 'edit-pack/:id',
+    loadChildren: () => import('./edit-pack/edit-pack.module').then( m => m.EditPackPageModule),
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'list-pack',
+    loadChildren: () => import('./list-pack/list-pack.module').then( m => m.ListPackPageModule),
+    canActivate: [AuthGuardService]
   }
 ];
 
