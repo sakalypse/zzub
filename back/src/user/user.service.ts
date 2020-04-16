@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { User } from './user.entity';
-import { CreateUserDTO } from './user.dto';
+import { CreateUserDTO, ReturnedUserDTO } from './user.dto';
 import * as bcrypt from "bcryptjs";
 import { validate } from 'class-validator';
 import { Pack } from 'src/pack/pack.entity';
@@ -21,7 +21,7 @@ export class UserService {
     * @param  dto : Contains user's data
     * @return       the saved user
     */
-    async createUser(dto: CreateUserDTO): Promise<User>{
+    async createUser(dto: CreateUserDTO): Promise<ReturnedUserDTO>{
         const { username, email, password } = dto;
 
         // check uniqueness of username/email
@@ -44,7 +44,8 @@ export class UserService {
             throw new HttpException({message: 'Input data validation failed', _errors}, HttpStatus.BAD_REQUEST);
         } else {
             const savedUser = await this.userRepository.save(newUser);
-            return savedUser;
+            const { password, ...result } = savedUser;
+            return result;
         }
     }
   
@@ -52,8 +53,14 @@ export class UserService {
     * Get all users
     * @return   All saved users
     */
-    async getAllUsers(): Promise<User[]>{
-        return await this.userRepository.find();
+    async getAllUsers(): Promise<ReturnedUserDTO[]>{
+        const users = await this.userRepository.find();
+        let returnedUsers = [];
+        users.forEach(user => {
+            const { password, ...result } = user;
+            returnedUsers.push(result);
+        });
+        return returnedUsers;
     }
 
     /*
@@ -61,8 +68,10 @@ export class UserService {
     * @param  userId
     * @return one user
     */
-    async getUserById(userId): Promise<User>{
-        return await this.userRepository.findOne(userId);
+    async getUserById(userId): Promise<ReturnedUserDTO>{
+        const user = await this.userRepository.findOne(userId);
+        const { password, ...result } = user;
+        return result;
     }
 
     /*
@@ -70,9 +79,20 @@ export class UserService {
     * @param  userId
     * @return one user
     */
-    async getUserByUsername(username): Promise<User>{
-        return await this.userRepository.findOne({username: username});
+    async getUserByUsername(username): Promise<ReturnedUserDTO>{
+        const user = await this.userRepository.findOne({username: username});
+        const { password, ...result } = user;
+        return result;
     }
+
+    /*
+    * Get a single user by the id given for authentification -> keep hashed password
+    * @param  userId
+    * @return one user
+    */
+   async getUserByUsernameForAuth(username): Promise<User>{
+    return await this.userRepository.findOne({username: username});
+}
 
     /*
     * Update a user by the id and dto given
@@ -80,14 +100,16 @@ export class UserService {
     * @param  dto : data to update
     * @return the user updated
     */
-    async updateUser(userId, dto): Promise<User>{
+    async updateUser(userId, dto): Promise<ReturnedUserDTO>{
         let userToUpdate = await this.userRepository.findOne(userId);
         
         userToUpdate.username = dto.username;
         userToUpdate.email = dto.email;
         userToUpdate.password = dto.password;
 
-        return await this.userRepository.save(userToUpdate);
+        const user = await this.userRepository.save(userToUpdate);
+        const { password, ...result } = user;
+        return result;
     }
 
     /*
@@ -106,8 +128,15 @@ export class UserService {
     * @return All saved packs of user
     */
     async getPacksOfUser(userId): Promise<Pack[]>{
-        return await this.packRepository.find({
+        const packs = await this.packRepository.find({
             relations: ["author", "rounds"],
             where:{author:{userId: userId}}});
+        
+        //remove hashed password from returned data
+        packs.forEach(pack => {
+            pack.author.password = "";
+        });
+
+        return packs;
     }
 }
