@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Question packs',
-      url: 'list-pack',
+      url: 'pack',
       icon: 'help'
     }
   ];

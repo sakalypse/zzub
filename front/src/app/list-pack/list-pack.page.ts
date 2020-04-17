@@ -39,7 +39,26 @@ export class ListPackPage implements OnInit {
   }
 
   edit(packId){
-    this.router.navigate(["/edit-pack/"+packId]);
+    this.router.navigate(["/pack/edit/"+packId]);
+  }
+
+  create(){
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization': 'Bearer ' + this.authService.getToken()
+      })
+    };
+    let userId = this.authService.getLoggedUser().userId;
+    let dto = {author : userId};
+    this.http.post(`${this.API_URL}/pack`, dto, httpOptions)
+    .subscribe(
+      (result:any) => {
+        this.router.navigate(["/pack/edit/"+result.packId]);
+      },
+      error=>{
+        console.log("error");
+      });
   }
 
 }

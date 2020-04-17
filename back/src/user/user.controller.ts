@@ -44,4 +44,10 @@ export class UserController {
         const packs = await this.userService.getPacksOfUser(userId);
         return res.status(HttpStatus.OK).json(packs);
     }
+
+    @Get('/:id/pack/:packId')
+    async getPackOfUser(@Res() res, @Param('id') userId, @Param('packId') packId){
+        const pack = await this.userService.getPackOfUser(userId, packId);
+        return res.status(HttpStatus.OK).json(pack);
+    }
 }
