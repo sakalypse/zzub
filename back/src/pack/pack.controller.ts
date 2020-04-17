@@ -2,6 +2,7 @@ import { Controller, Post, Res, Body, HttpStatus, Get,
          Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { PackService } from './pack.service';
 import { CreatePackDTO, UpdatePackDTO } from './pack.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('pack')
 export class PackController {
@@ -9,6 +10,7 @@ export class PackController {
         private packService: PackService
     ){}
 
+    @UseGuards(JwtAuthGuard)
     @Post('')
     async createPack(@Res() res,
                          @Body() createPackDTO: CreatePackDTO){
