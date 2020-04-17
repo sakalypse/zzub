@@ -21,12 +21,12 @@ const routes: Routes = [
     loadChildren: () => import('./sign/sign.module').then( m => m.SignPageModule)
   },
   {
-    path: 'edit-pack/:id',
+    path: 'pack/edit/:id',
     loadChildren: () => import('./edit-pack/edit-pack.module').then( m => m.EditPackPageModule),
     canActivate: [AuthGuardService]
   },
   {
-    path: 'list-pack',
+    path: 'pack',
     loadChildren: () => import('./list-pack/list-pack.module').then( m => m.ListPackPageModule),
     canActivate: [AuthGuardService]
   }

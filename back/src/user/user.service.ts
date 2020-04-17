@@ -140,4 +140,25 @@ export class UserService {
 
         return packs;
     }
+
+    /*
+    * Get single pack of a user
+    * @param  userId
+    * @param  packId
+    * @return saved pack of user
+    */
+    async getPackOfUser(userId, packId): Promise<Pack>{
+        const pack = await this.packRepository.findOne({
+        relations: ["author", "rounds",
+                    "rounds.choices", "rounds.extras"],
+        where:{author:{userId: userId}, packId}});
+
+        //remove hashed password from returned data
+        if(pack){
+            pack.author.password = "";
+            return pack;
+        }
+        else   
+            return null;
+    }
 }

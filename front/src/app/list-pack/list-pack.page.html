@@ -1,4 +1,4 @@
-<ion-content>
+<div class="page" *ngIf="packs">
   <p *ngIf="!packs || packs.length==0">No pack yet</p>
   <ion-card *ngFor="let pack of packs">
     <ion-card-content>
@@ -8,4 +8,4 @@
       (click)="edit(pack.packId)">Edit</ion-button>
     </ion-card-content>
   </ion-card>
-</ion-content>
+</div>

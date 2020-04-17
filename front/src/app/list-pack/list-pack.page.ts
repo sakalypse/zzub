@@ -39,7 +39,7 @@ export class ListPackPage implements OnInit {
   }
 
   edit(packId){
-    this.router.navigate(["/edit-pack/"+packId]);
+    this.router.navigate(["/pack/edit/"+packId]);
   }
 
 }
