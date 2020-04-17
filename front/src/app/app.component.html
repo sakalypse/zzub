@@ -43,43 +43,44 @@
         
       </ion-header>
       <ion-content>
+        <div class="background closed" (click)="toggleMobileMenu()"></div>   
         <ion-list (swipeleft)="toggleMobileMenu()" (click)="toggleMobileMenu()" class="main-menu--mobile closed">
-          <div *ngFor="let p of appPages">
-            <div class="menu-link" [routerDirection]="'root'" [routerLink]="[p.url]">
-              <ion-icon slot="start" [name]="p.icon"></ion-icon>
-              <span>
-                {{p.title}}
-              </span>
-              <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
+            <div *ngFor="let p of appPages">
+              <div class="menu-link" [routerDirection]="'root'" [routerLink]="[p.url]">
+                <ion-icon slot="start" [name]="p.icon"></ion-icon>
+                <span>
+                  {{p.title}}
+                </span>
+                <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
+              </div>
             </div>
-          </div>
-          <div *ngIf="!this.authService.isConnected()">
+            <div *ngIf="!this.authService.isConnected()">
+              <div class="menu-link" [routerDirection]="'root'"
+                  [routerLink]="'login'">
+                <ion-icon slot="start" name="log-in"></ion-icon>
+                <span>
+                  Login
+                </span>
+                <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
+              </div>
+              <div class="menu-link" [routerDirection]="'root'"
+                  [routerLink]="'sign'">
+                <ion-icon slot="start" name="pencil"></ion-icon>
+                <span>
+                  Sign up
+                </span>
+                <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
+              </div>
+            </div>
             <div class="menu-link" [routerDirection]="'root'"
-                 [routerLink]="'login'">
-              <ion-icon slot="start" name="log-in"></ion-icon>
+                [routerLink]="" (click)="logout()"
+                *ngIf="this.authService.isConnected()">
+              <ion-icon slot="start" name="exit-outline"></ion-icon>
               <span>
-                Login
+                Logout
               </span>
               <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
             </div>
-            <div class="menu-link" [routerDirection]="'root'"
-                 [routerLink]="'sign'">
-              <ion-icon slot="start" name="pencil"></ion-icon>
-              <span>
-                Sign up
-              </span>
-              <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
-            </div>
-          </div>
-          <div class="menu-link" [routerDirection]="'root'"
-               [routerLink]="" (click)="logout()"
-               *ngIf="this.authService.isConnected()">
-            <ion-icon slot="start" name="exit-outline"></ion-icon>
-            <span>
-              Logout
-            </span>
-            <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
-          </div>
         </ion-list>    
     <ion-router-outlet id="main-content"></ion-router-outlet>
     </ion-content>

@@ -53,6 +53,7 @@ export class AppComponent implements OnInit {
 
   toggleMobileMenu() {
     document.querySelector('.main-menu--mobile').classList.toggle("closed");
+    document.querySelector('.background').classList.toggle("closed");
   }
 
   ngOnInit() {

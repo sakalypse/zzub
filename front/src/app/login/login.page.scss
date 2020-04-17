@@ -11,7 +11,7 @@ ion-content{
         margin: 0;
     
         .login-form{
-            //margin: 20px 10px;
+            border-radius: 5px;
             background: white;
             margin: auto;
             padding: 20px 40px;
@@ -19,7 +19,7 @@ ion-content{
             max-width: 500px !important;
         
             .login-icon{
-                padding: 20px;
+                padding: 10px;
                 text-align: center;
                 font-size: 80px;
                 color: var(--ion-color-primary);
@@ -29,6 +29,7 @@ ion-content{
             }
         
             .login-title{
+                margin-top: 10px;
                 text-align: center;
                 text-transform: uppercase;
             }

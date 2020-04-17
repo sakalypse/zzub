@@ -133,16 +133,33 @@ ion-header{
   }
 }
 
+
+.background{
+  position: relative;
+  height: 100%;
+  z-index: 9;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+
+  &.closed{
+    display: none;
+  }
+}
+
 .main-menu--mobile{
   z-index: 10;
   position: absolute;
   left: 0;
-  right: 0;
+  right: 20%;
   top: 0;
   bottom: 0;
   transition: all 0.3s ease-out;
 
   .menu-link{
+    z-index: 10;
     padding: 20px 0 20px 20px;
     text-align: left;
     border-bottom: 1px solid #dedede;
