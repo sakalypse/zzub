@@ -1,0 +1,62 @@
+.accordion {
+    background-color: white;
+    position: relative;
+    color: #444;
+    cursor: pointer;
+    padding: 20px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+    transition: 0.2s ease;
+    margin-top: 15px;
+    border-left: 5px solid var(--custom-color-secondary);
+    //box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
+    background: #ededed;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    &.active{
+
+        ion-icon{
+            transform: rotate(180deg);
+        }
+    }
+
+    ion-icon{
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        font-size: 20px;
+        transform-origin: 50% 50%;
+        transition: 0.2s ease;
+        pointer-events: none;
+    }
+  }
+    
+  .panel {
+    padding: 20px 40px;
+    display: none;
+    background-color: white;
+    box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
+    overflow: hidden;
+  }
+
+  .toggle{
+      margin: 20px 0;
+      border-radius: 5px;
+      overflow: hidden;
+      .toggle-choice{
+          box-sizing: border-box;
+          border-collapse: collapse;
+          border: 2px solid var(--custom-color-secondary);
+          display: inline-block;
+          padding: 5px;
+          cursor: pointer;
+
+          &:hover{
+              background: #ededed;
+          }
+      }
+  }

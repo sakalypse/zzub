@@ -31,4 +31,12 @@
     position: relative;
     transform: translateX(-50%);
     left: 50%;
+
+    .subtitle{
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--custom-color-secondary);
+        margin: 10px 0;
+    }
 }
+

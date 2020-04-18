@@ -1,3 +1,54 @@
 <div class="page" *ngIf="pack">
   <p>Edit pack : {{pack.packId}}</p>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <form>
+          <!-- TITLE -->
+          <div class="subtitle">Title</div>
+          <ion-item>
+            <ion-label position="floating">Title</ion-label>
+            <ion-input type="text" required></ion-input>
+          </ion-item>
+          <!-- THEME SELECTION -->
+          <div class="subtitle">Theme</div>
+          <ion-list>
+            <ion-radio-group value="biff">
+              <ion-item>
+                <ion-label>Sport</ion-label>
+                <ion-radio slot="start" value="sport"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>History</ion-label>
+                <ion-radio slot="start" value="History"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>Cinema</ion-label>
+                <ion-radio slot="start" value="Cinema"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-list>
+          <!-- QUESTIONS-->
+          <div class="subtitle">Questions</div>
+          <button (click)="expandAccordion($event)" class="accordion">Question 1<ion-icon slot="end" name="chevron-up"></ion-icon></button>
+          <div class="panel">
+            <ion-item>
+              <ion-label position="floating">Title of the question</ion-label>
+              <ion-input type="text" required></ion-input>
+            </ion-item>
+            <div class="subtitle">Answer Type</div>
+            <!--<div class="toggle">
+              <div class="toggle-choice">Multiple Choice</div>
+              <div class="toggle-choice">Single Answer</div>
+            </div>-->
+          </div>
+          <button (click)="expandAccordion($event)" class="accordion">Question 2<ion-icon slot="end" name="chevron-up"></ion-icon></button>
+          <div class="panel">
+              <p>Hello</p>
+          </div>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </div>
+
