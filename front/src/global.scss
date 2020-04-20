@@ -26,6 +26,11 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 //Custom Global styles
+
+.ion-page{
+    overflow: auto;
+}
+
 .page{
     max-width: 1200px;
     position: relative;
@@ -38,5 +43,9 @@
         color: var(--custom-color-secondary);
         margin: 10px 0;
     }
+}
+
+.hidden{
+    display: none;
 }
 

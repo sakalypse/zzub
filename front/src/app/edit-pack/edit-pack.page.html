@@ -37,11 +37,77 @@
               <ion-input type="text" required></ion-input>
             </ion-item>
             <div class="subtitle">Answer Type</div>
-            <!--<div class="toggle">
-              <div class="toggle-choice">Multiple Choice</div>
-              <div class="toggle-choice">Single Answer</div>
-            </div>-->
+            <!-- Answer type toggle -->
+            <div class="toggle">
+              <div id="multiple" (click)="toggleAnswerType($event)" class="toggle-choice selected">Multiple Choice</div>
+              <div id="single" (click)="toggleAnswerType($event)" class="toggle-choice">Single Answer</div>
+            </div>
+            <!-- Multiple Answers-->
+            <div id="answer-multiple" class="answer-edit">
+              <ion-item>
+                <ion-label position="floating">Correct Answer</ion-label>
+                <ion-input type="text"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Wrong Answer #1</ion-label>
+                <ion-input type="text"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Wrong Answer #2</ion-label>
+                <ion-input type="text"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Wrong Answer #3</ion-label>
+                <ion-input type="text"></ion-input>
+              </ion-item>
+            </div>
+            <!-- Single Answer-->
+            <div id="answer-single" class="answer-edit hidden">
+              <ion-item>
+                <ion-label position="floating">Correct Answer</ion-label>
+                <ion-input type="text"></ion-input>
+              </ion-item>
+            </div>
+            <!-- Extra type toggle -->
+            <div class="toggle">
+              <div id="noExtra" (click)="toggleExtraType($event)" class="toggle-choice toggle-extra selected">No extra</div>
+              <div id="audio" (click)="toggleExtraType($event)" class="toggle-choice toggle-extra">Audio</div>
+              <div id="video" (click)="toggleExtraType($event)" class="toggle-choice toggle-extra">Video</div>
+              <div id="img" (click)="toggleExtraType($event)" class="toggle-choice toggle-extra">Images</div>
+            </div>
+            <!-- No extra -->
+            <div id="extra-noExtra" class="extra-edit">
+            </div>
+            <!-- Audio extra -->
+            <div id="extra-audio" class="extra-edit hidden">
+              <ion-item>
+                <ion-label position="floating">Audio (Youtube URL)</ion-label>
+                <ion-input type="text"></ion-input>
+              </ion-item>
+            </div>
+            <!-- Video extra -->
+            <div id="extra-video" class="extra-edit hidden">
+              <ion-item>
+                <ion-label position="floating">Video (Youtube URL)</ion-label>
+                <ion-input type="text"></ion-input>
+              </ion-item>
+            </div>
+            <!-- Img extra -->
+            <div id="extra-img" class="extra-edit hidden">
+              <ion-item>
+                <ion-label position="floating">Image (URL)</ion-label>
+                <ion-input type="text"></ion-input>
+              </ion-item>
+            </div>
+            <!-- Question Actions Bar -->
+            <div class="questions-actions">
+              <ion-button>
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Delete
+              </ion-button>
+            </div> 
           </div>
+          
           <button (click)="expandAccordion($event)" class="accordion">Question 2<ion-icon slot="end" name="chevron-up"></ion-icon></button>
           <div class="panel">
               <p>Hello</p>

@@ -33,30 +33,55 @@
         transition: 0.2s ease;
         pointer-events: none;
     }
-  }
+}
     
-  .panel {
-    padding: 20px 40px;
-    display: none;
-    background-color: white;
-    box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
-    overflow: hidden;
-  }
+.panel {
+padding: 20px 40px;
+display: none;
+background-color: white;
+box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
 
-  .toggle{
-      margin: 20px 0;
-      border-radius: 5px;
-      overflow: hidden;
-      .toggle-choice{
-          box-sizing: border-box;
-          border-collapse: collapse;
-          border: 2px solid var(--custom-color-secondary);
-          display: inline-block;
-          padding: 5px;
-          cursor: pointer;
+    .toggle{
+        width: auto;
+        margin: 20px 0;
+        box-shadow: var(--custom-shadow-primary);
+        border: 2px solid var(--custom-color-secondary);
+        display: inline-block;
+        transition: 0.2s ease;
+        box-sizing: border-box;
 
-          &:hover{
-              background: #ededed;
-          }
-      }
-  }
+        .toggle-choice{
+            box-sizing: border-box;
+            display: inline-block;
+            padding: 10px;
+            cursor: pointer;
+            transition: 0.4s ease;
+
+            &:hover{
+                background: #ededed;
+                color: var(--custom-color-secondary);
+            }
+
+            &.selected{
+                background: var(--custom-color-secondary);
+                color: white;
+            }
+
+        }
+    }
+
+    .answer-edit{
+        padding: 10px;
+    }
+    
+    .extra-edit{
+        padding: 10px;
+    }
+
+    .questions-actions{
+        margin-top: 10px;
+        ion-button{
+            right: 0;
+        }
+    }
+}

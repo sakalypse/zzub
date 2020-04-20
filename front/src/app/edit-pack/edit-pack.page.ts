@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './edit-pack.page.html',
   styleUrls: ['./edit-pack.page.scss'],
 })
+
 export class EditPackPage implements OnInit {
   pack;
   API_URL = environment.API_URL_DEV;
@@ -52,6 +53,81 @@ export class EditPackPage implements OnInit {
     } else {
       panel.style.display = "block";
     }
+  }
+
+  toggleAnswerType(event){
+
+    let answerTypes = document.querySelectorAll(".answer-edit");
+    let selected;
+
+    answerTypes.forEach((answerType) => {
+      selected = document.querySelector(".selected");
+    });
+
+    let selectedId = selected.id;
+
+    if(selectedId != event.target.id){
+
+      //Getting selected type
+      let type = event.target.id;
+
+      //Hide all panels
+      let answerTypes = document.querySelectorAll(".answer-edit");
+      answerTypes.forEach((answerType) => {
+        answerType.classList.add("hidden");
+      });
+
+      //Show panel coresponding to the right id
+      document.querySelector("#answer-"+type).classList.remove("hidden");
+
+      //Displaying current type selected in toggle
+      event.target.classList.toggle("selected");
+      
+      if(event.target.nextElementSibling){
+        event.target.nextElementSibling.classList.toggle("selected");
+      }
+
+      if(event.target.previousElementSibling){
+        event.target.previousElementSibling.classList.toggle("selected");
+      }  
+
+    }
+      
+  }
+
+  toggleExtraType(event){
+
+    let extraTypes = document.querySelectorAll(".extra-edit");
+    let selected;
+
+    extraTypes.forEach((answerType) => {
+      selected = document.querySelector(".selected");
+    });
+
+    let selectedId = selected.id;
+
+    if(selectedId != event.target.id){
+
+      //Getting selected type
+      let type = event.target.id;
+
+      //Hide all panels
+      let extraTypes = document.querySelectorAll(".extra-edit");
+      extraTypes.forEach((extraTypes) => {
+        extraTypes.classList.add("hidden");
+      });
+
+      //Show panel coresponding to the right id
+      document.querySelector("#extra-"+type).classList.remove("hidden");
+
+      //Displaying current type selected in toggle
+      document.querySelectorAll(".toggle-extra").forEach((extraEdits) => {
+        extraEdits.classList.remove("selected");
+      });
+      event.target.classList.add("selected");
+
+    }
+      
   }
 
 }
