@@ -6,6 +6,9 @@ import { CreateUserDTO, ReturnedUserDTO } from './user.dto';
 import * as bcrypt from "bcryptjs";
 import { validate } from 'class-validator';
 import { Pack } from 'src/pack/pack.entity';
+import { Role } from 'src/shared/role.enum';
+
+//let role = require("src/shared/role.enum");
 
 @Injectable()
 export class UserService {
@@ -15,6 +18,34 @@ export class UserService {
         @InjectRepository(Pack)
         private packRepository : Repository<Pack>
     ) {}
+
+    /*
+    * Create admin User
+    */
+    async createAdmin(username, email, password){
+        // check if null
+        if(username && email && password){
+            // check uniqueness of username/email
+            const userSearched = await this.userRepository.
+                findOne({ username: username, email: email });
+            if(userSearched){
+                console.log("Admin already created");
+                return;
+            }
+            // create new user
+            let newUser = new User();
+            newUser.username = username
+            newUser.email = email;
+            newUser.password = bcrypt.hashSync(password, 10);
+            newUser.role = Role.admin; 
+            
+            this.userRepository.save(newUser);
+        }
+        else{
+            console.log("Admin's data missing");
+            return;
+        }
+    }
 
     /*
     * Create a new User with the data received
@@ -38,6 +69,7 @@ export class UserService {
         newUser.username = username;
         newUser.email = email;
         newUser.password = bcrypt.hashSync(password, 10);
+        newUser.role = Role.user;
 
         const errors = await validate(newUser);
         if (errors.length > 0) {
@@ -128,7 +160,7 @@ export class UserService {
     * @param  userId
     * @return All saved packs of user
     */
-    async getPacksOfUser(userId): Promise<Pack[]>{
+    async getAllPacksOfUser(userId): Promise<Pack[]>{
         const packs = await this.packRepository.find({
             relations: ["author", "rounds"],
             where:{author:{userId: userId}}});

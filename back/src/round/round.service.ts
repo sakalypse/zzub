@@ -54,7 +54,7 @@ export class RoundService {
     */
     async getRoundById(roundId): Promise<Round>{
         return await this.roundRepository.
-                     findOne(roundId, {relations: ["choices", "extras"]});
+                     findOne(roundId, {relations: ["choices", "extras", "pack"]});
     }
 
     /*

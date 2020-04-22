@@ -7,12 +7,14 @@ import { Tag } from 'src/tag/tag.entity';
 import { User } from 'src/user/user.entity';
 import { TagService } from 'src/tag/tag.service';
 import { UserService } from 'src/user/user.service';
+import { RoundService } from 'src/round/round.service';
+import { Round } from 'src/round/round.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Pack, User, Tag])
+    TypeOrmModule.forFeature([Pack, User, Tag, Round])
   ],
-  providers: [PackService, TagService, UserService],
+  providers: [PackService, TagService, UserService, RoundService],
   controllers: [PackController]
 })
 export class PackModule {}
