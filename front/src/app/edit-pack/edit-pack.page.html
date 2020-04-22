@@ -10,9 +10,20 @@
             <ion-label position="floating">Title</ion-label>
             <ion-input type="text" required></ion-input>
           </ion-item>
+          <!-- Language SELECTION -->
+          <div class="subtitle">Language</div>
+          <ion-item>
+            <ion-label>Select a language</ion-label>
+            <ion-select value="French" okText="Okay" cancelText="Dismiss">
+              <ion-select-option value="French">French</ion-select-option>
+              <ion-select-option value="English">English</ion-select-option>
+              <ion-select-option value="German">German</ion-select-option>
+              <ion-select-option value="Spanish">Spanish</ion-select-option>
+            </ion-select>
+          </ion-item>
           <!-- THEME SELECTION -->
           <div class="subtitle">Theme</div>
-          <ion-list>
+          <ion-list class="theme-list">
             <ion-radio-group value="biff">
               <ion-item>
                 <ion-label>Sport</ion-label>
@@ -32,6 +43,7 @@
           <div class="subtitle">Questions</div>
           <button (click)="expandAccordion($event)" class="accordion">Question 1<ion-icon slot="end" name="chevron-up"></ion-icon></button>
           <div class="panel">
+            <form>
             <ion-item>
               <ion-label position="floating">Title of the question</ion-label>
               <ion-input type="text" required></ion-input>
@@ -68,6 +80,7 @@
                 <ion-input type="text"></ion-input>
               </ion-item>
             </div>
+            <div class="subtitle">Extra</div>
             <!-- Extra type toggle -->
             <div class="toggle">
               <div id="noExtra" (click)="toggleExtraType($event)" class="toggle-choice toggle-extra selected">No extra</div>
@@ -84,34 +97,57 @@
                 <ion-label position="floating">Audio (Youtube URL)</ion-label>
                 <ion-input type="text"></ion-input>
               </ion-item>
+              <ion-row>
+                <ion-col class="preview-container" size-xs="12" size-sm="4">
+                  <div class="preview sound-preview">
+                    <ion-icon slot="center" name="volume-high"></ion-icon>
+                  </div>
+                </ion-col>
+              </ion-row>
             </div>
             <!-- Video extra -->
             <div id="extra-video" class="extra-edit hidden">
               <ion-item>
                 <ion-label position="floating">Video (Youtube URL)</ion-label>
-                <ion-input type="text"></ion-input>
+                <ion-input type="text" name="video-input" [(ngModel)]="video.src"></ion-input>
               </ion-item>
+              <div class="preview-container">
+                <div class="preview video-preview">
+                  <iframe width="560" height="315" src="{{ video.src }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+              </div>
             </div>
             <!-- Img extra -->
             <div id="extra-img" class="extra-edit hidden">
-              <ion-item>
-                <ion-label position="floating">Image (URL)</ion-label>
-                <ion-input type="text"></ion-input>
-              </ion-item>
+              <div *ngFor="let image of images">
+                <ion-item >
+                  <ion-label position="floating">Image (URL)</ion-label>
+                  <ion-input type="text" name="{{image.title}}" [(ngModel)]="image.src"></ion-input>
+                </ion-item>
+              </div>
+              <ion-row>
+                <ion-col class="preview-container" *ngFor="let image of images" size-xs="12" size-sm="4">
+                  <div class="preview img-preview">
+                    <div class="delete-extra"><ion-icon slot="center" name="close"></ion-icon></div>
+                      <img src="{{ image.src }}" alt="">
+                  </div>
+                </ion-col>
+              </ion-row>
             </div>
             <!-- Question Actions Bar -->
             <div class="questions-actions">
-              <ion-button>
+              <ion-button color="danger">
                 <ion-icon slot="start" name="trash"></ion-icon>
                 Delete
               </ion-button>
             </div> 
+            </form>
           </div>
-          
-          <button (click)="expandAccordion($event)" class="accordion">Question 2<ion-icon slot="end" name="chevron-up"></ion-icon></button>
-          <div class="panel">
-              <p>Hello</p>
-          </div>
+          <ion-row>
+            <ion-col size-xs="12" offset-sm="3" size-sm="6" offset-lg="4" size-lg="4">
+              <div class="add-question"><span>Add Question</span><ion-icon slot="end" name="add"></ion-icon></div>
+            </ion-col>
+          </ion-row>
         </form>
       </ion-col>
     </ion-row>

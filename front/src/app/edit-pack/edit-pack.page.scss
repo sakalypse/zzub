@@ -48,7 +48,7 @@ box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
         border: 2px solid var(--custom-color-secondary);
         display: inline-block;
         transition: 0.2s ease;
-        box-sizing: border-box;
+        box-sizing: border-box;       
 
         .toggle-choice{
             box-sizing: border-box;
@@ -56,9 +56,10 @@ box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
             padding: 10px;
             cursor: pointer;
             transition: 0.4s ease;
+            font-weight: 500;
 
             &:hover{
-                background: #ededed;
+                background: #ccc;
                 color: var(--custom-color-secondary);
             }
 
@@ -75,13 +76,115 @@ box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
     }
     
     .extra-edit{
-        padding: 10px;
+        padding: 20px 10px;
+
+        &#extra-noExtra{
+            display: none;
+        }
+
     }
 
     .questions-actions{
         margin-top: 10px;
+        min-height: 50px;
         ion-button{
-            right: 0;
+            float: right;
         }
     }
 }
+
+.add-question{
+    box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
+    border: 2px solid var(--custom-color-secondary);
+    color: var(--custom-color-secondary);
+    text-align: center;
+    padding: 10px;
+    margin: 20px 0;
+    cursor: pointer;
+    transition: 0.4s ease-out;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+
+    &:hover{
+        color: white;
+        background-color: var(--custom-color-secondary);
+    }
+
+    ion-icon{
+        font-size: 20px;
+        font-weight: bolder;
+        margin: auto 5px;
+    }
+}
+
+.preview-container{
+
+    &:first-child{
+        .preview{
+            &.img-preview{
+                .delete-extra{
+                    display: none;
+                }
+            }
+        }  
+    }
+
+    .preview{
+        margin: 20px 0;
+        display: flex;
+        box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
+        padding: 20px;
+    
+        &.sound-preview{
+            height: 200px;
+            ion-icon{
+                margin: auto;
+                font-size: 60px;
+            }
+        }
+    
+        &.video-preview{
+            iframe{
+                margin: auto;
+            }
+        }
+    
+        &.img-preview{
+            position: relative;
+    
+            .delete-extra{
+                background-color: var(--ion-color-danger);
+                color: white;
+                height: 30px;
+                width: 30px;
+                border-radius: 50%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                display: flex;
+                transform: translate(25%, -25%);
+                cursor: pointer;
+    
+                &:hover{
+                    ion-icon{
+                        transform: rotate(180deg);
+                    }
+                }
+    
+                ion-icon{
+                    margin: auto;
+                    font-size: 20px;
+                    transition: 0.2s ease-out;
+                }
+    
+                
+            }
+    
+            
+        }
+    }
+
+}
+

@@ -13,6 +13,28 @@ import { environment } from 'src/environments/environment';
 export class EditPackPage implements OnInit {
   pack;
   API_URL = environment.API_URL_DEV;
+  public images = [
+    {
+      src: 'https://resize-parismatch.lanmedia.fr/r/901,,forcex/img/var/news/storage/images/paris-match/animal-story/un-nouveau-bebe-panda-est-ne-au-zoo-de-kuala-lumpur-1526057/sipa-ap22206128-000006/24886535-1-fre-FR/SIPA-ap22206128-000006.jpg',
+      title: 'image 1'
+    },
+    {
+      src: 'https://static.lexpress.fr/medias_11839/w_480,h_270,c_fill,g_north/v1526979624/un-panda-s-alimente-dans-le-zoo-de-la-foret-de-shenyang-dans-la-province-chinoise-de-liaoning-le-20-decembre-2017_6061884.jpg',
+      title: 'image 2'
+    },
+    {
+      src: 'https://actus.zoobeauval.com/wp-content/uploads/2019/07/AP9I0679.jpg',
+      title: 'image 3'
+    }
+  ];
+
+  public video = {
+    src: 'https://www.youtube.com/embed/DOWwWsbG1Sw'
+  }
+
+  public sound = {
+    src: 'https://www.youtube.com/watch?v=Z4PDu6jQY_A'
+  }
 
   constructor(
     @Inject(AuthService)
