@@ -19,6 +19,9 @@ export class User {
     @Column() 
     password:string;
 
+    @Column() 
+    role:number;
+
     @OneToMany(type => Pack, pack => pack.author)
     @JoinColumn()
     packs:Pack[];

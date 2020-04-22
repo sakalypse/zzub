@@ -5,20 +5,16 @@ import { UserController } from './user.controller';
 import { User } from './user.entity';
 import { Pack } from 'src/pack/pack.entity';
 import { Round } from 'src/round/round.entity';
-import { UserMiddleware } from 'src/middleware/user.middleware';
+import { PackService } from 'src/pack/pack.service';
+import { TagService } from 'src/tag/tag.service';
+import { Tag } from 'src/tag/tag.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Pack, Round])
+        TypeOrmModule.forFeature([User, Pack, Round, Tag])
     ],
-    providers: [UserService],
+    providers: [UserService, PackService],
     exports: [UserService],
     controllers: [UserController]
 })
-export class UserModule implements NestModule{
-    configure(consumer: MiddlewareConsumer) {
-      consumer
-        .apply(UserMiddleware)
-        .forRoutes('user/:id/pack');
-    }
-  }
+export class UserModule{}
