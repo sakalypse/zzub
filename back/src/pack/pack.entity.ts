@@ -20,6 +20,9 @@ export class Pack {
 
     @Column()
     isPublic:boolean;
+
+    @Column()
+    language:number;
     
     @ManyToOne(type => Tag, tag => tag.packs,
         {onDelete:"CASCADE"})

@@ -13,6 +13,23 @@ export class TagService {
     ) {}
 
     /*
+    * Create Default tags
+    */
+   async initDefaultTags(){
+    let tags = [
+        "Sport",
+        "Music",
+        "History",
+        "Cinema"
+    ]
+    tags.forEach(tag => {
+        let tagToSave = new Tag();
+        tagToSave.name = tag;
+        this.tagRepository.save(tagToSave);
+    });
+}
+
+    /*
     * Create a new Tag with the data received
     * @param  dto : Contains tag's data
     * @return       the saved tag

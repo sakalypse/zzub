@@ -46,7 +46,6 @@ export class SignPage implements OnInit {
       return;
     }
 
-    this.userForm.removeControl("password2");
     this.authService.signup(this.userForm.value)
     .subscribe(x => {
       let formLogin = {

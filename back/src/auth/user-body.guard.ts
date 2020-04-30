@@ -21,13 +21,13 @@ export class UserBodyGuard implements CanActivate {
       //check author inside body
       if(request.body.author && decoded.userId != request.body.author)
         throw new UnauthorizedException();
-      //check pack inside body
+      //check pack inside body -> if author of pack == userId from token
       if(request.body.pack){
         const pack = await this.packService.getPackById(request.body.pack);
         if(decoded.userId != pack.author.userId)
           throw new UnauthorizedException();
       }
-      //check pack inside body
+      //check round inside body
       if(request.body.round){
         const round = await this.roundService.getRoundById(request.body.round);
         const pack = await this.packService.getPackById(round.pack);

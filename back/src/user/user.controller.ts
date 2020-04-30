@@ -64,6 +64,7 @@ export class UserController {
         return res.status(HttpStatus.OK).json(pack);
     }
 
+    /*
     @UseGuards(UserGuard)
     @Put('/:id/pack/:packId')
     async updatePackOfUser( @Res() res, @Param('packId') packId,
@@ -79,4 +80,5 @@ export class UserController {
         const deleteResult = await this.packService.deletePack(packId);
         return res.status(HttpStatus.OK).json(deleteResult);
     }
+    */
 }

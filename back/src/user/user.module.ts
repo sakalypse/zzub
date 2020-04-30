@@ -8,12 +8,13 @@ import { Round } from 'src/round/round.entity';
 import { PackService } from 'src/pack/pack.service';
 import { TagService } from 'src/tag/tag.service';
 import { Tag } from 'src/tag/tag.entity';
+import { RoundService } from 'src/round/round.service';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([User, Pack, Round, Tag])
     ],
-    providers: [UserService, PackService],
+    providers: [UserService, PackService, RoundService],
     exports: [UserService],
     controllers: [UserController]
 })

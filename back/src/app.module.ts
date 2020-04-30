@@ -11,6 +11,7 @@ import { RoundModule } from './round/round.module';
 import { ChoiceModule } from './choice/choice.module';
 import { ExtraModule } from './extra/extra.module';
 import { UserService } from './user/user.service';
+import { TagService } from './tag/tag.service';
 
 @Module({
   imports: [
@@ -27,11 +28,14 @@ import { UserService } from './user/user.service';
   providers: [AppService],
 })
 export class AppModule implements OnModuleInit {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private tagService: TagService) {}
   onModuleInit() {
     this.userService.createAdmin(
       process.env.ADMINUSERNAME,
       process.env.ADMINEMAIL,
       process.env.ADMINPASSWORD);
+    this.tagService.initDefaultTags();
   }
 }
