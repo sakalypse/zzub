@@ -1,0 +1,90 @@
+.filters-button{
+    display: flex;
+    box-shadow: var(--custom-shadow-primary);
+    height: 100%;
+    width: 100%;
+
+    span{
+        margin: auto;
+    }
+}
+.filters-container{
+    display: flex;
+    flex-wrap: wrap;
+
+    .filter{
+        font-size: 12px;
+        width: 50%;
+        padding: 10px;
+        //margin: auto;
+        display: flex;
+
+        *{
+            margin: auto 0;
+        }
+
+        @media screen and (min-width: 720px){
+            width: 20%;
+        }
+
+        ion-label{
+            padding-left: 10px;
+        }
+    }
+}
+
+.pack{
+    padding: 20px 20px 10px 20px;
+    margin: 5px;
+    box-shadow: var(--custom-shadow-primary);
+
+    .pack-name{
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .pack-nbquestions{
+        text-align: center;
+    }
+
+    .pack-creator{
+        text-align: center;
+    }
+
+    .pack-bottombar{
+        margin-top: 20px;
+        display:flex;
+        
+        >div{
+            margin: auto;
+            display:flex;
+            padding: 5px 10px;
+
+            ion-icon{
+                margin:auto;
+                font-size: 16px;
+            }
+
+            span{
+                margin-left: 5px;
+            }
+        }
+
+        .tag{
+            box-shadow: var(--custom-shadow-primary);
+            border: 1px solid orangered;
+            color: orangered;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .edit-pack{
+            box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
+            background-color: var(--custom-color-secondary);
+            color: white;
+            cursor: pointer;
+        }
+    }
+}
