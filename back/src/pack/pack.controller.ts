@@ -5,6 +5,7 @@ import { CreatePackDTO, UpdatePackDTO } from './pack.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserBodyGuard } from 'src/auth/user-body.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
+import { UserGuard } from 'src/auth/user.guard';
 
 @Controller('pack')
 export class PackController {
@@ -35,7 +36,7 @@ export class PackController {
         return res.status(HttpStatus.OK).json(pack);
     }
 
-    @UseGuards(AdminGuard)
+    @UseGuards(UserBodyGuard)
     @Put('/:id')
     async updatePack( @Res() res, @Param('id') packId,
                           @Body() dto: UpdatePackDTO){
@@ -44,9 +45,9 @@ export class PackController {
         return res.status(HttpStatus.OK).json(pack);
     }
 
-    @UseGuards(AdminGuard)
-    @Delete('/:id')
-    async deletePack(@Res() res, @Param('id') packId){
+    @UseGuards(UserGuard)
+    @Delete('/:packId')
+    async deletePack(@Res() res, @Param('packId') packId){
         const deleteResult = await this.packService.deletePack(packId);
         return res.status(HttpStatus.OK).json(deleteResult);
     }

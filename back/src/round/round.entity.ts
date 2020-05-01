@@ -19,15 +19,14 @@ export class Round {
 
     @Column()
     isMultipleChoice:boolean;
-    
-    @Column({nullable:true})
-    answerSingleChoice:string;
 
     @OneToMany(type => Choice, choice => choice.round)
     @JoinColumn()
     choices:Choice[];
 
-    @OneToMany(type => Extra, extra => extra.round)
+    @OneToOne(type => Extra, extra => extra.round, {
+        cascade: ['update']
+      })
     @JoinColumn()
-    extras:Extra[];
+    extra:Extra;
 }

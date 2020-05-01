@@ -33,6 +33,7 @@ export class PackService {
         newPack.name = author.username;
         newPack.author = dto.author;
         newPack.isPublic = false;
+        newPack.language = 0;
         newPack.rounds = [];
 
         let packSearched;
@@ -88,17 +89,21 @@ export class PackService {
         let packToUpdate = await this.packRepository.findOne(packId);
         
         // check uniqueness of name
-        const packSearched = await this.packRepository.
-        findOne({where:{ name: dto.name}});
-
-        if (packSearched) {
-        const errors = {name: 'Name already taken.'};
-        throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
+        if(packToUpdate.name != dto.name){
+            const packSearched = await this.packRepository.
+            findOne({where:{ name: dto.name}});
+            if (packSearched) {
+            const errors = {name: 'Name already taken.'};
+            throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
+            }
         }
 
         packToUpdate.name = dto.name;
         packToUpdate.tag = dto.tag;
         packToUpdate.isPublic = dto.isPublic;
+        if(dto.language<0||dto.language>3)
+            throw new HttpException({message: 'Language not valid'}, HttpStatus.BAD_REQUEST);
+        packToUpdate.language = dto.language;
 
         return await this.packRepository.save(packToUpdate);
     }

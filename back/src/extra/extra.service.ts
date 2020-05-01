@@ -2,14 +2,17 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult, In } from 'typeorm';
 import { Extra } from './extra.entity';
-import { CreateExtraDTO, UpdateExtraDTO } from './extra.dto';
+import { CreateExtraDTO, UpdateExtraDTO, ExtraType } from './extra.dto';
 import { validate } from 'class-validator';
+import { Round } from 'src/round/round.entity';
 
 @Injectable()
 export class ExtraService {
     constructor(
         @InjectRepository(Extra)
-        private extraRepository : Repository<Extra>
+        private extraRepository : Repository<Extra>,
+        @InjectRepository(Round)
+        private roundRepository : Repository<Round>
     ) {}
 
     /*
@@ -18,13 +21,15 @@ export class ExtraService {
     * @return       the saved extra
     */
     async createExtra(dto: CreateExtraDTO): Promise<Extra>{
-        const { round, url } = dto;
+        const { round, extraType, url } = dto;
 
         // create new extra
         let newExtra = new Extra();
-        newExtra.round = round;
+        
+        newExtra.round = await this.roundRepository.findOne(round);
+        newExtra.extraType = extraType;
         newExtra.url = url;
-
+        
         const errors = await validate(newExtra);
         if (errors.length > 0) {
             const _errors = {name: 'Extra input is not valid.'};
@@ -48,7 +53,8 @@ export class ExtraService {
     * @return one extra
     */
     async getExtraById(extraId): Promise<Extra>{
-        return await this.extraRepository.findOne(extraId);
+        return await this.extraRepository.findOne(extraId,
+                                {relations: ["round"]});
     }
 
     /*
@@ -60,6 +66,7 @@ export class ExtraService {
     async updateExtra(extraId, dto: UpdateExtraDTO): Promise<Extra>{
         let extraToUpdate = await this.extraRepository.findOne(extraId);
         extraToUpdate.url = dto.url;
+        extraToUpdate.extraType = dto.extraType;
         return await this.extraRepository.save(extraToUpdate);
     }
 

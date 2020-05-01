@@ -49,7 +49,8 @@ export class ChoiceService {
     * @return one choice
     */
     async getChoiceById(choiceId): Promise<Choice>{
-        return await this.choiceRepository.findOne(choiceId);
+        return await this.choiceRepository.findOne(choiceId,
+                            {relations: ["round"]});
     }
 
     /*
