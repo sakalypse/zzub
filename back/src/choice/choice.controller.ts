@@ -4,6 +4,7 @@ import { ChoiceService } from './choice.service';
 import { CreateChoiceDTO, UpdateChoiceDTO } from './choice.dto';
 import { AdminGuard } from 'src/auth/admin.guard';
 import { UserBodyGuard } from 'src/auth/user-body.guard';
+import { UserGuard } from 'src/auth/user.guard';
 
 @Controller('choice')
 export class ChoiceController {
@@ -34,18 +35,18 @@ export class ChoiceController {
         return res.status(HttpStatus.OK).json(choice);
     }
 
-    @UseGuards(AdminGuard)
-    @Put('/:id')
-    async updateChoice( @Res() res, @Param('id') choiceId,
+    @UseGuards(UserGuard)
+    @Put('/:choiceId')
+    async updateChoice( @Res() res, @Param('choiceId') choiceId,
                           @Body() dto: UpdateChoiceDTO){
         const choice = await this.choiceService.
                      updateChoice(choiceId, dto);
         return res.status(HttpStatus.OK).json(choice);
     }
 
-    @UseGuards(AdminGuard)
-    @Delete('/:id')
-    async deleteChoice(@Res() res, @Param('id') choiceId){
+    @UseGuards(UserGuard)
+    @Delete('/:choiceId')
+    async deleteChoice(@Res() res, @Param('choiceId') choiceId){
         const deleteResult = await this.choiceService.deleteChoice(choiceId);
         return res.status(HttpStatus.OK).json(deleteResult);
     }

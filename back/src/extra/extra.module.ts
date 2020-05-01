@@ -9,12 +9,15 @@ import { Pack } from 'src/pack/pack.entity';
 import { Tag } from 'src/tag/tag.entity';
 import { User } from 'src/user/user.entity';
 import { Round } from 'src/round/round.entity';
+import { Choice } from 'src/choice/choice.entity';
+import { ChoiceService } from 'src/choice/choice.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Extra, Pack, Tag, User, Round])
+    TypeOrmModule.forFeature([Extra, Pack, Tag, User, Round, Choice])
   ],
-  providers: [ExtraService, PackService, RoundService],
+  exports: [ExtraService],
+  providers: [ExtraService, PackService, RoundService, ChoiceService],
   controllers: [ExtraController]
 })
 export class ExtraModule {}

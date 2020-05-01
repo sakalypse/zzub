@@ -53,7 +53,8 @@ export class ExtraService {
     * @return one extra
     */
     async getExtraById(extraId): Promise<Extra>{
-        return await this.extraRepository.findOne(extraId);
+        return await this.extraRepository.findOne(extraId,
+                                {relations: ["round"]});
     }
 
     /*
