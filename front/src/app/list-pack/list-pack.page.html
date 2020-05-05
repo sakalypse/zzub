@@ -1,67 +1,74 @@
 <ion-content>
   <p *ngIf="!packs || packs.length==0">No pack yet</p>
   <div class="page" *ngIf="packs">
-<<<<<<< HEAD
     <ion-grid>
       <ion-row>
-        <ion-col size-xs="4" offset-md="7" size-md="1">
-          <div class="filters-button"><span>Filters</span></div>
-        </ion-col>
-        <ion-col size-xs="8" size-md="4">
-          <ion-searchbar></ion-searchbar>
+        <ion-col>
+          
         </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" size-md="6">
-          <div class="filters-container">
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>Sport</ion-label>
-              </div>
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>Cinema</ion-label>
-              </div>
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>History</ion-label>
-              </div>
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>Geography</ion-label>
-              </div>
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>Sciences</ion-label>
-              </div>
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>Video Games</ion-label>
-              </div>
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>Music</ion-label>
-              </div>
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>Literature</ion-label>
-              </div>
-              <div class="filter">
-                <ion-checkbox></ion-checkbox>
-                <ion-label>Misc</ion-label>
-              </div>
-          </div>
-        </ion-col>
-        <ion-col size-md="3">
-          Sort by
-        </ion-col>
-        <ion-col size-md="3">
-          Favorites/My pack
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" size-sm="6" size-lg="4" *ngFor="let pack of packs">
+      <div class="search-container">
+        <ion-row>
+          <ion-col size-xs="12" size-md="4">
+            <div class="create-button" (click)="create()"><span>Create a new pack</span><ion-icon name="add"></ion-icon></div>
+          </ion-col>
+          <ion-col size-xs="12" offset-md="3" size-md="1">
+            <div class="filters-button"><span>Filters</span></div>
+          </ion-col>
+          <ion-col size-xs="12" size-md="4">
+            <ion-searchbar></ion-searchbar>
+          </ion-col>
+        </ion-row>
+        <div class="filters-mega-container">
+        <ion-row>
+          <ion-col class="filters-container" size-xs="12" size-md="4">
+          <h2 class="filter-title">Themes</h2>
+            <ion-item>
+              <ion-label>Themes</ion-label>
+              <ion-select multiple value="" okText="Okay" cancelText="Cancel">
+                <ion-select-option value="Sport">Sport</ion-select-option>
+                <ion-select-option value="Cinema">Cinema</ion-select-option>
+                <ion-select-option value="History">History</ion-select-option>
+                <ion-select-option value="Geography">Geography</ion-select-option>
+                <ion-select-option value="Sciences">Sciences</ion-select-option>
+                <ion-select-option value="Video Games">Video Games</ion-select-option>
+                <ion-select-option value="Literature">Literature</ion-select-option>
+                <ion-select-option value="Misc">Misc</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col class="filters-container" size-xs="12" size-md="4">
+            <h2 class="filter-title">Sort by</h2>
+            <ion-item>
+              <ion-label>Sort by</ion-label>
+              <ion-select value="" okText="Okay" cancelText="Cancel">
+                <ion-select-option value="Most played">Most played</ion-select-option>
+                <ion-select-option value="Most liked">Most liked</ion-select-option>
+                <ion-select-option value="Most recent">Most recent</ion-select-option>
+                <ion-select-option value="A-Z">A-Z</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col class="filters-container" size-xs="12" size-md="4">
+            <h2 class="filter-title">Favorites/My pack</h2>
+              <ion-row>
+                <ion-col> 
+                  <div class="button-filter"><ion-icon name="star-outline"></ion-icon>Favorites</div>
+                </ion-col>
+                <ion-col>
+                  <div class="button-filter"><ion-icon name="person-outline"></ion-icon>My-pack</div>
+                </ion-col>
+              </ion-row>
+          </ion-col>
+        </ion-row>
+      </div>
+      </div>
+      <ion-row class="pack-list" data-simplebar>
+        <ion-col size-xs="12" size-md="6" *ngFor="let pack of packs">
           <div class="pack">
+              <div class="delete-pack" (click)="alertConfirmDelete(pack.packId)">
+                <ion-icon slot="center" name="close"></ion-icon>
+              </div>
               <div class="pack-name">
                 {{pack.name}}
               </div>
@@ -71,9 +78,7 @@
               <div class="pack-creator">
                 Created By Sakalypse
               </div>
-              <ion-button 
-              color="danger"
-              (click)="alertConfirmDelete(pack.packId)">Delete</ion-button>
+              
               <div class="pack-bottombar">
                 <div class="tag">Music</div>
                 <div class="play-count"><ion-icon name="play-outline"></ion-icon><span>10</span></div>
@@ -85,9 +90,5 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-
-    <ion-button 
-        color="primary"
-        (click)="create()">Create</ion-button>
   </div>
 </ion-content>

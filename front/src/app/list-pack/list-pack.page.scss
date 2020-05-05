@@ -1,90 +1,195 @@
-.filters-button{
+.filters-button,.create-button{
     display: flex;
-    box-shadow: var(--custom-shadow-primary);
     height: 100%;
     width: 100%;
+    border: 2px solid var(--custom-color-secondary);
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: white;
+    transition: 0.4s ease-out;
+    justify-content: center;
+
+    &:hover{
+        color: var(--custom-color-secondary);
+    }
 
     span{
-        margin: auto;
-    }
-}
-.filters-container{
-    display: flex;
-    flex-wrap: wrap;
-
-    .filter{
-        font-size: 12px;
-        width: 50%;
         padding: 10px;
-        //margin: auto;
-        display: flex;
-
-        *{
-            margin: auto 0;
-        }
-
-        @media screen and (min-width: 720px){
-            width: 20%;
-        }
-
-        ion-label{
-            padding-left: 10px;
-        }
+        margin: auto 0;
     }
+
+    ion-icon{
+        margin: auto 0;
+    }
+
 }
 
-.pack{
-    padding: 20px 20px 10px 20px;
-    margin: 5px;
+ion-searchbar{
+    padding: 0;
+    box-shadow: none;
+}
+
+ion-content{
+    --background: #F6F7FB;
+}
+
+.filters-mega-container{
     box-shadow: var(--custom-shadow-primary);
+    margin: 5px;
 
-    .pack-name{
+    .filter-title{
         text-align: center;
-        text-transform: uppercase;
-        font-weight: bold;
+        margin-bottom: 10px;
         font-size: 20px;
+        display: none;
     }
 
-    .pack-nbquestions{
-        text-align: center;
+    ion-col{
+        background: white;
     }
 
-    .pack-creator{
-        text-align: center;
-    }
-
-    .pack-bottombar{
-        margin-top: 20px;
-        display:flex;
+    .filters-container{
         
-        >div{
-            margin: auto;
-            display:flex;
-            padding: 5px 10px;
+        .button-filter{
+            margin: 10px;
+            text-align: center;
+            border: 2px solid var(--custom-color-secondary);
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: white;
+            padding: 10px;
+            transition: 0.4s ease-out;
+
+            &:hover{
+                color: var(--custom-color-secondary);
+            }
 
             ion-icon{
-                margin:auto;
-                font-size: 16px;
-            }
-
-            span{
-                margin-left: 5px;
+                margin-right: 10px;
             }
         }
 
-        .tag{
-            box-shadow: var(--custom-shadow-primary);
-            border: 1px solid orangered;
-            color: orangered;
-            padding: 5px 10px;
-            border-radius: 5px;
+        ion-item{
+            margin: 10px;
         }
+    
+        .filter{
+            font-size: 12px;
+            width: 50%;
+            padding: 10px;
+            //margin: auto;
+            display: flex;
+    
+            *{
+                margin: auto 0;
+            }
+    
+            @media screen and (min-width: 720px){
+                width: 20%;
+            }
+    
+            ion-label{
+                padding-left: 10px;
+            }
+    
+            &.sort{
+                width: 50%;
+            }
+        }
+    }
+}
 
-        .edit-pack{
-            box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
-            background-color: var(--custom-color-secondary);
-            color: white;
+.pack-list{
+    height: 60vh;
+    overflow: auto;
+
+    .pack{
+        padding: 20px 20px 10px 20px;
+        margin: 5px;
+        box-shadow: var(--custom-shadow-primary);
+        background: white;
+        border-radius: 5px;
+    
+        .pack-name{
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    
+        .pack-nbquestions{
+            text-align: center;
+        }
+    
+        .pack-creator{
+            text-align: center;
+        }
+    
+        .pack-bottombar{
+            margin-top: 20px;
+            display:flex;
+            
+            >div{
+                margin: auto;
+                display:flex;
+                padding: 5px 10px;
+    
+                ion-icon{
+                    margin:auto;
+                    font-size: 16px;
+                }
+    
+                span{
+                    margin-left: 5px;
+                }
+            }
+    
+            .tag{
+                //box-shadow: var(--custom-shadow-primary);
+                border: 1px solid orangered;
+                color: orangered;
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+    
+            .edit-pack{
+                border: 2px solid var(--custom-color-secondary);
+                border-radius: 5px;
+                background-color: white;
+                cursor: pointer;
+                transition: 0.4s ease-out;
+
+                &:hover{
+                    color: var(--custom-color-secondary);
+                }
+            }
+        }
+    
+        .delete-pack{
+            //background-color: var(--ion-color-danger);
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            transform: translate(-25%, 25%);
             cursor: pointer;
+    
+            &:hover{
+                ion-icon{
+                    transform: rotate(180deg);
+                }
+            }
+    
+            ion-icon{
+                margin: auto;
+                font-size: 20px;
+                transition: 0.2s ease-out;
+            }
+    
+            
         }
     }
 }
