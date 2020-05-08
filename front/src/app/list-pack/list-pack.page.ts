@@ -14,6 +14,7 @@ export class ListPackPage implements OnInit {
   API_URL = environment.API_URL_DEV;
   httpOptions;
   packs;
+  editMode = false;
 
   constructor(
     @Inject(AuthService)
@@ -102,6 +103,20 @@ export class ListPackPage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  toggleFilters(){
+    let filterMenu = document.querySelector('.filters-mega-container') as HTMLElement;
+
+    console.log(filterMenu);
+
+    if(filterMenu.style.display == "none"){
+      filterMenu.style.display = "block";
+    }
+    else{
+      filterMenu.style.display = "none";
+    }
+
   }
 
 }

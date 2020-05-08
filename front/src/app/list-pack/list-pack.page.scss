@@ -1,3 +1,89 @@
+.game-infos{
+    margin: 20px 5px;
+    box-shadow: var(--custom-shadow-primary);
+    background-color: white;
+
+    .game-pack-list{
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px;
+        max-height: 125px;
+        overflow: auto;
+
+        @media screen and (max-width: 720px) {
+            justify-content: center;
+        
+        }
+
+        .game-pack{
+            padding: 10px 30px 10px 15px;
+            border: 1px solid black;
+            margin: 5px;
+            position: relative;
+            text-align: left;
+            text-transform: uppercase;
+
+            .delete-pack{
+                //background-color: var(--ion-color-danger);
+                height: 100%;
+                width: 30px;
+                border-radius: 50%;
+                position: absolute;
+                top: 0;
+                right: 0;
+                display: flex;
+                //transform: translateY(25%);
+                cursor: pointer;
+        
+                &:hover{
+                    ion-icon{
+                        transform: rotate(180deg);
+                    }
+                }
+        
+                ion-icon{
+                    margin: auto;
+                    font-size: 20px;
+                    transition: 0.2s ease-out;
+                }
+        
+                
+            }
+        }
+    }
+
+    .host-container{
+        display: flex;
+
+        .host-button{
+            width: 80%;
+            margin: auto;
+            background-color: var(--custom-color-secondary);
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            height: 50px;
+            display: flex;
+            min-height: 50px;
+    
+            span{
+                margin: auto;
+            }
+        }
+    }
+
+    @media screen and (max-width: 720px) {
+        .host-container{
+            order: -1;
+
+            .host-button{
+                width: 100%;
+            }
+        }
+    
+    }
+}
+
 .filters-button,.create-button{
     display: flex;
     height: 100%;
@@ -36,6 +122,33 @@ ion-content{
 .filters-mega-container{
     box-shadow: var(--custom-shadow-primary);
     margin: 5px;
+
+    .apply{
+        display: none;
+    }
+
+    @media screen and (max-width: 720px) {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10000;
+        background: white;
+        margin: 0;
+
+        .apply{
+            display: block;
+            padding: 10px;
+            text-align: center;
+            color: white;
+            background-color: black;
+            border: none;
+            width: 90%;
+            margin: 0 5%;
+        }
+    }
 
     .filter-title{
         text-align: center;
@@ -153,6 +266,18 @@ ion-content{
             }
     
             .edit-pack{
+                border: 2px solid var(--custom-color-secondary);
+                border-radius: 5px;
+                background-color: white;
+                cursor: pointer;
+                transition: 0.4s ease-out;
+
+                &:hover{
+                    color: var(--custom-color-secondary);
+                }
+            }
+
+            .add-pack{
                 border: 2px solid var(--custom-color-secondary);
                 border-radius: 5px;
                 background-color: white;
