@@ -27,8 +27,13 @@
 
 //Custom Global styles
 
+*{
+    font-family: 'nunito', sans-serif;
+}
+
 .ion-page{
     overflow: auto;
+    background: var(--custom-color-background);
 }
 
 .page{

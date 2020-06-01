@@ -1,11 +1,11 @@
 <div class="page" *ngIf="pack && tags">
   <ion-grid>
     <ion-row>
-      <ion-col>
+      <ion-col class="edit-mega-container">
         <form [formGroup]="packForm">
           <!-- TITLE -->
           <div class="subtitle">Title</div>
-          <ion-item>
+          <ion-item class="custom-input">
             <ion-input type="text" formControlName="name" required></ion-input>
           </ion-item>
           <!-- Language SELECTION -->
@@ -22,6 +22,7 @@
           </ion-item>
           <!-- THEME SELECTION -->
           <div class="subtitle">Theme</div>
+          <!--
           <ion-list class="theme-list">
             <ion-radio-group formControlName="tag" value="{{tag.value}}" required>
               <ion-item *ngFor="let radioTag of tags">
@@ -30,6 +31,13 @@
               </ion-item>
             </ion-radio-group>
           </ion-list>
+          -->
+          <ion-item>
+            <ion-label>Select a language</ion-label>
+            <ion-select formControlName="tag" value="{{tag.value}}" okText="Okay" cancelText="Dismiss" required>
+              <ion-select-option *ngFor="let radioTag of tags" value="{{radioTag.tagId}}">{{radioTag.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
           <!-- IsPublic SELECTION -->
           <div class="subtitle">Public</div>
           <ion-item>
@@ -46,21 +54,18 @@
                 <button (click)="expandAccordion($event)" class="accordion">Question {{i+1}}<ion-icon slot="end" name="chevron-up"></ion-icon></button>
                 <div class="panel">
                   <div [formGroupName]="i">
-                    <ion-item>
-                      <ion-label position="floating">Title of the question</ion-label>
-                      <ion-input type="text" formControlName="question" required></ion-input>
-                    </ion-item>
-                    <div class="subtitle">Answer Type</div>
+                      <ion-label class="custom-label" position="stacked">Title of the question</ion-label>
+                      <ion-input class="custom-input" type="text" formControlName="question" required></ion-input>
                     <!-- Answer type toggle -->
                     <div class="toggle">
                       <div id="multiple" (click)="toggleAnswerType($event, i)"
-                           class="toggle-choice"
-                           [ngClass]="{'selected': this.questionsForms.get('questions')
-                           .get(''+i).value.isMultipleChoice}">Multiple Choice</div>
+                          class="toggle-choice"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.isMultipleChoice}">Multiple Choice</div>
                       <div id="single" (click)="toggleAnswerType($event, i)"
-                           class="toggle-choice"
-                           [ngClass]="{'selected': !this.questionsForms.get('questions')
-                           .get(''+i).value.isMultipleChoice}">Typed Answer</div>
+                          class="toggle-choice"
+                          [ngClass]="{'selected': !this.questionsForms.get('questions')
+                          .get(''+i).value.isMultipleChoice}">Typed Answer</div>
                     </div>
                     <!-- Multiple Answers-->
                     <div *ngIf="this.questionsForms.get('questions').get(''+i)
@@ -68,31 +73,32 @@
                       <div *ngFor="let choice of this.questionsForms.get('questions').get(''+i)
                         .get('choices').controls; let indexChoice = index"
                       [formGroupName]="indexChoice">
-                        <ion-item *ngIf="choice.value.isAnswer">
-                          <ion-label position="floating">Correct Answer</ion-label>
-                          <ion-input type="text" formControlName="choice"></ion-input>
-                        </ion-item>
-                        <ion-item *ngIf="!choice.value.isAnswer" >
-                          <ion-label position="floating">Wrong Answer #{{indexChoice}}</ion-label>
-                          <ion-input type="text"
-                            formControlName="choice"></ion-input>
-                          <ion-button
-                            slot="end"
-                            color="danger"
-                            expand="block" 
-                            (click)="removeChoice(i,
-                                    indexChoice,
-                                    this.questionsForms.get('questions').get(''+i)
-                                    .get('choices').get(''+indexChoice).value.choiceId)"><ion-icon name="close-circle-outline"></ion-icon></ion-button>
-                        </ion-item>
+                        <div *ngIf="choice.value.isAnswer">
+                          <ion-label class="custom-label" position="floating">Correct Answer</ion-label>
+                          <ion-input class="custom-input" type="text" formControlName="choice"></ion-input>
+                        </div>
+                        <div *ngIf="!choice.value.isAnswer" >                            
+                          <ion-label class="custom-label" position="floating">Wrong Answer #{{indexChoice}}</ion-label>
+                          <div class="custom-input-wrong-container">
+                              <ion-input class="custom-input wrong" type="text"
+                                formControlName="choice"></ion-input>
+                              <button
+                                class="delete-wrong"
+                                color="danger" 
+                                (click)="removeChoice(i,
+                                        indexChoice,
+                                        this.questionsForms.get('questions').get(''+i)
+                                        .get('choices').get(''+indexChoice).value.choiceId)"><ion-icon name="trash"></ion-icon></button>
+                          </div>
+                        </div>
                       </div>
-                      <ion-button
+                      <button class="add-choice"
                       [disabled]="!this.questionsForms.get('questions')
                       .get(''+i).value.isMultipleChoice" 
                       (click)="addChoice(i, this.questionsForms.get('questions')
                         .get(''+i).value.roundId)"
                       *ngIf="this.questionsForms.get('questions').get(''+i)
-                      .get('choices').length < 4" >Add choice</ion-button>
+                      .get('choices').length < 4" ><span>Add Choice</span><ion-icon slot="end" name="add"></ion-icon></button>
                     </div>
                     <!-- Single Answer-->
                     <div *ngIf="!this.questionsForms.get('questions').get(''+i)
@@ -100,40 +106,39 @@
                       <div *ngFor="let choice of this.questionsForms.get('questions').get(''+i)
                         .get('choices').controls; let indexChoice = index"
                       [formGroupName]="indexChoice">
-                        <ion-item *ngIf="choice.value.isAnswer">
-                          <ion-label position="floating">Correct Answer</ion-label>
-                          <ion-input type="text" formControlName="choice"></ion-input>
-                        </ion-item>
+                        <div *ngIf="choice.value.isAnswer">
+                          <ion-label class="custom-label" position="floating">Correct Answer</ion-label>
+                          <ion-input class="custom-input" type="text" formControlName="choice"></ion-input>
+                        </div>
                       </div>
                     </div>
-                    <div class="subtitle">Extra</div>
                     <!-- Extra type toggle -->
                     <div class="toggle">
                       <div id="noExtra" (click)="toggleExtraType($event,i)"
-                           class="toggle-choice toggle-extra"
-                           [ngClass]="{'selected': this.questionsForms.get('questions')
-                           .get(''+i).value.extraType==0}">No extra</div>
-                      <div id="audio" (click)="toggleExtraType($event,i)"
-                           class="toggle-choice toggle-extra"
-                           [ngClass]="{'selected': this.questionsForms.get('questions')
-                           .get(''+i).value.extraType==1}">Audio</div>
+                          class="toggle-choice toggle-extra"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.extraType==0}">No extra</div>
+                      <!--<div id="audio" (click)="toggleExtraType($event,i)"
+                          class="toggle-choice toggle-extra"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.extraType==1}">Audio</div>
                       <div id="video" (click)="toggleExtraType($event,i)"
-                           class="toggle-choice toggle-extra"
-                           [ngClass]="{'selected': this.questionsForms.get('questions')
-                           .get(''+i).value.extraType==2}">Video</div>
+                          class="toggle-choice toggle-extra"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.extraType==2}">Video</div>-->
                       <div id="img" (click)="toggleExtraType($event,i)"
-                           class="toggle-choice toggle-extra"
-                           [ngClass]="{'selected': this.questionsForms.get('questions')
-                           .get(''+i).value.extraType==3}">Image</div>
+                          class="toggle-choice toggle-extra"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.extraType==3}">Image</div>
                     </div>
                     <!-- No extra -->
                     <div id="extra-noExtra" class="extra-edit"
-                         *ngIf="this.questionsForms.get('questions').get(''+i)
+                        *ngIf="this.questionsForms.get('questions').get(''+i)
                           .value.extraType==0">
                     </div>
                     <!-- Audio extra -->
                     <div id="extra-audio" class="extra-edit"
-                         *ngIf="this.questionsForms.get('questions').get(''+i)
+                        *ngIf="this.questionsForms.get('questions').get(''+i)
                           .value.extraType==1">
                       <ion-item>
                         <ion-label position="floating">Audio (Youtube URL)</ion-label>
@@ -149,7 +154,7 @@
                     </div>
                     <!-- Video extra -->
                     <div id="extra-video" class="extra-edit"
-                         *ngIf="this.questionsForms.get('questions').get(''+i)
+                        *ngIf="this.questionsForms.get('questions').get(''+i)
                           .value.extraType==2">
                       <ion-item>
                         <ion-label position="floating">Video (Youtube URL)</ion-label>
@@ -163,7 +168,7 @@
                     </div>
                     <!-- Img extra -->
                     <div id="extra-img" class="extra-edit"
-                         *ngIf="this.questionsForms.get('questions').get(''+i)
+                        *ngIf="this.questionsForms.get('questions').get(''+i)
                           .value.extraType==3">
                       <ion-item >
                         <ion-label position="floating">Image (URL)</ion-label>
@@ -200,7 +205,7 @@
           <ion-button
             expand="block" 
             [disabled]="packForm.invalid || questionsForms.invalid" 
-            (click)="savePack()">Save</ion-button>
+            (click)="savePack()">Save pack</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

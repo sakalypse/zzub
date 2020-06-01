@@ -14,7 +14,7 @@ export class ListPackPage implements OnInit {
   API_URL = environment.API_URL_DEV;
   httpOptions;
   packs;
-  editMode = false;
+  editMode = true;
 
   constructor(
     @Inject(AuthService)
@@ -107,8 +107,6 @@ export class ListPackPage implements OnInit {
 
   toggleFilters(){
     let filterMenu = document.querySelector('.filters-mega-container') as HTMLElement;
-
-    console.log(filterMenu);
 
     if(filterMenu.style.display == "none"){
       filterMenu.style.display = "block";
