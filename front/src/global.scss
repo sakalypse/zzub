@@ -25,10 +25,25 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+//Tools
+
+.margin-top-0{
+    margin-top: 0 !important;
+}
+
+.margin-bottom-0{
+    margin-bottom: 0 !important;
+}
+
 //Custom Global styles
+
+*{
+    font-family: 'nunito', sans-serif;
+}
 
 .ion-page{
     overflow: auto;
+    //background: var(--custom-color-background);
 }
 
 .page{
@@ -38,16 +53,74 @@
     left: 50%;
 
     .subtitle{
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 500;
         color: var(--custom-color-secondary);
         margin: 20px 0 10px; 
         font-weight: bold;
         text-transform: uppercase;
+        display: flex;
+
+        ion-icon{
+            //font-weight: bolder;
+            margin: auto 5px;
+        }
+    }
+}
+
+.button-custom{
+    box-shadow: 3px 0px 25px -3px rgba(0,0,0,0.31);
+    border: 2px solid var(--custom-color-secondary);
+    color: var(--custom-color-secondary);
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.4s ease-out;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    width: 100%;
+
+    &.button-primary{
+        background-color: var(--custom-color-primary);
+        color: white;
+        border: none;
+
+        &:hover{
+            background-color: var(--custom-color-primary-dark);
+        }
+    }
+
+    &.button-secondary{
+        background-color: var(--custom-color-secondary);
+        color: white;
+        border: none;
+
+        &:hover{
+            background-color: var(--custom-color-secondary-dark);
+        }
+    }
+
+    ion-icon{
+        font-size: 20px;
+        font-weight: bolder;
+        margin: auto 5px;
+    }
+
+    &:disabled{
+        opacity: 0.7;
+        pointer-events: none;
     }
 }
 
 .hidden{
     display: none;
+}
+
+.secondary{
+    color: var(--custom-color-secondary);
 }
 

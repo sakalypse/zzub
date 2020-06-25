@@ -118,8 +118,6 @@ export class ListPackPage implements OnInit {
   toggleFilters(){
     let filterMenu = document.querySelector('.filters-mega-container') as HTMLElement;
 
-    console.log(filterMenu);
-
     if(filterMenu.style.display == "none"){
       filterMenu.style.display = "block";
     }
