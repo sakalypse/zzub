@@ -15,9 +15,9 @@ export class ListPackPage implements OnInit {
   httpOptions;
   packs;
   tags;
-  tagFilter:any;
+  tagFilter;
   nameFilter="";
-  editMode = true;
+  editMode;
 
   constructor(
     @Inject(AuthService)
@@ -37,6 +37,10 @@ export class ListPackPage implements OnInit {
 
   ngOnInit(){
     this.init();
+    if(this.router.url==='/selectpack')
+      this.editMode=false;
+    else
+      this.editMode=true;
   }
 
   init() {
@@ -153,9 +157,8 @@ export class ListPackPage implements OnInit {
       },
       error=>{},
       ()=>{
-
         //filter tag
-        if(this.tagFilter!=0 || this.tagFilter.Count != this.tags.Count)
+        if(this.tagFilter && (this.tagFilter.Count!=0 || this.tagFilter.Count != this.tags.Count))
           this.packs = this.packs.filter(pack => this.tagFilter.includes(pack.tag.name));
         //filter name
         if(this.nameFilter!=""){
