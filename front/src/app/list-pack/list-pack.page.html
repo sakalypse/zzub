@@ -1,5 +1,4 @@
 <ion-content>
-  <p *ngIf="!packs || packs.length==0">No pack yet</p>
   <div class="page" *ngIf="packs">
     <ion-grid>
         <div *ngIf="!editMode" class="game-infos">
@@ -55,11 +54,11 @@
                   La discographie de crazy frog
                 </div>
               </div>
-          </ion-col>
-          <ion-col class="host-container"size-xs="12" size-md="2">
-            <div class="host-button"><span>Host game</span></div>
-          </ion-col>
-        </ion-row>
+            </ion-col>
+            <ion-col class="host-container"size-xs="12" size-md="2">
+              <div class="host-button"><span>Host game</span></div>
+            </ion-col>
+          </ion-row>
         </div>
       <div class="search-container">
         <ion-row>
@@ -70,7 +69,7 @@
             <div class="filters-button" (click)="toggleFilters()"><span>Filters</span></div>
           </ion-col>
           <ion-col size-xs="12" size-md="4">
-            <ion-searchbar></ion-searchbar>
+            <ion-searchbar type="text" debounce="500" (ionInput)="filterName($event)"></ion-searchbar>
           </ion-col>
         </ion-row>
         <div class="filters-mega-container">
@@ -79,6 +78,10 @@
           <h2 class="filter-title">Themes</h2>
             <ion-item>
               <ion-label>Themes</ion-label>
+              <ion-select multiple [(ngModel)]="tagFilter" (ngModelChange)="filter()"okText="Okay" cancelText="Cancel">
+                <ion-select-option *ngFor="let tag of tags" value="{{tag.name}}">{{tag.name}}</ion-select-option>
+              </ion-select>
+              <!--
               <ion-select multiple value="" okText="Okay" cancelText="Cancel">
                 <ion-select-option value="Sport">Sport</ion-select-option>
                 <ion-select-option value="Cinema">Cinema</ion-select-option>
@@ -88,7 +91,7 @@
                 <ion-select-option value="Video Games">Video Games</ion-select-option>
                 <ion-select-option value="Literature">Literature</ion-select-option>
                 <ion-select-option value="Misc">Misc</ion-select-option>
-              </ion-select>
+              </ion-select>-->
             </ion-item>
           </ion-col>
           <ion-col class="filters-container" size-xs="12" size-md="4">
@@ -109,7 +112,7 @@
                 <ion-col> 
                   <div class="button-filter"><ion-icon name="star-outline"></ion-icon>Favorites</div>
                 </ion-col>
-                <ion-col>
+                <ion-col *ngIf="!editMode">
                   <div class="button-filter"><ion-icon name="person-outline"></ion-icon>My packs</div>
                 </ion-col>
               </ion-row>
@@ -135,11 +138,11 @@
                 {{pack.rounds.length}} questions
               </div>
               <div class="pack-creator">
-                Created By Sakalypse
+                Created By {{pack.author.username}}
               </div>
               
               <div class="pack-bottombar">
-                <div class="tag">Music</div>
+                <div class="tag">{{pack.tag.name}}</div>
                 <div class="play-count"><ion-icon name="play-outline"></ion-icon><span>10</span></div>
                 <div class="likes"><ion-icon name="thumbs-up-outline"></ion-icon><span>20</span></div>
                 <div class="fav"><ion-icon name="star-outline"></ion-icon><span>Fav</span></div>

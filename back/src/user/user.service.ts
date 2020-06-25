@@ -162,7 +162,7 @@ export class UserService {
     */
     async getAllPacksOfUser(userId): Promise<Pack[]>{
         const packs = await this.packRepository.find({
-            relations: ["author", "rounds"],
+            relations: ["author", "rounds", "tag"],
             where:{author:{userId: userId}}});
         
         //remove hashed password from returned data

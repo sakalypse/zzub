@@ -14,7 +14,10 @@ export class ListPackPage implements OnInit {
   API_URL = environment.API_URL_DEV;
   httpOptions;
   packs;
-  editMode = false;
+  tags;
+  tagFilter:any;
+  nameFilter="";
+  editMode = true;
 
   constructor(
     @Inject(AuthService)
@@ -44,10 +47,17 @@ export class ListPackPage implements OnInit {
       })
     };
     let userId = this.authService.getLoggedUser().userId;
+    //get packs
     this.http.get(`${this.API_URL}/user/${userId}/pack`, this.httpOptions)
     .subscribe(
       result => {
         this.packs = result;
+      });
+    //get tags
+    this.http.get(`${this.API_URL}/tag`, this.httpOptions)
+    .subscribe(
+      result => {
+        this.tags = result;
       });
   }
 
@@ -119,4 +129,43 @@ export class ListPackPage implements OnInit {
 
   }
 
+  filterName(event:any){
+    const val = event.target.value;
+
+    if (val && val.trim() != '')
+      this.nameFilter = val.toLowerCase();
+    else
+      this.nameFilter="";
+    this.filter();
+  }
+
+  filter(){
+    this.httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization': 'Bearer ' + this.authService.getToken()
+      })
+    };
+    let userId = this.authService.getLoggedUser().userId;
+    //get packs
+    this.http.get(`${this.API_URL}/user/${userId}/pack`, this.httpOptions)
+    .subscribe(
+      result => {
+        this.packs = result;
+      },
+      error=>{},
+      ()=>{
+
+        //filter tag
+        if(this.tagFilter!=0 || this.tagFilter.Count != this.tags.Count)
+          this.packs = this.packs.filter(pack => this.tagFilter.includes(pack.tag.name));
+        //filter name
+        if(this.nameFilter!=""){
+          this.packs = this.packs.filter(pack => {
+            return (pack.name.toLowerCase().indexOf(this.nameFilter) > -1);
+          });
+        }
+      }
+    );
+  }
 }
