@@ -28,6 +28,13 @@ export class PackController {
         const packs = await this.packService.getAllPacks();
         return res.status(HttpStatus.OK).json(packs);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/public')
+    async getAllPublicPacks(@Res() res){
+        const packs = await this.packService.getAllPublicPacks();
+        return res.status(HttpStatus.OK).json(packs);
+    }
     
     @UseGuards(AdminGuard)
     @Get('/:id')

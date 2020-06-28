@@ -18,6 +18,10 @@ export class ListPackPage implements OnInit {
   tagFilter;
   nameFilter="";
   editMode;
+  ownPackFilter=false;
+
+  //params for hosting a game
+  listPacksHost=[];
 
   constructor(
     @Inject(AuthService)
@@ -37,10 +41,6 @@ export class ListPackPage implements OnInit {
 
   ngOnInit(){
     this.init();
-    if(this.router.url==='/selectpack')
-      this.editMode=false;
-    else
-      this.editMode=true;
   }
 
   init() {
@@ -51,18 +51,31 @@ export class ListPackPage implements OnInit {
       })
     };
     let userId = this.authService.getLoggedUser().userId;
-    //get packs
-    this.http.get(`${this.API_URL}/user/${userId}/pack`, this.httpOptions)
-    .subscribe(
-      result => {
-        this.packs = result;
+    if(this.router.url==='/selectpack'){
+      this.editMode=false;
+      //get all public packs
+      this.http.get(`${this.API_URL}/pack/public`, this.httpOptions)
+      .subscribe(
+        result => {
+          this.packs = result;
       });
+    }
+    else{
+      this.editMode=true;
+      //get own packs
+      this.http.get(`${this.API_URL}/user/${userId}/pack`, this.httpOptions)
+      .subscribe(
+        result => {
+          this.packs = result;
+      });
+    }
+    
     //get tags
     this.http.get(`${this.API_URL}/tag`, this.httpOptions)
     .subscribe(
       result => {
         this.tags = result;
-      });
+    });
   }
 
 
@@ -119,6 +132,7 @@ export class ListPackPage implements OnInit {
     await alert.present();
   }
 
+  //#region Filter
   toggleFilters(){
     let filterMenu = document.querySelector('.filters-mega-container') as HTMLElement;
 
@@ -141,6 +155,14 @@ export class ListPackPage implements OnInit {
     this.filter();
   }
 
+  /*
+  * Triggered when clicked on "My packs" button
+  */
+  filterOwnPacks(){
+    this.ownPackFilter = !this.ownPackFilter;
+    this.filter();
+  }
+
   filter(){
     this.httpOptions = {
       headers: new HttpHeaders({
@@ -150,7 +172,13 @@ export class ListPackPage implements OnInit {
     };
     let userId = this.authService.getLoggedUser().userId;
     //get packs
-    this.http.get(`${this.API_URL}/user/${userId}/pack`, this.httpOptions)
+    let pathToPackAPI;
+    if(this.editMode || this.ownPackFilter)
+      pathToPackAPI = `${this.API_URL}/user/${userId}/pack`;
+    else
+      pathToPackAPI = `${this.API_URL}/pack/public`;
+
+    this.http.get(pathToPackAPI, this.httpOptions)
     .subscribe(
       result => {
         this.packs = result;
@@ -158,7 +186,7 @@ export class ListPackPage implements OnInit {
       error=>{},
       ()=>{
         //filter tag
-        if(this.tagFilter && (this.tagFilter.Count!=0 || this.tagFilter.Count != this.tags.Count))
+        if(this.tagFilter && this.tagFilter.length!=0)
           this.packs = this.packs.filter(pack => this.tagFilter.includes(pack.tag.name));
         //filter name
         if(this.nameFilter!=""){
@@ -169,4 +197,17 @@ export class ListPackPage implements OnInit {
       }
     );
   }
+  //#endregion
+
+  //#region List pack to host
+  addToListPacksHost(packId){
+    if(this.listPacksHost.length == 0 || !this.listPacksHost.some(x => x.packId == packId))
+      this.listPacksHost.push(this.packs.find(x => x.packId == packId));
+  }
+
+  removeToListPacksHost(packId){
+    if(this.listPacksHost.length != 0 && this.listPacksHost.some(x => x.packId == packId))
+      this.listPacksHost.splice(this.listPacksHost.indexOf(this.packs.find(x => x.packId == packId)), 1);
+  }
+  //#endregion
 }

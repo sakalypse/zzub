@@ -58,7 +58,33 @@ export class PackService {
     * @return   All saved packs
     */
     async getAllPacks(): Promise<Pack[]>{
-        return await this.packRepository.find({relations: ["author", "tag"]});
+        const packs = await this.packRepository.find({relations: ["author", "tag"]});
+
+        //remove hashed password from returned data
+        packs.forEach(pack => {
+            pack.author.password = "";
+        });
+
+        return packs;
+    }
+
+    /*
+    * Get all public packs
+    * @return   All saved packs that are public
+    */
+    async getAllPublicPacks(): Promise<Pack[]>{
+        const packs = await this.packRepository.find({
+            where: {
+                isPublic: true
+            },
+            relations: ["author", "rounds", "tag"]});
+
+        //remove hashed password from returned data
+        packs.forEach(pack => {
+            pack.author.password = "";
+        });
+
+        return packs;
     }
 
     /*
