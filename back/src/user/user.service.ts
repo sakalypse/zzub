@@ -37,7 +37,7 @@ export class UserService {
             newUser.username = username
             newUser.email = email;
             newUser.password = bcrypt.hashSync(password, 10);
-            newUser.role = Role.admin; 
+            newUser.role = Role.admin;
             
             this.userRepository.save(newUser);
         }
@@ -192,5 +192,65 @@ export class UserService {
         }
         else   
             return null;
+    }
+
+    /*
+    * Get all favorties packs of a user
+    * @param  userId
+    * @return All favorites packs of user
+    */
+    async getAllFavoritesPacksOfUser(userId): Promise<Pack[]>{
+        const user = await this.userRepository.findOne({
+            relations: ["favorites", "favorites.author", "favorites.rounds", "favorites.tag"],
+            where:{author:{userId: userId}}});
+        const packs = user.favorites;
+        //remove hashed password from returned data
+        packs.forEach(pack => {
+            pack.author.password = "";
+        });
+        
+        return packs;
+    }
+
+    /*
+    * Add a pack to a user
+    * @param  userId, packId
+    */
+    async favoritesPackToUser(userId, packId): Promise<ReturnedUserDTO>{
+        const user = await this.userRepository.findOne({
+            relations:["favorites"],
+            where:{userId: userId}});
+        if(!user)
+            throw new HttpException({message: 'User not known'}, HttpStatus.BAD_REQUEST);
+        const pack = await this.packRepository.findOne({
+            where:{packId: packId}});
+        if(!pack)
+            throw new HttpException({message: 'Pack not known'}, HttpStatus.BAD_REQUEST);
+
+        user.favorites.push(pack);
+        const userSaved = await this.userRepository.save(user);
+        const { password, ...result } = userSaved;
+        return result;
+    }
+
+    /*
+    * Remove the favorite pack from a user
+    * @param  userId, packId
+    */
+    async deleteFavoritesPackToUser(userId, packId): Promise<ReturnedUserDTO>{
+        const user = await this.userRepository.findOne({
+            relations:["favorites"],
+            where:{userId: userId}});
+        if(!user)
+            throw new HttpException({message: 'User not known'}, HttpStatus.BAD_REQUEST);
+        const pack = await this.packRepository.findOne({
+            where:{packId: packId}});
+        if(!pack)
+            throw new HttpException({message: 'Pack not known'}, HttpStatus.BAD_REQUEST);
+
+        user.favorites = user.favorites.filter(x => x.packId != pack.packId);
+        const userSaved = await this.userRepository.save(user);
+        const { password, ...result } = userSaved;
+        return result;
     }
 }

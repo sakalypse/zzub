@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn,
-        Column, Unique, OneToMany, JoinColumn} from 'typeorm';
+        Column, Unique, OneToMany, JoinColumn, ManyToMany, JoinTable} from 'typeorm';
 import {Length, IsEmail, IsDate} from "class-validator";
 import { Pack } from 'src/pack/pack.entity';
 
@@ -25,4 +25,8 @@ export class User {
     @OneToMany(type => Pack, pack => pack.author)
     @JoinColumn()
     packs:Pack[];
+
+    @ManyToMany(type => Pack, pack => pack.packId, { cascade: true })
+    @JoinTable()
+    favorites:Pack[];
 }

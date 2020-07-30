@@ -17,8 +17,10 @@ export class ListPackPage implements OnInit {
   tags;
   tagFilter;
   nameFilter="";
+  favoriteFilter=false;
   editMode;
   ownPackFilter=false;
+  listFavorites;
 
   //params for hosting a game
   listPacksHost=[];
@@ -69,13 +71,27 @@ export class ListPackPage implements OnInit {
           this.packs = result;
       });
     }
-    
+
     //get tags
     this.http.get(`${this.API_URL}/tag`, this.httpOptions)
     .subscribe(
       result => {
         this.tags = result;
     });
+
+    this.loadListFav();
+  }
+
+  loadListFav(){
+    this.http.get(`${this.API_URL}/user/${this.authService.getLoggedUser().userId}/favorite`, this.httpOptions)
+      .subscribe(
+        (result:any) => {
+          let buf = [];
+          result.forEach(pack => {
+            buf.push(pack.packId);
+          });
+          this.listFavorites = buf;
+      });
   }
 
 
@@ -132,6 +148,58 @@ export class ListPackPage implements OnInit {
     await alert.present();
   }
 
+  //#region Action on a pack
+  favPack(packId){
+    let alreadyFav = false;
+    this.http.get(`${this.API_URL}/user/${this.authService.getLoggedUser().userId}/favorite`, this.httpOptions)
+      .subscribe(
+        (result:any) => {
+          result.forEach(favorite => {
+            if(favorite.packId == packId)
+              alreadyFav=true;
+          });
+              
+          if(alreadyFav){
+            this.http.delete(`${this.API_URL}/user/${this.authService.getLoggedUser().userId}/favorite/${packId}`, this.httpOptions)
+            .subscribe(
+              (result:any) => {
+                //Relaod list fav
+                this.loadListFav();
+                this.toastController.create({
+                  message: 'Pack removed from favorites',
+                  duration: 2000
+                }).then(toast=>toast.present());
+              },
+              error=>{
+                this.toastController.create({
+                  message: "Couldn't remove the pack from the favorites",
+                  duration: 2000
+                }).then(toast=>toast.present());
+            });
+          }
+          else{
+            this.http.put(`${this.API_URL}/user/${this.authService.getLoggedUser().userId}/favorite/${packId}`, null, this.httpOptions)
+            .subscribe(
+              (result:any) => {
+                //Relaod list fav
+              this.loadListFav();
+                this.toastController.create({
+                  message: 'Pack added to favorites',
+                  duration: 2000
+                }).then(toast=>toast.present());
+              },
+              error=>{
+                this.toastController.create({
+                  message: "Couldn't add the pack to the favorites",
+                  duration: 2000
+                }).then(toast=>toast.present());
+            });
+          }
+      });
+  }
+
+  //#endregion
+
   //#region Filter
   toggleFilters(){
     let filterMenu = document.querySelector('.filters-mega-container') as HTMLElement;
@@ -162,6 +230,10 @@ export class ListPackPage implements OnInit {
     this.ownPackFilter = !this.ownPackFilter;
     this.filter();
   }
+  filterFavorite(){
+    this.favoriteFilter = !this.favoriteFilter;
+    this.filter();
+  }
 
   filter(){
     this.httpOptions = {
@@ -172,6 +244,7 @@ export class ListPackPage implements OnInit {
     };
     let userId = this.authService.getLoggedUser().userId;
     //get packs
+    //filter own packs
     let pathToPackAPI;
     if(this.editMode || this.ownPackFilter)
       pathToPackAPI = `${this.API_URL}/user/${userId}/pack`;
@@ -193,6 +266,10 @@ export class ListPackPage implements OnInit {
           this.packs = this.packs.filter(pack => {
             return (pack.name.toLowerCase().indexOf(this.nameFilter) > -1);
           });
+        }
+        //filter favorite
+        if(this.favoriteFilter && this.listFavorites.length!=0){
+          this.packs = this.packs.filter(pack => this.listFavorites.includes(pack.packId));
         }
       }
     );

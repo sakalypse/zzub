@@ -64,6 +64,28 @@ export class UserController {
         return res.status(HttpStatus.OK).json(pack);
     }
 
+    //Favorites packs of User
+    @UseGuards(UserGuard)
+    @Get('/:id/favorite')
+    async getAllFavoritesPacksOfUser(@Res() res, @Param('id') userId){
+        const packs = await this.userService.getAllFavoritesPacksOfUser(userId);
+        return res.status(HttpStatus.OK).json(packs);
+    }
+
+    //packId called here idPack to pass the guard : here we don't care if the pack is owned by the user
+    @UseGuards(UserGuard)
+    @Put('/:id/favorite/:idPack')
+    async FavoritePackToUser(@Res() res, @Param('id') userId, @Param('idPack') idPack, @Body() dto: any){
+        const packs = await this.userService.favoritesPackToUser(userId, idPack);
+        return res.status(HttpStatus.OK).json(packs);
+    }
+    @UseGuards(UserGuard)
+    @Delete('/:id/favorite/:idPack')
+    async DeleteFavoritePackToUser(@Res() res, @Param('id') userId, @Param('idPack') idPack, @Body() dto: any){
+        const packs = await this.userService.deleteFavoritesPackToUser(userId, idPack);
+        return res.status(HttpStatus.OK).json(packs);
+    }
+
     /*
     @UseGuards(UserGuard)
     @Put('/:id/pack/:packId')

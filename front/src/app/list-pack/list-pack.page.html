@@ -68,10 +68,15 @@
             <h2 class="filter-title">Favorites/My packs</h2>
               <ion-row>
                 <ion-col> 
-                  <div class="button-filter"><ion-icon name="star-outline"></ion-icon>Favorites</div>
+                  <div class="button-filter" (click)="filterFavorite()">
+                    <ion-icon name="star" *ngIf="favoriteFilter"></ion-icon>
+                    <ion-icon name="star-outline" *ngIf="!favoriteFilter"></ion-icon>
+                    Favorites</div>
                 </ion-col>
                 <ion-col *ngIf="!editMode">
-                  <div class="button-filter"(click)="filterOwnPacks()" ><ion-icon name="person-outline"></ion-icon>My packs</div>
+                  <div class="button-filter"(click)="filterOwnPacks()" >
+                    <ion-icon *ngIf="!ownPackFilter" name="person-outline"></ion-icon>
+                    <ion-icon *ngIf="ownPackFilter" name="person"></ion-icon>My packs</div>
                 </ion-col>
               </ion-row>
           </ion-col>
@@ -103,7 +108,8 @@
                 <div class="tag">{{pack.tag.name}}</div>
                 <div class="play-count"><ion-icon name="play-outline"></ion-icon><span>10</span></div>
                 <div class="likes"><ion-icon name="thumbs-up-outline"></ion-icon><span>20</span></div>
-                <div class="fav"><ion-icon name="star-outline"></ion-icon><span>Fav</span></div>
+                <div class="fav" (click)="favPack(pack.packId)"><ion-icon name="star" *ngIf="listFavorites && listFavorites.includes(pack.packId)" ></ion-icon>
+                                                                <ion-icon name="star-outline" *ngIf="listFavorites && !listFavorites.includes(pack.packId)" ></ion-icon><span>Fav</span></div>
                 <div *ngIf="editMode" class="edit-pack" (click)="edit(pack.packId)"><ion-icon name="create-outline"></ion-icon><span>Edit</span></div>
                 <div *ngIf="!editMode" class="add-pack" (click)="addToListPacksHost(pack.packId)"><ion-icon name="add"></ion-icon><span>Add</span></div>
               </div>

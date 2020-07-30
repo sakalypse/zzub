@@ -17,4 +17,5 @@ export class ReturnedUserDTO{
     readonly username:string;
     readonly email:string;
     readonly packs:Pack[];
+    readonly favorites:Pack[];
 }
