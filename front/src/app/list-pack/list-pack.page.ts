@@ -284,7 +284,7 @@ export class ListPackPage implements OnInit {
 
   removeToListPacksHost(packId){
     if(this.listPacksHost.length != 0 && this.listPacksHost.some(x => x.packId == packId))
-      this.listPacksHost.splice(this.listPacksHost.indexOf(this.packs.find(x => x.packId == packId)), 1);
+      this.listPacksHost.splice(this.listPacksHost.indexOf(this.listPacksHost.find(x => x.packId == packId)), 1);
   }
   //#endregion
 }
