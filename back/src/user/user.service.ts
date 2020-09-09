@@ -123,9 +123,12 @@ export class UserService {
     * @param  userId
     * @return one user
     */
-   async getUserByUsernameForAuth(username): Promise<User>{
-    return await this.userRepository.findOne({username: username});
-}
+    async getUserByUsernameForAuth(username): Promise<User>{
+        return await this.userRepository.findOne({username: username});
+    }   
+    async getUserByIdForAuth(id): Promise<User>{
+        return await this.userRepository.findOne({where:{userId: id}, relations: ["game", "hostGame"]});
+    } 
 
     /*
     * Update a user by the id and dto given
@@ -139,6 +142,9 @@ export class UserService {
         userToUpdate.username = dto.username;
         userToUpdate.email = dto.email;
         userToUpdate.password = dto.password;
+        userToUpdate.game = dto.game;
+        userToUpdate.hostGame = dto.hostGame;
+
 
         const user = await this.userRepository.save(userToUpdate);
         const { password, ...result } = user;

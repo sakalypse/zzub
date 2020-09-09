@@ -12,6 +12,7 @@ import { ChoiceModule } from './choice/choice.module';
 import { ExtraModule } from './extra/extra.module';
 import { UserService } from './user/user.service';
 import { TagService } from './tag/tag.service';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { TagService } from './tag/tag.service';
     TagModule,
     RoundModule,
     ChoiceModule,
-    ExtraModule],
+    ExtraModule,
+    GameModule],
   controllers: [AppController],
   providers: [AppService],
 })
