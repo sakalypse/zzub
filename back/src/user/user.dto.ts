@@ -1,4 +1,5 @@
 import { Pack } from "src/pack/pack.entity";
+import { Game } from "src/game/game.entity";
 
 export class CreateUserDTO{
     readonly username:string;
@@ -9,7 +10,8 @@ export class CreateUserDTO{
 export class UpdateUserDTO{
     readonly username:string;
     readonly email:string;
-    readonly password:string;
+    readonly game:Game;
+    readonly hostGame:Game;
 }
 
 export class ReturnedUserDTO{

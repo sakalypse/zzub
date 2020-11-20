@@ -1,7 +1,8 @@
 import {Entity, PrimaryGeneratedColumn,
-        Column, Unique, OneToMany, JoinColumn, ManyToMany, JoinTable} from 'typeorm';
+        Column, Unique, OneToMany, JoinColumn, ManyToMany, JoinTable, ManyToOne, OneToOne} from 'typeorm';
 import {Length, IsEmail, IsDate} from "class-validator";
 import { Pack } from 'src/pack/pack.entity';
+import { Game } from 'src/game/game.entity';
 
 @Entity()
 @Unique(["username"])
@@ -29,4 +30,9 @@ export class User {
     @ManyToMany(type => Pack, pack => pack.packId, { cascade: true })
     @JoinTable()
     favorites:Pack[];
+
+    @ManyToOne(type => Game)
+    game: Game;
+    @ManyToOne(type => Game)
+    hostGame: Game;
 }
