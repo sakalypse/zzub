@@ -88,34 +88,47 @@
         </ion-row>
       </div>
       </div>
-      <ion-row class="pack-list" data-simplebar>
-        <ion-col size-xs="12" size-md="6" *ngFor="let pack of packs">
-          <div class="pack">
-              <div *ngIf="editMode" class="delete-pack" (click)="alertConfirmDelete(pack.packId)">
-                <ion-icon slot="center" name="close"></ion-icon>
-              </div>
+      <div class="pack-list" data-simplebar>
+        <div class="pack" *ngFor="let pack of packs">
+          <!--<div *ngIf="editMode" class="delete-pack" (click)="alertConfirmDelete(pack.packId)">
+            <ion-icon slot="center" name="close"></ion-icon>
+          </div>-->
+          <div class="pack-topbar">
+            <div class="tag">{{pack.tag.name}}</div>
+            <div class="flag-lang"><img src="..\assets\Images\flags\002-france.svg" alt=""></div>
+          </div>
+          <div class="pack-img">
+            <img src="" alt="">
+          </div>
+
+          
+          <div class="pack-bottombar">
+            <div class="infos-container">
               <div class="pack-name">
                 {{pack.name}}
               </div>
-              <div class="pack-nbquestions">
-                {{pack.rounds.length}} questions
-              </div>
-              <div class="pack-creator">
-                Created By {{pack.author.username}}
-              </div>
-              
-              <div class="pack-bottombar">
-                <div class="tag">{{pack.tag.name}}</div>
-                <div class="play-count"><ion-icon name="play-outline"></ion-icon><span>10</span></div>
-                <div class="likes"><ion-icon name="thumbs-up-outline"></ion-icon><span>20</span></div>
-                <div class="fav" (click)="favPack(pack.packId)"><ion-icon name="star" *ngIf="listFavorites && listFavorites.includes(pack.packId)" ></ion-icon>
-                                                                <ion-icon name="star-outline" *ngIf="listFavorites && !listFavorites.includes(pack.packId)" ></ion-icon><span>Fav</span></div>
-                <div *ngIf="editMode" class="edit-pack" (click)="edit(pack.packId)"><ion-icon name="create-outline"></ion-icon><span>Edit</span></div>
-                <div *ngIf="!editMode" class="add-pack" (click)="addToListPacksHost(pack.packId)"><ion-icon name="add"></ion-icon><span>Add</span></div>
+              <div class="pack-subinfos">
+                <div class="pack-nbquestions">
+                  {{pack.rounds.length}} questions
+                </div>
+                <div class="pack-author">
+                  By {{pack.author.username}}
+                </div>
               </div>
             </div>
-        </ion-col>
-      </ion-row>
+            <div class="actions-container">
+              <div class="play"><ion-icon name="play-outline"></ion-icon></div>
+              <div class="play-count">1.3k</div>
+              <div class="likes"><ion-icon name="heart"></ion-icon></div>
+              <div class="likes-count">1.7k</div>
+              <div class="fav" (click)="favPack(pack.packId)"><ion-icon name="star" class="selected" *ngIf="listFavorites && listFavorites.includes(pack.packId)" ></ion-icon>
+                                                              <ion-icon name="star" *ngIf="listFavorites && !listFavorites.includes(pack.packId)" ></ion-icon></div>
+              <div *ngIf="editMode" class="edit-pack" (click)="edit(pack.packId)"><ion-icon name="create-outline"></ion-icon></div>
+              <div *ngIf="!editMode" class="add-pack" (click)="addToListPacksHost(pack.packId)"><ion-icon name="add-circle-outline"></ion-icon></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </ion-grid>
   </div>
 </ion-content>

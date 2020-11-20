@@ -1,3 +1,23 @@
+ion-content{
+    --background: white;
+    position: relative;
+}
+
+.page{
+    background-color: white;
+    max-width: 1200px;
+    box-shadow: var(--material-shadow-2);
+    min-height: 100%;
+    left: 0;
+    transform: translateX(0);
+
+    @media screen and (min-width: 768px){
+        padding: 20px;
+        transform: translateX(-50%);
+        left: 50%;
+    }
+}
+
 .game-infos{
     margin: 20px 5px;
     box-shadow: var(--custom-shadow-primary);
@@ -213,79 +233,170 @@ ion-content{
 }
 
 .pack-list{
-    height: 60vh;
+    bottom: 0;
     overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
 
     .pack{
-        padding: 20px 20px 10px 20px;
+        //padding: 20px 20px 10px 20px;
         margin: 5px;
         box-shadow: var(--custom-shadow-primary);
         background: white;
-        border-radius: 5px;
-    
-        .pack-name{
-            text-align: center;
-            text-transform: uppercase;
-            font-weight: bold;
-            font-size: 20px;
+        //border-radius: 5px;
+        position: relative;
+        max-width: 370px;
+        width: 100%;
+        margin: 10px auto;
+
+        .pack-topbar{
+            position: absolute;
+            display: flex;
+            top: 0;
+            height: 30px;
+            background-color: rgba(12, 12, 12, 0.5);
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+
+            .tag{
+                color: white;
+                font-size: bold;
+                padding: 0 10px;
+                text-transform: uppercase;
+            }
+            
+            .flag-lang{
+                display: flex;
+                width: 40px;
+
+                img{
+                    margin: auto;
+                    height: 25px;
+                    width: auto;
+                }
+            }
+        }
+
+        .pack-img{
+            width: 100%;
+            height: 180px;
+            background-color: var(--custom-color-primary);
         }
     
-        .pack-nbquestions{
-            text-align: center;
-        }
-    
-        .pack-creator{
-            text-align: center;
-        }
+       
     
         .pack-bottombar{
-            margin-top: 20px;
+            //margin-top: 20px;
             display:flex;
+            padding: 10px;
+
+            .infos-container{
+                display: flex;
+                flex-direction: column;
+                text-align: left;
+                width: 50%;
+
+                .pack-name{
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+
+                .pack-subinfos{
+                    font-size: 12px;
+                    display: flex;
+                    flex-direction: row;
+                    color: var(--custom-color-gray);
+
+                    .pack-nbquestions{
+                        padding-right: 5px;
+                        border-right: 0.5px solid var(--custom-color-gray);
+                    }
+                
+                    .pack-author{
+                        padding-left: 5px;
+                    }
+                }                
+            }
             
-            >div{
-                margin: auto;
-                display:flex;
-                padding: 5px 10px;
-    
+            .actions-container{
+                flex-direction: row;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                width: 50%;
+
+                *{
+                    text-align: center;
+                    margin: 0 auto;
+                }
+
                 ion-icon{
-                    margin:auto;
-                    font-size: 16px;
+                    font-size: 26px;
                 }
-    
-                span{
-                    margin-left: 5px;
+
+                .play{
+                    position: relative;
+                    display: flex;
                 }
-            }
-    
-            .tag{
-                //box-shadow: var(--custom-shadow-primary);
-                border: 1px solid orangered;
-                color: orangered;
-                padding: 5px 10px;
-                border-radius: 5px;
-            }
-    
-            .edit-pack{
-                border: 2px solid var(--custom-color-secondary);
-                border-radius: 5px;
-                background-color: white;
-                cursor: pointer;
-                transition: 0.4s ease-out;
 
-                &:hover{
-                    color: var(--custom-color-secondary);
+                .play-count{
+                    font-size: 10px;
+                    margin-left: -4px;
                 }
-            }
 
-            .add-pack{
-                border: 2px solid var(--custom-color-secondary);
-                border-radius: 5px;
-                background-color: white;
-                cursor: pointer;
-                transition: 0.4s ease-out;
+                .likes{
+                    position: relative;
+                    display: flex;
 
-                &:hover{
-                    color: var(--custom-color-secondary);
+                    ion-icon{
+                        cursor: pointer;
+                        stroke-width: 30px;
+                        stroke: black;
+                        fill: white;
+                        transition: all 0.2s ease;
+
+                        &:hover{
+                            fill: #EB445A;
+                        }
+
+                        &.selected{
+                            fill: #EB445A;
+                        }
+                    }
+                }
+
+                .likes-count{
+                    font-size: 10px;
+                    margin-left: -2px;
+                }
+
+                .fav{
+
+                    ion-icon{
+                        cursor: pointer;
+                        stroke-width: 30px;
+                        stroke: black;
+                        fill: white;
+                        transition: all 0.2s ease;
+
+                        &:hover{
+                            fill: #ffd534;
+                        }
+
+                        &.selected{
+                            fill: #ffd534;
+                        }
+                    }
+                }
+
+                .edit-pack{
+                    cursor: pointer;
+                }
+
+                .add-pack{
+                    cursor: pointer;
                 }
             }
         }
