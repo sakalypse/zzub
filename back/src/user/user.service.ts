@@ -208,8 +208,11 @@ export class UserService {
     async getAllFavoritesPacksOfUser(userId): Promise<Pack[]>{
         const user = await this.userRepository.findOne({
             relations: ["favorites", "favorites.author", "favorites.rounds", "favorites.tag"],
-            where:{author:{userId: userId}}});
+            where:{userId: userId}});
+        console.log("user:"+user);
         const packs = user.favorites;
+        console.log("packs:"+packs);
+
         //remove hashed password from returned data
         packs.forEach(pack => {
             pack.author.password = "";

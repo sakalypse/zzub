@@ -182,7 +182,7 @@ export class ListPackPage implements OnInit {
             .subscribe(
               (result:any) => {
                 //Relaod list fav
-              this.loadListFav();
+                this.loadListFav();
                 this.toastController.create({
                   message: 'Pack added to favorites',
                   duration: 2000

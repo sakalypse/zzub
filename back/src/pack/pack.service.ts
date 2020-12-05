@@ -35,6 +35,8 @@ export class PackService {
         newPack.isPublic = false;
         newPack.language = 0;
         newPack.rounds = [];
+        newPack.tag = await this.tagRepository.findOne(1);
+        console.log("tag : "+newPack.tag);
 
         let packSearched;
         do{
