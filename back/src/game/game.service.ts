@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateGameDTO } from './game.dto';
 import { User } from 'src/user/user.entity';
 import { PackService } from 'src/pack/pack.service';
+var randomstring = require("randomstring");
 
 @Injectable()
 export class GameService {
@@ -22,7 +23,6 @@ export class GameService {
     async createGame(createGame: CreateGameDTO): Promise<Game>{
         let game = new Game(); 
         game.dateCreation = new Date();
-        console.log("iyu");
 
         await this.userService.getUserByIdForAuth(createGame.owner).
         then(user=>{
@@ -45,7 +45,13 @@ export class GameService {
         }).catch(error => {throw new
                             HttpException(error,
                              HttpStatus.FORBIDDEN)});
-        
+
+        //generate code
+        do{
+            game.code = randomstring.generate(4).toUpperCase();
+            var codeAlreadyExist = await this.getGameByCode(game.code);
+        }while(codeAlreadyExist!=undefined && codeAlreadyExist!=null);
+
         return await this.gameRepository.save(game);
     }
 
@@ -56,6 +62,14 @@ export class GameService {
                                 {relations: ["owner",
                                             "players" ,
                                             "pack"]});
+    }
+
+    async getGameByCode(code) : Promise<Game>{
+        return await this.gameRepository
+                        .findOne({ code: code},
+                                    {relations: ["owner",
+                                                "players" ,
+                                                "pack"]});
     }
 
     //get all games
@@ -90,9 +104,8 @@ export class GameService {
     async removeUserToGame(userId, gameId): Promise<User>{
         let user;
         await this.userService.getUserByIdForAuth(userId).
-        then(async result=>{
-            user=result;
-            result.game = null;
+        then(async user=>{
+            user.game = null;
             this.userService.updateUser(user.userId, user);
             /*
             if(user.guest){

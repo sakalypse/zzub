@@ -286,5 +286,32 @@ export class ListPackPage implements OnInit {
     if(this.listPacksHost.length != 0 && this.listPacksHost.some(x => x.packId == packId))
       this.listPacksHost.splice(this.listPacksHost.indexOf(this.listPacksHost.find(x => x.packId == packId)), 1);
   }
+
+  hostGame(){
+    if(this.listPacksHost.length == 0){
+      this.toastController.create({
+        message: "Can't host a room without any pack",
+        duration: 2000
+      }).then(toast=>toast.present());
+      return;
+    }
+
+    //Trying to create a room
+    let dto = {owner : this.authService.getLoggedUser().userId,
+               pack : this.listPacksHost};
+    
+    this.http.post(`${this.API_URL}/game/create`, dto, this.httpOptions)
+    .subscribe(
+      (result:any) => {
+        this.router.navigate(["/lobby/"+result.code]);
+      },
+      error=>{
+        console.log(error);
+        this.toastController.create({
+          message: 'Error while trying to create a room',
+          duration: 2000
+        }).then(toast=>toast.present());
+    });
+  }
   //#endregion
 }

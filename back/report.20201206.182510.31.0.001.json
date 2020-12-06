@@ -1,0 +1,456 @@
+
+{
+  "header": {
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20201206.182510.31.0.001.json",
+    "dumpEventTime": "2020-12-06T18:25:10Z",
+    "dumpEventTimeStamp": "1607279110460",
+    "processId": 31,
+    "cwd": "/usr/src/back",
+    "commandLine": [
+      "node",
+      "/usr/src/back/dist/main"
+    ],
+    "nodejsVersion": "v12.4.0",
+    "glibcVersionRuntime": "2.24",
+    "glibcVersionCompiler": "2.17",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "linux",
+    "componentVersions": {
+      "node": "12.4.0",
+      "v8": "7.4.288.27-node.18",
+      "uv": "1.29.1",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.38.0",
+      "napi": "4",
+      "llhttp": "1.1.3",
+      "http_parser": "2.8.0",
+      "openssl": "1.1.1b",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019a",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "headersUrl": "https://nodejs.org/download/release/v12.4.0/node-v12.4.0-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.4.0/node-v12.4.0.tar.gz"
+    },
+    "osName": "Linux",
+    "osRelease": "5.3.0-28-generic",
+    "osVersion": "#30~18.04.1-Ubuntu SMP Fri Jan 17 06:14:09 UTC 2020",
+    "osMachine": "x86_64",
+    "host": "b03f2ab29f9c"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x0000000000aadaf5",
+      "symbol": "report::TriggerNodeReport(v8::Isolate*, node::Environment*, char const*, char const*, std::string const&, v8::Local<v8::String>) [node]"
+    },
+    {
+      "pc": "0x000000000098fec3",
+      "symbol": "node::OnFatalError(char const*, char const*) [node]"
+    },
+    {
+      "pc": "0x0000000000b1552e",
+      "symbol": "v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, bool) [node]"
+    },
+    {
+      "pc": "0x0000000000b158a9",
+      "symbol": "v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, bool) [node]"
+    },
+    {
+      "pc": "0x0000000000f20105",
+      "symbol": " [node]"
+    },
+    {
+      "pc": "0x0000000000f2aa6b",
+      "symbol": "v8::internal::Heap::PerformGarbageCollection(v8::internal::GarbageCollector, v8::GCCallbackFlags) [node]"
+    },
+    {
+      "pc": "0x0000000000f2b787",
+      "symbol": "v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [node]"
+    },
+    {
+      "pc": "0x0000000000f2e225",
+      "symbol": "v8::internal::Heap::AllocateRawWithRetryOrFail(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [node]"
+    },
+    {
+      "pc": "0x0000000000ef9250",
+      "symbol": "v8::internal::Factory::NewFillerObject(int, bool, v8::internal::AllocationSpace) [node]"
+    },
+    {
+      "pc": "0x00000000011cb0ce",
+      "symbol": "v8::internal::Runtime_AllocateInNewSpace(int, unsigned long*, v8::internal::Isolate*) [node]"
+    },
+    {
+      "pc": "0x0000000001a93942",
+      "symbol": " [node]"
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 2137083904,
+    "totalCommittedMemory": 2135203120,
+    "usedMemory": 2119748624,
+    "availableMemory": 63545360,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 524288,
+        "committedMemory": 32024,
+        "capacity": 523976,
+        "used": 31712,
+        "available": 492264
+      },
+      "new_space": {
+        "memorySize": 2097152,
+        "committedMemory": 1112360,
+        "capacity": 1047952,
+        "used": 63176,
+        "available": 984776
+      },
+      "old_space": {
+        "memorySize": 2129256448,
+        "committedMemory": 2128989872,
+        "capacity": 2115641136,
+        "used": 2115352160,
+        "available": 288976
+      },
+      "code_space": {
+        "memorySize": 1212416,
+        "committedMemory": 1089056,
+        "capacity": 813440,
+        "used": 813440,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 1576960,
+        "committedMemory": 1563168,
+        "capacity": 1129360,
+        "used": 1129360,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 2367488,
+        "committedMemory": 2367488,
+        "capacity": 2355320,
+        "used": 2355320,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 49152,
+        "committedMemory": 49152,
+        "capacity": 3456,
+        "used": 3456,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 1047952,
+        "used": 0,
+        "available": 1047952
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 185.14,
+    "kernelCpuSeconds": 2.57785,
+    "cpuConsumptionPercent": 111.737,
+    "maxRss": 2232528896,
+    "pageFaults": {
+      "IORequired": 476,
+      "IONotRequired": 730750
+    },
+    "fsActivity": {
+      "reads": 89216,
+      "writes": 0
+    }
+  },
+  "uvthreadResourceUsage": {
+    "userCpuSeconds": 102.615,
+    "kernelCpuSeconds": 0.980179,
+    "cpuConsumptionPercent": 61.6637,
+    "fsActivity": {
+      "reads": 84184,
+      "writes": 0
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "npm_package_dependencies__nestjs_platform_express": "^7.0.0",
+    "npm_package_devDependencies__types_node": "^13.9.1",
+    "npm_package_devDependencies__types_supertest": "^2.0.8",
+    "npm_package_devDependencies_ts_node": "^8.6.2",
+    "npm_package_jest_testRegex": ".spec.ts$",
+    "npm_config_cache_lock_stale": "60000",
+    "npm_config_ham_it_up": "",
+    "npm_config_legacy_bundling": "",
+    "npm_config_sign_git_tag": "",
+    "npm_package_dependencies_bcryptjs": "^2.4.3",
+    "npm_package_devDependencies_jest": "^25.1.0",
+    "npm_config_user_agent": "npm/6.9.0 node/v12.4.0 linux x64",
+    "npm_config_always_auth": "",
+    "NODE_VERSION": "12.4.0",
+    "npm_package_dependencies__nestjs_jwt": "^7.0.0",
+    "npm_package_jest_moduleFileExtensions_0": "js",
+    "npm_package_jest_testEnvironment": "node",
+    "npm_config_bin_links": "true",
+    "npm_config_key": "",
+    "HOSTNAME": "b03f2ab29f9c",
+    "YARN_VERSION": "1.16.0",
+    "npm_package_scripts_prebuild": "rimraf dist",
+    "npm_package_scripts_start_dev": "nest start --watch",
+    "npm_package_jest_moduleFileExtensions_1": "json",
+    "npm_config_allow_same_version": "",
+    "npm_config_description": "true",
+    "npm_config_fetch_retries": "2",
+    "npm_config_heading": "npm",
+    "npm_config_if_present": "",
+    "npm_config_init_version": "1.0.0",
+    "npm_config_user": "",
+    "npm_node_execpath": "/usr/local/bin/node",
+    "npm_package_scripts_start_prod": "node dist/main",
+    "npm_package_dependencies_rxjs": "^6.5.4",
+    "npm_package_devDependencies__types_express": "^4.17.3",
+    "npm_package_jest_moduleFileExtensions_2": "ts",
+    "npm_config_prefer_online": "",
+    "npm_config_noproxy": "",
+    "HOME": "/root",
+    "npm_package_devDependencies__typescript_eslint_parser": "^2.23.0",
+    "npm_config_force": "",
+    "npm_package_dependencies_passport_local": "^1.0.0",
+    "npm_package_devDependencies_eslint_config_prettier": "^6.10.0",
+    "npm_config_only": "",
+    "npm_config_read_only": "",
+    "npm_package_dependencies__nestjs_passport": "^7.0.0",
+    "npm_config_cache_min": "10",
+    "npm_config_init_license": "ISC",
+    "npm_package_scripts_start_debug": "nest start --debug --watch",
+    "npm_package_dependencies__nestjs_core": "^7.0.7",
+    "npm_package_devDependencies__types_passport_jwt": "^3.0.3",
+    "npm_config_editor": "vi",
+    "npm_config_rollback": "true",
+    "npm_config_tag_version_prefix": "v",
+    "npm_package_dependencies_reflect_metadata": "^0.1.13",
+    "npm_config_cache_max": "Infinity",
+    "npm_config_timing": "",
+    "npm_config_userconfig": "/root/.npmrc",
+    "npm_package_dependencies_dotenv": "^8.2.0",
+    "npm_package_devDependencies_tsconfig_paths": "^3.9.0",
+    "npm_config_engine_strict": "",
+    "npm_config_init_author_name": "",
+    "npm_config_init_author_url": "",
+    "npm_config_preid": "",
+    "npm_config_tmp": "/tmp",
+    "npm_package_description": "<p align=\"center\">   <a href=\"http://nestjs.com/\" target=\"blank\"><img src=\"https://nestjs.com/img/logo_text.svg\" width=\"320\" alt=\"Nest Logo\" /></a> </p>",
+    "npm_package_devDependencies_typescript": "^3.7.4",
+    "npm_config_depth": "Infinity",
+    "npm_config_package_lock_only": "",
+    "npm_config_save_dev": "",
+    "npm_config_usage": "",
+    "npm_package_dependencies_passport": "^0.4.1",
+    "npm_package_devDependencies__nestjs_testing": "^7.0.0",
+    "npm_package_readmeFilename": "README.md",
+    "npm_config_metrics_registry": "https://registry.npmjs.org/",
+    "npm_config_cafile": "",
+    "npm_config_otp": "",
+    "npm_config_package_lock": "true",
+    "npm_config_progress": "true",
+    "npm_config_https_proxy": "",
+    "npm_config_save_prod": "",
+    "npm_package_dependencies_class_validator": "^0.11.1",
+    "npm_package_devDependencies_prettier": "^1.19.1",
+    "npm_package_devDependencies_ts_loader": "^6.2.1",
+    "npm_config_audit": "true",
+    "npm_config_cidr": "",
+    "npm_config_onload_script": "",
+    "npm_config_sso_type": "oauth",
+    "npm_package_devDependencies_eslint_plugin_import": "^2.20.1",
+    "npm_config_rebuild_bundle": "true",
+    "npm_config_save_bundle": "",
+    "npm_config_shell": "bash",
+    "npm_package_private": "true",
+    "npm_package_scripts_test_debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "npm_package_devDependencies__types_jest": "25.1.4",
+    "npm_package_devDependencies_ts_jest": "25.2.1",
+    "npm_config_dry_run": "",
+    "npm_config_prefix": "/usr/local",
+    "npm_package_scripts_lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "npm_package_dependencies__nestjs_typeorm": "^7.0.0",
+    "npm_package_devDependencies__typescript_eslint_eslint_plugin": "^2.23.0",
+    "npm_config_scope": "",
+    "npm_config_browser": "",
+    "npm_config_cache_lock_wait": "10000",
+    "npm_config_ignore_prepublish": "",
+    "npm_config_registry": "https://registry.npmjs.org/",
+    "npm_config_save_optional": "",
+    "npm_config_searchopts": "",
+    "npm_config_versions": "",
+    "npm_package_jest_rootDir": "src",
+    "npm_config_cache": "/root/.npm",
+    "npm_config_proxy": "",
+    "npm_config_send_metrics": "",
+    "npm_package_scripts_start": "nest start",
+    "npm_package_dependencies__nestjs_config": "^0.4.0",
+    "npm_package_jest_coverageDirectory": "../coverage",
+    "npm_config_global_style": "",
+    "npm_config_ignore_scripts": "",
+    "npm_config_version": "",
+    "npm_package_scripts_test_cov": "jest --coverage",
+    "npm_package_dependencies_passport_jwt": "^4.0.0",
+    "npm_config_local_address": "",
+    "npm_config_viewer": "man",
+    "npm_config_node_gyp": "/usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js",
+    "PATH": "/usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin:/usr/src/back/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "npm_package_name": "back",
+    "npm_config_audit_level": "low",
+    "npm_config_prefer_offline": "",
+    "NODE": "/usr/local/bin/node",
+    "npm_package_scripts_test_e2e": "jest --config ./test/jest-e2e.json",
+    "npm_package_dependencies_typeorm": "^0.2.24",
+    "npm_config_color": "true",
+    "npm_config_sign_git_commit": "",
+    "npm_config_fetch_retry_mintimeout": "10000",
+    "npm_config_maxsockets": "50",
+    "npm_config_offline": "",
+    "npm_config_sso_poll_frequency": "500",
+    "npm_package_devDependencies_eslint": "^6.8.0",
+    "npm_config_umask": "0022",
+    "npm_package_devDependencies_supertest": "^4.0.2",
+    "npm_config_fetch_retry_maxtimeout": "60000",
+    "npm_config_loglevel": "notice",
+    "npm_config_logs_max": "10",
+    "npm_config_message": "%s",
+    "npm_lifecycle_script": "nest start",
+    "npm_package_scripts_test": "jest",
+    "npm_config_ca": "",
+    "npm_config_cert": "",
+    "npm_config_global": "",
+    "npm_config_link": "",
+    "npm_package_version": "0.0.1",
+    "npm_package_devDependencies__nestjs_cli": "^7.1.2",
+    "npm_config_access": "",
+    "npm_config_also": "",
+    "npm_config_save": "true",
+    "npm_config_unicode": "",
+    "npm_lifecycle_event": "start",
+    "npm_package_scripts_build": "nest build",
+    "npm_config_argv": "{\"remain\":[],\"cooked\":[\"run\",\"start\"],\"original\":[\"run\",\"start\"]}",
+    "npm_config_before": "",
+    "npm_config_long": "",
+    "npm_config_production": "",
+    "npm_config_searchlimit": "20",
+    "npm_config_unsafe_perm": "",
+    "npm_config_update_notifier": "true",
+    "npm_package_author": "",
+    "npm_config_auth_type": "legacy",
+    "npm_config_node_version": "12.4.0",
+    "npm_config_tag": "latest",
+    "npm_config_git_tag_version": "true",
+    "npm_config_commit_hooks": "true",
+    "npm_config_script_shell": "",
+    "npm_config_shrinkwrap": "true",
+    "npm_package_license": "UNLICENSED",
+    "npm_config_fetch_retry_factor": "10",
+    "npm_config_save_exact": "",
+    "npm_config_strict_ssl": "true",
+    "npm_package_scripts_format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "npm_package_scripts_test_watch": "jest --watch",
+    "npm_config_dev": "",
+    "npm_config_globalconfig": "/usr/local/etc/npmrc",
+    "npm_config_init_module": "/root/.npm-init.js",
+    "npm_config_parseable": "",
+    "PWD": "/usr/src/back",
+    "npm_package_jest_transform_______t_j_s_": "ts-jest",
+    "npm_config_globalignorefile": "/usr/local/etc/npmignore",
+    "npm_execpath": "/usr/local/lib/node_modules/npm/bin/npm-cli.js",
+    "npm_package_devDependencies__nestjs_schematics": "^7.0.0",
+    "npm_config_cache_lock_retries": "10",
+    "npm_config_searchstaleness": "900",
+    "npm_package_dependencies_randomstring": "^1.1.5",
+    "npm_package_dependencies_rimraf": "^3.0.2",
+    "npm_package_devDependencies__types_passport_local": "^1.0.33",
+    "npm_config_node_options": "",
+    "npm_config_save_prefix": "^",
+    "npm_config_scripts_prepend_node_path": "warn-only",
+    "npm_config_group": "",
+    "npm_config_init_author_email": "",
+    "npm_config_searchexclude": "",
+    "npm_config_git": "git",
+    "npm_config_optional": "true",
+    "npm_package_dependencies__nestjs_common": "^7.0.7",
+    "npm_package_dependencies_mysql": "^2.18.1",
+    "npm_config_json": "",
+    "INIT_CWD": "/usr/src/back",
+    "JWTSECRET": "mdrlefunoui"
+  },
+  "userLimits": {
+    "core_file_size_blocks": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "data_seg_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "file_size_blocks": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_locked_memory_bytes": {
+      "soft": 16777216,
+      "hard": 16777216
+    },
+    "max_memory_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "open_files": {
+      "soft": 1048576,
+      "hard": 1048576
+    },
+    "stack_size_bytes": {
+      "soft": 8388608,
+      "hard": "unlimited"
+    },
+    "cpu_time_seconds": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_user_processes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "virtual_memory_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    }
+  },
+  "sharedObjects": [
+    "linux-vdso.so.1",
+    "/lib/x86_64-linux-gnu/libdl.so.2",
+    "/lib/x86_64-linux-gnu/librt.so.1",
+    "/usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+    "/lib/x86_64-linux-gnu/libm.so.6",
+    "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+    "/lib/x86_64-linux-gnu/libpthread.so.0",
+    "/lib/x86_64-linux-gnu/libc.so.6",
+    "/lib64/ld-linux-x86-64.so.2",
+    "/lib/x86_64-linux-gnu/libnss_files.so.2",
+    "/lib/x86_64-linux-gnu/libnss_dns.so.2",
+    "/lib/x86_64-linux-gnu/libresolv.so.2"
+  ]
+}

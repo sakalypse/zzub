@@ -11,8 +11,9 @@ export class GameController {
     async createGame(@Res() res, @Body() game: CreateGameDTO){
       const newGame = await this.gameService.
                         createGame(game);
+
       return res.status(HttpStatus.OK).json({
-          game: newGame.gameId
+          code: newGame.code
       })
     }
   
@@ -35,6 +36,13 @@ export class GameController {
     async getGameById(@Res() res, @Param('id') id){
       const game = await this.gameService.
                         getgameById(id);
+      return res.status(HttpStatus.OK).json(game)
+    }
+
+    @Get('/code/:id')
+    async getGameByCode(@Res() res, @Param('id') id){
+      const game = await this.gameService.
+                        getGameByCode(id);
       return res.status(HttpStatus.OK).json(game)
     }
   

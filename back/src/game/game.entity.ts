@@ -22,4 +22,7 @@ export class Game {
 
     @Column({nullable:true})
     dateCreation: Date;
+
+    @Column({nullable:false})
+    code: String;
 }

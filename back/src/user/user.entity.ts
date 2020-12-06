@@ -33,6 +33,7 @@ export class User {
 
     @ManyToOne(type => Game)
     game: Game;
-    @ManyToOne(type => Game)
+    @JoinColumn()
+    @OneToOne(type => Game)
     hostGame: Game;
 }
