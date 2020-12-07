@@ -48,15 +48,16 @@ export class LobbyPage implements OnInit {
     this.http.get(`${this.API_URL}/game/code/${this.roomCode}`, this.httpOptions)
       .subscribe(
         result => {
+          console.log("result:"+result);
           this.room = result;
       });
   }
 
   deleteRoom(){
-    this.http.delete(`${this.API_URL}/game/delete/${this.room.id}`, this.httpOptions)
+    this.http.delete(`${this.API_URL}/game/delete/${this.room.gameId}`, this.httpOptions)
     .subscribe(
       (result:any) => {
-        this.router.navigate(["/index/"]);
+        this.router.navigate(["/homepage/"]);
       },
       error=>{
         this.toastController.create({

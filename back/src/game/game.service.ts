@@ -23,25 +23,23 @@ export class GameService {
     async createGame(createGame: CreateGameDTO): Promise<Game>{
         let game = new Game(); 
         game.dateCreation = new Date();
-
         await this.userService.getUserByIdForAuth(createGame.owner).
-        then(user=>{
+        then(async user=>{
             //if the user has already a game : stop here
             if(user.hostGame!=null){
                 throw new HttpException('Already has game', HttpStatus.FORBIDDEN);
             }
 
-            user.hostGame = game;
+            //user.hostGame = game;
             game.owner = user;
             game.pack = [];
-            //game.players = [user];
-            user.game = game;
+            game.players = [user];
+            //user.game = game;
             
             createGame.pack.forEach(async newPack => {
                 game.pack.push(await this.packService.getPackById(newPack));
             });
-
-            this.userService.updateUser(user.userId, user);
+            //await this.userService.updateUser(user.userId, user);
         }).catch(error => {throw new
                             HttpException(error,
                              HttpStatus.FORBIDDEN)});
@@ -57,19 +55,35 @@ export class GameService {
 
     //Get a single game by its ID
     async getgameById(gameId): Promise<Game>{
-        return await this.gameRepository.
+        var game = await this.gameRepository.
                         findOne(gameId,
                                 {relations: ["owner",
                                             "players" ,
                                             "pack"]});
+        if(game!=null){                           
+            game.owner.password = "";
+            game.players.forEach(player => {
+                player.password = "";
+            });
+        }
+
+        return game;
     }
 
     async getGameByCode(code) : Promise<Game>{
-        return await this.gameRepository
+        var game = await this.gameRepository
                         .findOne({ code: code},
                                     {relations: ["owner",
                                                 "players" ,
                                                 "pack"]});
+        if(game!=null){
+            game.owner.password = "";
+            game.players.forEach(player => {
+                player.password = "";
+            });
+        }
+
+        return game;
     }
 
     //get all games
