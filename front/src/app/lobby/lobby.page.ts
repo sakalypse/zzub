@@ -33,7 +33,6 @@ export class LobbyPage implements OnInit {
   }
 
   ngOnInit() {
-    this.init();
   }
 
   init() {
@@ -44,11 +43,13 @@ export class LobbyPage implements OnInit {
       })
     };
 
+    //TODO : check if user is already registered in the game
+
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
     this.http.get(`${this.API_URL}/game/code/${this.roomCode}`, this.httpOptions)
       .subscribe(
         result => {
-          console.log("result:"+result);
+          console.log(result);
           this.room = result;
       });
   }
