@@ -31,9 +31,9 @@ export class User {
     @JoinTable()
     favorites:Pack[];
 
-    @ManyToOne(type => Game)
+    @ManyToOne(type => Game, { cascade: true })
     game: Game;
     @JoinColumn()
-    @OneToOne(type => Game)
+    @OneToOne(type => Game, { cascade: true })
     hostGame: Game;
 }

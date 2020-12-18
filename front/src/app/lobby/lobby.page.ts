@@ -43,14 +43,22 @@ export class LobbyPage implements OnInit {
       })
     };
 
-    //TODO : check if user is already registered in the game
-
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
     this.http.get(`${this.API_URL}/game/code/${this.roomCode}`, this.httpOptions)
       .subscribe(
         result => {
-          console.log(result);
           this.room = result;
+          console.log(this.room);
+          if(!this.room.players.includes(x=>x.userId == this.authService.getLoggedUser().userId)){
+            this.http.put(`${this.API_URL}/game/${this.room.gameId}/adduser/${this.authService.getLoggedUser().userId}`, this.httpOptions)
+                              .subscribe(
+                                (result:any) => {
+                                  //Handle websocket
+                                },
+                                error=>{
+                                  this.router.navigate(["/homepage/"]);
+                              });
+          }
       });
   }
 

@@ -6,4 +6,11 @@
   <div *ngFor ="let pack of this.room.pack" >
     <div>{{pack.name}}</div>
   </div>
+
+  <div><br/>Players :</div>
+  <ion-card *ngFor ="let player of this.room.players" >
+    <ion-card-content>
+      {{player.username}}
+    </ion-card-content>
+  </ion-card>
 </ion-content>

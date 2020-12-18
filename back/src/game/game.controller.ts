@@ -21,7 +21,7 @@ export class GameController {
     async addUserToGame(@Res() res, @Body() body: any, @Param('id') id){
       const userRes = await this.gameService.
                         addUserToGame(body.user, id);
-  
+
       return res.status(HttpStatus.OK).json("User : " + userRes.userId + " successfully added to the game")
     }
     @Put('/removeuser/:id')
