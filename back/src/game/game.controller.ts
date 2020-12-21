@@ -17,17 +17,19 @@ export class GameController {
       })
     }
   
-    @Put('/adduser/:id')
-    async addUserToGame(@Res() res, @Body() body: any, @Param('id') id){
+    //TODO Guard handle security
+    @Put(':gameId/adduser/:userId')
+    async addUserToGame(@Res() res, @Param('gameId') gameId, @Param('userId') userId){
       const userRes = await this.gameService.
-                        addUserToGame(body.user, id);
+                        addUserToGame(userId, gameId);
 
       return res.status(HttpStatus.OK).json("User : " + userRes.userId + " successfully added to the game")
     }
-    @Put('/removeuser/:id')
-    async removeUserToGame(@Res() res, @Body() body: any, @Param('id') id){
+
+    @Put(':gameId/removeuser/:userId')
+    async removeUserToGame(@Res() res, @Param('gameId') gameId, @Param('userId') userId){
       const userRes = await this.gameService.
-                        removeUserToGame(body.user, id);
+                        removeUserToGame(userId, gameId);
   
       return res.status(HttpStatus.OK).json("User : " + userRes.userId + " successfully removed from the game")
     }

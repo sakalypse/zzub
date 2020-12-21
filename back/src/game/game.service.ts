@@ -115,11 +115,12 @@ export class GameService {
 
     //Remove a user to a game
     async removeUserToGame(userId, gameId): Promise<User>{
-        let user;
+        var user;
         await this.userService.getUserByIdForAuth(userId).
-        then(async user=>{
+        then(async userFound =>{
+            user = userFound;
             user.game = null;
-            this.userService.updateUser(user.userId, user);
+            this.userService.updateUser(userId, user);
             /*
             if(user.guest){
                 await this.userService.deleteUserById(user.userId)

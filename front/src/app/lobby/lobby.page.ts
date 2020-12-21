@@ -48,17 +48,32 @@ export class LobbyPage implements OnInit {
       .subscribe(
         result => {
           this.room = result;
-          console.log(this.room);
-          if(!this.room.players.includes(x=>x.userId == this.authService.getLoggedUser().userId)){
+          if(!this.room.players.some(x=>x.userId == this.authService.getLoggedUser().userId)){
             this.http.put(`${this.API_URL}/game/${this.room.gameId}/adduser/${this.authService.getLoggedUser().userId}`, this.httpOptions)
                               .subscribe(
                                 (result:any) => {
-                                  //Handle websocket
+                                  console.log("successfuly added");
                                 },
                                 error=>{
                                   this.router.navigate(["/homepage/"]);
                               });
           }
+      },
+      error => {
+        console.log("Game doesn't exist");
+        this.router.navigate(["/homepage/"]);
+      });
+  }
+
+  exitRoom(){
+    console.log(this.authService.getLoggedUser().userId);
+    this.http.put(`${this.API_URL}/game/${this.room.gameId}/removeuser/${this.authService.getLoggedUser().userId}`, this.httpOptions)
+      .subscribe(
+        (result:any) => {
+          console.log("successfuly removed");
+        },
+        error=>{
+          this.router.navigate(["/homepage/"]);
       });
   }
 
