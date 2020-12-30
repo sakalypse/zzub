@@ -15,6 +15,7 @@ export class LobbyPage implements OnInit {
   httpOptions;
   roomCode;
   room;
+  owner;
 
   constructor(
     @Inject(AuthService)
@@ -48,6 +49,12 @@ export class LobbyPage implements OnInit {
       .subscribe(
         result => {
           this.room = result;
+          if(this.room.owner.userId == this.authService.getLoggedUser().userId)
+            this.owner = true;
+          else
+            this.owner = false;
+
+          //Add user in game if not already in
           if(!this.room.players.some(x=>x.userId == this.authService.getLoggedUser().userId)){
             this.http.put(`${this.API_URL}/game/${this.room.gameId}/adduser/${this.authService.getLoggedUser().userId}`, this.httpOptions)
                               .subscribe(
@@ -71,6 +78,7 @@ export class LobbyPage implements OnInit {
       .subscribe(
         (result:any) => {
           console.log("successfuly removed");
+          this.router.navigate(["/homepage/"]);
         },
         error=>{
           this.router.navigate(["/homepage/"]);

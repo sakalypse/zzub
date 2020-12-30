@@ -1,7 +1,7 @@
 <ion-content *ngIf="this.room!=null">
   <div>Lobby : {{roomCode}}</div>
-  <button (click)="deleteRoom()">Delete room</button>
-  <button (click)="exitRoom()">Exit room</button>
+  <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
+  <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
   
   <div><br/>Packs :</div>
   <div *ngFor ="let pack of this.room.pack" >

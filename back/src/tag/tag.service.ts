@@ -16,6 +16,14 @@ export class TagService {
     * Create Default tags
     */
    async initDefaultTags(){
+    //check if tags are not already created
+    const tagSearched = await this.tagRepository.
+                findOne({ name: "Sport" });
+    if(tagSearched){
+        console.log("Tags already created");
+        return;
+    }
+
     let tags = [
         "Sport",
         "Music",
