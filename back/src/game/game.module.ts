@@ -8,12 +8,13 @@ import { UserService } from 'src/user/user.service';
 import { Pack } from 'src/pack/pack.entity';
 import { PackService } from 'src/pack/pack.service';
 import { Tag } from 'src/tag/tag.entity';
+import { GameGateway } from './game.gateway';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Game, User, Pack, Tag]),
   ],
   controllers: [GameController],
-  providers: [GameService, UserService, PackService]
+  providers: [GameService, UserService, PackService, GameGateway]
 })
 export class GameModule {}

@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
+import { Socket } from 'ngx-socket-io';
 
 @Component({
   selector: 'app-lobby',
@@ -16,6 +17,7 @@ export class LobbyPage implements OnInit {
   roomCode;
   room;
   owner;
+  players;
 
   constructor(
     @Inject(AuthService)
@@ -25,7 +27,8 @@ export class LobbyPage implements OnInit {
     public router: Router,
     private activatedRoute:ActivatedRoute,
     public alertController: AlertController,
-    public toastController: ToastController
+    public toastController: ToastController,
+    public socket:Socket
   ){
     this.http = new HttpClient(handler);
     activatedRoute.params.subscribe(val => {
@@ -36,7 +39,7 @@ export class LobbyPage implements OnInit {
   ngOnInit() {
   }
 
-  init() {
+  async init() {
     this.httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
@@ -45,10 +48,11 @@ export class LobbyPage implements OnInit {
     };
 
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
-    this.http.get(`${this.API_URL}/game/code/${this.roomCode}`, this.httpOptions)
+    await this.http.get(`${this.API_URL}/game/code/${this.roomCode}`, this.httpOptions)
       .subscribe(
-        result => {
+        (result:any) => {
           this.room = result;
+          this.players = result.players;
           if(this.room.owner.userId == this.authService.getLoggedUser().userId)
             this.owner = true;
           else
@@ -58,8 +62,8 @@ export class LobbyPage implements OnInit {
           if(!this.room.players.some(x=>x.userId == this.authService.getLoggedUser().userId)){
             this.http.put(`${this.API_URL}/game/${this.room.gameId}/adduser/${this.authService.getLoggedUser().userId}`, this.httpOptions)
                               .subscribe(
-                                (result:any) => {
-                                  console.log("successfuly added");
+                                async (result:any) => {
+                                  this.players.push(await this.http.get<any>(`${this.API_URL}/user/safeinfo/${this.authService.getLoggedUser().userId}`, this.httpOptions).toPromise());
                                 },
                                 error=>{
                                   this.router.navigate(["/homepage/"]);
@@ -67,17 +71,45 @@ export class LobbyPage implements OnInit {
           }
       },
       error => {
-        console.log("Game doesn't exist");
+        //Game doesn't exist
         this.router.navigate(["/homepage/"]);
       });
+
+
+    //initialize socket
+    this.socket.emit('joinLobby', this.authService.getLoggedUser().userId, this.roomCode);
+
+    //listen for new player
+    this.socket.fromEvent('joinLobby').
+    subscribe(async id => {
+      await this.http.get<any>(`${this.API_URL}/user/safeinfo/${id}`, this.httpOptions)
+      .subscribe((player:any)=>{
+        if(!this.players.some(x=>x.userId == player.userId))
+        {
+          this.players.push(player);
+        }
+      })
+    });
+
+    //listen for player quitting
+    this.socket.fromEvent('quitGame').
+    subscribe(async id => {
+      this.players = this.players.
+                        filter(x => x.userId !== id);
+    });
+
+    //listen for session killed
+    this.socket.fromEvent('killGame').
+    subscribe(async id => {
+      this.router.navigate(["/homepage/"]);
+    });
   }
 
   exitRoom(){
-    console.log(this.authService.getLoggedUser().userId);
     this.http.put(`${this.API_URL}/game/${this.room.gameId}/removeuser/${this.authService.getLoggedUser().userId}`, this.httpOptions)
       .subscribe(
         (result:any) => {
-          console.log("successfuly removed");
+          this.socket.emit('quitGame', this.authService.getLoggedUser().userId, this.roomCode);
           this.router.navigate(["/homepage/"]);
         },
         error=>{
@@ -89,6 +121,7 @@ export class LobbyPage implements OnInit {
     this.http.delete(`${this.API_URL}/game/delete/${this.room.gameId}`, this.httpOptions)
     .subscribe(
       (result:any) => {
+        this.socket.emit('killGame', this.roomCode);
         this.router.navigate(["/homepage/"]);
       },
       error=>{

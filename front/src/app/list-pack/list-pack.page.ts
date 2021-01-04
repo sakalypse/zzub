@@ -299,7 +299,6 @@ export class ListPackPage implements OnInit {
     //Trying to create a room
     let dto = {owner : this.authService.getLoggedUser().userId,
                pack : this.listPacksHost};
-    console.log(dto); 
     this.http.post(`${this.API_URL}/game/create`, dto, this.httpOptions)
     .subscribe(
       (result:any) => {

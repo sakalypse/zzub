@@ -28,7 +28,12 @@ export class UserController {
         return res.status(HttpStatus.OK).json(users);
     }
     
-    @UseGuards(UserGuard)
+    @Get('/safeinfo/:id')
+    async getUserSafeInfo(@Res() res, @Param('id') userId){
+        const user = await this.userService.getUserSafeInfoById(userId);
+        return res.status(HttpStatus.OK).json(user);
+    }
+
     @Get('/:id')
     async getUser(@Res() res, @Param('id') userId){
         const user = await this.userService.getUserById(userId);
