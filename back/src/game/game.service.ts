@@ -103,7 +103,7 @@ export class GameService {
         then(result=>{
             user=result;
             //if the user has already a game : stop here
-            if(user.game!=null)
+            if(user.game!=null || user.hostGame!=null )
                 throw new HttpException('Already has game', HttpStatus.FORBIDDEN);
             user.game = game;
             this.userService.updateUser(user.userId, user);

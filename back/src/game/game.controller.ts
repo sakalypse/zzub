@@ -26,7 +26,7 @@ export class GameController {
       return res.status(HttpStatus.OK).json("User : " + userRes.userId + " successfully added to the game")
     }
 
-    @Put(':gameId/removeuser/:userId')
+    @Put(':gameId/removeuser/:userId') 
     async removeUserToGame(@Res() res, @Param('gameId') gameId, @Param('userId') userId){
       const userRes = await this.gameService.
                         removeUserToGame(userId, gameId);
