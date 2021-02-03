@@ -232,6 +232,9 @@
 :root{
   //Custom Gradients
   --custom-color-gradient: linear-gradient(145deg, rgba(112,26,197,1) 0%, rgba(26,123,197,1) 100%);
+  --custom-gradient-pink: linear-gradient(145deg, #C51162 0%, #F50057 100%);
+  --custom-gradient-orange: linear-gradient(145deg, #FF9100 0%, #FF6D00 100%);
+  --custom-gradient-red: linear-gradient(145deg, #D50000 0%, #FF1744 100%);
 
   //Custom Colors
   --custom-color-background: #F6F7FB;

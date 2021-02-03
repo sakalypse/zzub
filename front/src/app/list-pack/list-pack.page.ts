@@ -286,5 +286,10 @@ export class ListPackPage implements OnInit {
     if(this.listPacksHost.length != 0 && this.listPacksHost.some(x => x.packId == packId))
       this.listPacksHost.splice(this.listPacksHost.indexOf(this.listPacksHost.find(x => x.packId == packId)), 1);
   }
+
+  toggleSelectedPacks(){
+    let gameInfos = document.querySelector('.game-infos') as HTMLElement;
+    gameInfos.classList.toggle('showMobile');
+  }
   //#endregion
 }
