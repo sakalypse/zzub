@@ -3,7 +3,7 @@
     <div *ngIf="!editMode" class="pre-lobby">
       <div class="game-infos">
         <div class="host-container">
-          <div class="host-button"><span>Host game</span></div>
+          <div class="host-button" (click)="hostGame()"><span>Host game</span></div>
           <div class="list-mobile-button" (click)="toggleSelectedPacks()"><span>Show selected packs<ion-icon name="chevron-up-outline"></ion-icon></span></div>
         </div>
         <div class="game-pack-list" *ngIf="listPacksHost && listPacksHost.length!=0">
@@ -73,9 +73,6 @@
           <ion-row>
             <ion-col>
               <div class="filters-button apply" (click)="toggleFilters()"><span>Apply filters</span></div>
-            </ion-col>
-            <ion-col class="host-container"size-xs="12" size-md="2">
-              <div class="host-button" (click)="hostGame()"><span>Host game</span></div>
             </ion-col>
           </ion-row>
         </div>
