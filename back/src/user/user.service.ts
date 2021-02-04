@@ -108,6 +108,19 @@ export class UserService {
     }
 
     /*
+    * Get safe infos from single user by the id given : May be ask by another user
+    * @param  userId
+    * @return one user
+    */
+    async getUserSafeInfoById(userId): Promise<ReturnedUserDTO>{
+        const user = await this.userRepository.findOne(userId);
+        let userReturn = new User();
+        userReturn = { userId :user.userId, username:user.username, game:user.game, hostGame:user.hostGame,
+                        email:null, password:null, role:null, packs:null, favorites:null };
+        return userReturn;
+    }
+
+    /*
     * Get a single user by the id given
     * @param  userId
     * @return one user
@@ -208,8 +221,9 @@ export class UserService {
     async getAllFavoritesPacksOfUser(userId): Promise<Pack[]>{
         const user = await this.userRepository.findOne({
             relations: ["favorites", "favorites.author", "favorites.rounds", "favorites.tag"],
-            where:{author:{userId: userId}}});
+            where:{userId: userId}});
         const packs = user.favorites;
+
         //remove hashed password from returned data
         packs.forEach(pack => {
             pack.author.password = "";

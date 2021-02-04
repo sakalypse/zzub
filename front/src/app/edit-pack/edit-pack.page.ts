@@ -5,6 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { ToastController, AlertController } from '@ionic/angular';
+import { PackService } from '../services/pack.service';
 
 @Component({
   selector: 'app-edit-pack',
@@ -29,6 +30,8 @@ export class EditPackPage implements OnInit {
   constructor(
     @Inject(AuthService)
     public authService: AuthService,
+    @Inject(PackService)
+    private packService:PackService,
     public http: HttpClient,
     handler: HttpBackend,
     public router: Router,
@@ -40,7 +43,11 @@ export class EditPackPage implements OnInit {
 
 
   ngOnInit(){
-    let packId = this.activatedRoute.snapshot.paramMap.get('id');
+    this.init();
+  }
+
+  async init(){
+    let packId = Number.parseInt(this.activatedRoute.snapshot.paramMap.get('id'));
 
     //Init control form
     this.name = new FormControl([Validators.required, Validators.minLength(1), Validators.maxLength(50)]);
@@ -54,37 +61,23 @@ export class EditPackPage implements OnInit {
       isPublic: this.isPublic
     });
 
-    //Fetch pack data
-    this.httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'Authorization': 'Bearer ' + this.authService.getToken()
-      })
-    };
     let userId = this.authService.getLoggedUser().userId;
-    this.http.get(`${this.API_URL}/user/${userId}/pack/${packId}`, this.httpOptions)
-    .subscribe(
-      result => {
-        this.pack = result;
-        if(this.pack == null){
-          this.router.navigate(["/pack/"]);
-        }
-        this.initQuestionsForms();
-        //assign value
-        this.name.setValue(this.pack.name);
-        this.language.setValue(this.pack.language);
-        if(this.pack.tag)
-          this.tag.setValue(this.pack.tag.tagId);
-        this.isPublic.setValue(this.pack.isPublic);
-        let author = new FormControl(this.pack.author.userId);
-        this.packForm.addControl("author", author)
-      });
-    //Fetch tags data
-    this.http.get(`${this.API_URL}/tag`, this.httpOptions)
-    .subscribe(
-        result => {
-          this.tags = result;
-        });
+    this.pack = await this.packService.getPack(userId, packId);
+    if(this.pack == null){
+      this.router.navigate(["/pack/"]);
+    }
+    this.initQuestionsForms();
+
+    //assign value
+    this.name.setValue(this.pack.name);
+    this.language.setValue(this.pack.language);
+    if(this.pack.tag)
+      this.tag.setValue(this.pack.tag.tagId);
+    this.isPublic.setValue(this.pack.isPublic);
+    let author = new FormControl(this.pack.author.userId);
+    this.packForm.addControl("author", author)
+        
+    this.tags = await this.packService.getAllTags();
   }
 
   //#region Toggles
@@ -133,45 +126,42 @@ export class EditPackPage implements OnInit {
   //#endregion
 
   //#region add/remove/init questions
-  addQuestion(){
-    const dto = {pack: this.pack.packId};
-    this.http.post<any>(`${this.API_URL}/round`,dto,this.httpOptions)
-    .subscribe(
-      (resultQuestion:any) => {
-        //Add Extra
-        let dto={round: resultQuestion.roundId, extraType: 0, url: ""};
-        this.http.post<any>(`${this.API_URL}/extra`,dto,this.httpOptions)
-        .subscribe((resultExtra:any) => {
+  async addQuestion(){
+    try{
+      const dtoRound = {pack: this.pack.packId};
+      let round:any = await this.packService.createRound(dtoRound);
+    
+      //Add Extra
+      let dtoExtra ={round: round.roundId, extraType: 0, url: ""};
+      let extra:any = await this.packService.createExtra(dtoExtra);
 
-          //Add one choice which is the answer
-          let dto={round: resultQuestion.roundId, choice: "", isAnswer: true};
-          this.http.post<any>(`${this.API_URL}/choice`,dto,this.httpOptions)
-          .subscribe((resultChoice:any) => {
-            let control = <FormArray>this.questionsForms.controls.questions;
-            control.push(this.fb.group({
-              roundId: [resultQuestion.roundId],
-              question: new FormControl(resultQuestion.question, [Validators.required]),
-              isMultipleChoice: [resultQuestion.isMultipleChoice],
-              extraId: [resultExtra.extraId],
-              extraType: 0,
-              url:"",
-              choices: this.fb.array([
-                this.fb.group({
-                  choiceId: [resultChoice.choiceId],
-                  choice: new FormControl(resultChoice.choice, [Validators.required]),
-                  isAnswer: [true]
-                })
-              ])
-            }));
-          });
-        });
-      },
-      (error) => {
-        this.toastController.create({
-          message: 'Error while adding a question',
-          duration: 2000
-        }).then(toast=>toast.present());
-    });
+      //Add one choice which is the answer
+      let dtoAnswer={round: round.roundId, choice: "", isAnswer: true};
+      let choice:any = await this.packService.createChoice(dtoAnswer);
+      
+      let control = <FormArray>this.questionsForms.controls.questions;
+      control.push(this.fb.group({
+        roundId: [round.roundId],
+        question: new FormControl(round.question, [Validators.required]),
+        isMultipleChoice: [round.isMultipleChoice],
+        extraId: [extra.extraId],
+        extraType: 0,
+        url:"",
+        choices: this.fb.array([
+          this.fb.group({
+            choiceId: [choice.choiceId],
+            choice: new FormControl(choice.choice, [Validators.required]),
+            isAnswer: [true]
+          })
+        ])
+      }));
+    }
+    catch(e){
+      this.toastController.create({
+        message: 'Error while adding a question',
+        duration: 2000
+      }).then(toast=>toast.present());
+    }
   }
 
   async removeQuestion(roundId){
@@ -183,25 +173,24 @@ export class EditPackPage implements OnInit {
           text: 'Cancel'
         }, {
           text: 'Delete',
-          handler: () => {
-            this.http.delete<any>(`${this.API_URL}/round/${roundId}`,this.httpOptions)
-            .subscribe(
-              (result) => {
-                this.toastController.create({
-                  message: 'Question removed',
-                  duration: 2000
-                }).then(toast=>toast.present());
-                //remove dynamicaly the question from the form
-                let control = <FormArray>this.questionsForms.controls.questions;
-                control.removeAt(control.value
-                  .findIndex(i => i.roundId == roundId))
-              },
-              (error) => {
-                this.toastController.create({
-                  message: 'Error while removing the question',
-                  duration: 2000
-                }).then(toast=>toast.present());
-            });
+          handler: async () => {
+            try{
+              await this.packService.deleteRound(roundId);
+              this.toastController.create({
+                message: 'Question removed',
+                duration: 2000
+              }).then(toast=>toast.present());
+              //remove dynamicaly the question from the form
+              let control = <FormArray>this.questionsForms.controls.questions;
+              control.removeAt(control.value
+                .findIndex(i => i.roundId == roundId))
+            }
+            catch(e){
+              this.toastController.create({
+                message: 'Error while removing the question',
+                duration: 2000
+              }).then(toast=>toast.present());
+            }
           }
         }
       ]
@@ -242,98 +231,90 @@ export class EditPackPage implements OnInit {
   //#endregion
 
   //#region add/remove choices
-  addChoice(controlId, roundId){
+  async addChoice(controlId, roundId){
     let control = <FormArray>this.questionsForms.get('questions').at(controlId).get('choices');
     if(control.length>=4)
       return;
       
     let dto={round: roundId, choice: "", isAnswer: false};
-    this.http.post<any>(`${this.API_URL}/choice`,dto,this.httpOptions)
-    .subscribe((resultChoice:any) => {
-      control.push(this.fb.group({
-        choiceId: [resultChoice.choiceId],
-        choice: [resultChoice.choice, Validators.required],
-        isAnswer: [resultChoice.isAnswer]
-      }));
-    });
+    let choice:any = await this.packService.createChoice(dto);
+    control.push(this.fb.group({
+      choiceId: [choice.choiceId],
+      choice: [choice.choice, Validators.required],
+      isAnswer: [choice.isAnswer]
+    }));
   }
 
-  removeChoice(controlId, choiceControlId, choiceId){
-    this.http.delete<any>(`${this.API_URL}/choice/${choiceId}`,this.httpOptions)
-    .subscribe(
-      (result) => {
-        //remove dynamicaly the choice from the form
-        let control = <FormArray>this.questionsForms.get('questions')
-                                  .at(controlId).get('choices');
-        control.removeAt(control.value
-          .findIndex(i => i.choiceId == choiceId))
-      },
-      (error) => {
-        this.toastController.create({
-          message: 'Error while removing the choice',
-          duration: 2000
-        }).then(toast=>toast.present());
-    });
+  async removeChoice(controlId, choiceControlId, choiceId){
+    try{
+      await this.packService.deleteChoice(choiceId);
+      //remove dynamicaly the choice from the form
+      let control = <FormArray>this.questionsForms.get('questions')
+                                .at(controlId).get('choices');
+      control.removeAt(control.value
+        .findIndex(i => i.choiceId == choiceId))
+    }
+    catch(e){
+      this.toastController.create({
+        message: 'Error while removing the choice',
+        duration: 2000
+      }).then(toast=>toast.present());
+    }
   }
   //#endregion
 
-  savePack(){
+  async savePack(){
     //stop if form invalid
     if (this.packForm.invalid) {
       return;
     }
 
     //save each question
-    this.questionsForms.get('questions').controls.forEach(question => {
+    this.questionsForms.get('questions').controls.forEach(async question => {
       if(question.invalid)
         return;
 
       //save extra of question 
       let extraDTO = { extraType: question.value.extraType,
                        url: question.value.url};
-      this.http.put<any>(`${this.API_URL}/extra/${question.value.extraId}`,
-                        extraDTO, this.httpOptions).subscribe((result) => {});
+      await this.packService.saveExtra(question.value.extraId, extraDTO);
 
       //save each choices of question
-      question.value.choices.forEach(choice => {
+      question.value.choices.forEach(async choice => {
         let choiceDTO = { choice: choice.choice,
                           isAnswer: choice.isAnswer};
-        this.http.put<any>(`${this.API_URL}/choice/${choice.choiceId}`,
-                    choiceDTO, this.httpOptions).subscribe((result) => {});
+        await this.packService.saveChoice(choice.choiceId, choiceDTO);
       });
       
       //save question
       let questionDTO = {question: question.value.question,
                          isMultipleChoice : question.value.isMultipleChoice};
-      this.http.put<any>(`${this.API_URL}/round/${question.value.roundId}`,
-                          questionDTO, this.httpOptions)
-      .subscribe(
-      (result) => {},
-      (error) => {
+      try{
+        await this.packService.saveRound(question.value.roundId, questionDTO);
+      }
+      catch(e){
         this.toastController.create({
           message: 'Error while saving the question : '+question.roundId+1,
           duration: 2000
         }).then(toast=>toast.present());
-      });
+      }
     });
 
     //save the pack
-    this.http.put<any>(`${this.API_URL}/pack/${this.pack.packId}`,
-                        this.packForm.value, this.httpOptions)
-    .subscribe(
-      (result) => {
-        this.toastController.create({
-          message: 'Pack saved',
-          duration: 2000
-        }).then(toast=>toast.present());
-        this.router.navigateByUrl("/pack");
-      },
-      (error) => {
-        this.toastController.create({
-          message: 'Error while saving',
-          duration: 2000
-        }).then(toast=>toast.present());
-    });
+    try{
+      await this.packService.savePack(this.pack.packId, this.packForm.value);
+      this.toastController.create({
+        message: 'Pack saved',
+        duration: 2000
+      }).then(toast=>toast.present());
+      this.router.navigateByUrl("/pack");
+    }
+    catch(e){
+      this.toastController.create({
+        message: 'Error while saving',
+        duration: 2000
+      }).then(toast=>toast.present());
+    }
   }
   
 }

@@ -24,7 +24,7 @@ export class SignPage implements OnInit {
     public router: Router) { }
 
   ngOnInit() {
-    this.username = new FormControl('', [Validators.required, Validators.minLength(6)]);
+    this.username = new FormControl('', [Validators.required, Validators.maxLength(25)]);
     this.email = new FormControl('', [Validators.required, Validators.email]);
     this.password = new FormControl('', [Validators.required, Validators.minLength(6)]);
     this.password2 = new FormControl('', [Validators.required, Validators.minLength(6)]);

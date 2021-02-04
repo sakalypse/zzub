@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE 80
 
-CMD [ "ionic", "serve", "--port=80", "--address", "0.0.0.0" ]
+CMD [ "ionic", "serve"]

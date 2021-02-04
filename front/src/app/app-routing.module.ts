@@ -34,6 +34,11 @@ const routes: Routes = [
     path: 'selectpack',
     loadChildren: () => import('./list-pack/list-pack.module').then( m => m.ListPackPageModule),
     canActivate: [AuthGuardService]
+  },
+  {
+    path: 'lobby/:code',
+    loadChildren: () => import('./lobby/lobby.module').then( m => m.LobbyPageModule),
+    canActivate: [AuthGuardService]
   }
 ];
 

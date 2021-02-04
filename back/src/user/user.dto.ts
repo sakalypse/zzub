@@ -21,3 +21,10 @@ export class ReturnedUserDTO{
     readonly packs:Pack[];
     readonly favorites:Pack[];
 }
+
+export class SafeInfoUserDTO{
+    readonly userId:number;
+    readonly username:string;
+    readonly game:Game;
+    readonly hostGame:Game;
+}

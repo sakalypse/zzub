@@ -15,8 +15,8 @@
             <div *ngIf="username.errors.required">
               Username is required.
             </div>
-            <div *ngIf="username.hasError('minlength')">
-              Must be at least 6 characters.
+            <div *ngIf="username.hasError('maxlength')">
+              Must be at most 25 characters.
             </div>
           </div>
         </ion-item>

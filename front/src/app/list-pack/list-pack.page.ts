@@ -4,6 +4,8 @@ import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
+import { PackService } from '../services/pack.service';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-list-pack',
@@ -28,6 +30,10 @@ export class ListPackPage implements OnInit {
   constructor(
     @Inject(AuthService)
     public authService: AuthService,
+    @Inject(PackService)
+    public packService: PackService,
+    @Inject(GameService)
+    public gameService: GameService,
     public http: HttpClient,
     handler: HttpBackend,
     public router: Router,
@@ -45,7 +51,7 @@ export class ListPackPage implements OnInit {
     this.init();
   }
 
-  init() {
+  async init() {
     this.httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
@@ -55,43 +61,24 @@ export class ListPackPage implements OnInit {
     let userId = this.authService.getLoggedUser().userId;
     if(this.router.url==='/selectpack'){
       this.editMode=false;
-      //get all public packs
-      this.http.get(`${this.API_URL}/pack/public`, this.httpOptions)
-      .subscribe(
-        result => {
-          this.packs = result;
-      });
+      this.packs = await this.packService.getAllPublicPacks();
     }
     else{
       this.editMode=true;
-      //get own packs
-      this.http.get(`${this.API_URL}/user/${userId}/pack`, this.httpOptions)
-      .subscribe(
-        result => {
-          this.packs = result;
-      });
+      this.packs = await this.packService.getAllPrivatePacks(userId);
     }
 
-    //get tags
-    this.http.get(`${this.API_URL}/tag`, this.httpOptions)
-    .subscribe(
-      result => {
-        this.tags = result;
-    });
-
+    this.tags = await this.packService.getAllTags();
     this.loadListFav();
   }
 
-  loadListFav(){
-    this.http.get(`${this.API_URL}/user/${this.authService.getLoggedUser().userId}/favorite`, this.httpOptions)
-      .subscribe(
-        (result:any) => {
-          let buf = [];
-          result.forEach(pack => {
-            buf.push(pack.packId);
-          });
-          this.listFavorites = buf;
-      });
+  async loadListFav(){
+    let favorites:any = await this.packService.getFavorites(this.authService.getLoggedUser().userId); 
+    let buf = [];
+    favorites.forEach(pack => {
+      buf.push(pack.packId);
+    });
+    this.listFavorites = buf;
   }
 
 
@@ -99,19 +86,10 @@ export class ListPackPage implements OnInit {
     this.router.navigate(["/pack/edit/"+packId]);
   }
 
-  create(){
+  async create(){
     let dto = {author : this.authService.getLoggedUser().userId};
-    this.http.post(`${this.API_URL}/pack`, dto, this.httpOptions)
-    .subscribe(
-      (result:any) => {
-        this.router.navigate(["/pack/edit/"+result.packId]);
-      },
-      error=>{
-        this.toastController.create({
-          message: 'Error while trying to create a pack',
-          duration: 2000
-        }).then(toast=>toast.present());
-    });
+    let packCreated:any = await this.packService.createPack(dto);
+    this.router.navigate(["/pack/edit/"+packCreated.packId]);
   }
 
   async alertConfirmDelete(packId) {
@@ -123,24 +101,21 @@ export class ListPackPage implements OnInit {
           text: 'Cancel'
         }, {
           text: 'Delete',
-          handler: () => {
+          handler: async () => {
             let dto = {pack : packId};
-            this.http.delete(`${this.API_URL}/pack/${packId}`,this.httpOptions)
-            .subscribe(
-              (result:any) => {
-                this.toastController.create({
-                  message: 'Pack successfully deleted',
-                  duration: 2000
-                }).then(toast=>toast.present());
-                
-                this.packs = this.packs.filter(i => i.packId !== packId);
-              },
-              error=>{
-                this.toastController.create({
-                  message: 'Error while trying to create a pack',
-                  duration: 2000
-                }).then(toast=>toast.present());
-            });
+            try{
+              await this.packService.deletePack(987);
+              this.toastController.create({
+                message: 'Pack successfully deleted',
+                duration: 2000
+              }).then(toast=>toast.present());
+              this.packs = this.packs.filter(i => i.packId !== packId);
+            }catch(e){
+              this.toastController.create({
+                message: 'Error while deleting pack',
+                duration: 2000
+              }).then(toast=>toast.present());
+            }
           }
         }
       ]
@@ -149,55 +124,49 @@ export class ListPackPage implements OnInit {
   }
 
   //#region Action on a pack
-  favPack(packId){
+  async favPack(packId){
     let alreadyFav = false;
-    this.http.get(`${this.API_URL}/user/${this.authService.getLoggedUser().userId}/favorite`, this.httpOptions)
-      .subscribe(
-        (result:any) => {
-          result.forEach(favorite => {
-            if(favorite.packId == packId)
-              alreadyFav=true;
-          });
-              
-          if(alreadyFav){
-            this.http.delete(`${this.API_URL}/user/${this.authService.getLoggedUser().userId}/favorite/${packId}`, this.httpOptions)
-            .subscribe(
-              (result:any) => {
-                //Relaod list fav
-                this.loadListFav();
-                this.toastController.create({
-                  message: 'Pack removed from favorites',
-                  duration: 2000
-                }).then(toast=>toast.present());
-              },
-              error=>{
-                this.toastController.create({
-                  message: "Couldn't remove the pack from the favorites",
-                  duration: 2000
-                }).then(toast=>toast.present());
-            });
-          }
-          else{
-            this.http.put(`${this.API_URL}/user/${this.authService.getLoggedUser().userId}/favorite/${packId}`, null, this.httpOptions)
-            .subscribe(
-              (result:any) => {
-                //Relaod list fav
-              this.loadListFav();
-                this.toastController.create({
-                  message: 'Pack added to favorites',
-                  duration: 2000
-                }).then(toast=>toast.present());
-              },
-              error=>{
-                this.toastController.create({
-                  message: "Couldn't add the pack to the favorites",
-                  duration: 2000
-                }).then(toast=>toast.present());
-            });
-          }
-      });
-  }
+    let userId = this.authService.getLoggedUser().userId;
+    let favorites = await this.packService.getFavorites(userId);
 
+    favorites.forEach(favorite => {
+      if(favorite.packId == packId)
+        alreadyFav=true;
+    });
+        
+    if(alreadyFav){
+      try{
+        await this.packService.deleteFavorite(userId, packId);
+        this.loadListFav();
+        this.toastController.create({
+          message: 'Pack removed from favorites',
+          duration: 2000
+        }).then(toast=>toast.present());
+      }
+      catch(e){
+        this.toastController.create({
+          message: "Couldn't remove the pack from the favorites",
+          duration: 2000
+        }).then(toast=>toast.present());
+      }
+    }
+    else{
+      try{
+        await this.packService.addFavorite(userId, packId);
+        this.loadListFav();
+        this.toastController.create({
+          message: 'Pack added to favorites',
+          duration: 2000
+        }).then(toast=>toast.present());
+      }
+      catch(e){
+        this.toastController.create({
+          message: "Couldn't add the pack to the favorites",
+          duration: 2000
+        }).then(toast=>toast.present());
+      }
+    }
+  }
   //#endregion
 
   //#region Filter
@@ -235,44 +204,29 @@ export class ListPackPage implements OnInit {
     this.filter();
   }
 
-  filter(){
-    this.httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'Authorization': 'Bearer ' + this.authService.getToken()
-      })
-    };
+  async filter(){
     let userId = this.authService.getLoggedUser().userId;
-    //get packs
-    //filter own packs
-    let pathToPackAPI;
+    //Filter own packs
     if(this.editMode || this.ownPackFilter)
-      pathToPackAPI = `${this.API_URL}/user/${userId}/pack`;
+      this.packs = await this.packService.getAllPrivatePacks(userId);
     else
-      pathToPackAPI = `${this.API_URL}/pack/public`;
+      this.packs = await this.packService.getAllPublicPacks();
 
-    this.http.get(pathToPackAPI, this.httpOptions)
-    .subscribe(
-      result => {
-        this.packs = result;
-      },
-      error=>{},
-      ()=>{
-        //filter tag
-        if(this.tagFilter && this.tagFilter.length!=0)
-          this.packs = this.packs.filter(pack => this.tagFilter.includes(pack.tag.name));
-        //filter name
-        if(this.nameFilter!=""){
-          this.packs = this.packs.filter(pack => {
-            return (pack.name.toLowerCase().indexOf(this.nameFilter) > -1);
-          });
-        }
-        //filter favorite
-        if(this.favoriteFilter && this.listFavorites.length!=0){
-          this.packs = this.packs.filter(pack => this.listFavorites.includes(pack.packId));
-        }
-      }
-    );
+    //filter tag
+    if(this.tagFilter && this.tagFilter.length!=0)
+      this.packs = this.packs.filter(pack => this.tagFilter.includes(pack.tag.name));
+
+    //filter name
+    if(this.nameFilter!=""){
+      this.packs = this.packs.filter(pack => {
+        return (pack.name.toLowerCase().indexOf(this.nameFilter) > -1);
+      });
+    }
+
+    //filter favorite
+    if(this.favoriteFilter && this.listFavorites.length!=0){
+      this.packs = this.packs.filter(pack => this.listFavorites.includes(pack.packId));
+    }
   }
   //#endregion
 
@@ -287,9 +241,34 @@ export class ListPackPage implements OnInit {
       this.listPacksHost.splice(this.listPacksHost.indexOf(this.listPacksHost.find(x => x.packId == packId)), 1);
   }
 
+  async hostGame(){
+    if(this.listPacksHost.length == 0){
+      this.toastController.create({
+        message: "Can't host a room without any pack",
+        duration: 2000
+      }).then(toast=>toast.present());
+      return;
+    }
+
+    //Trying to create a room
+    let dto = {owner : this.authService.getLoggedUser().userId,
+               pack : this.listPacksHost};
+    try{
+      let gameCreated = await this.gameService.createGame(dto);
+        this.router.navigate(["/lobby/"+gameCreated.code]);
+    }
+    catch(e){
+        this.toastController.create({
+          message: 'Error while trying to create a room',
+          duration: 2000
+        }).then(toast=>toast.present());
+    }
+  }
+
   toggleSelectedPacks(){
     let gameInfos = document.querySelector('.game-infos') as HTMLElement;
     gameInfos.classList.toggle('showMobile');
   }
+  
   //#endregion
 }

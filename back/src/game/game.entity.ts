@@ -13,13 +13,16 @@ export class Game {
     pack:Pack[];
 
     @JoinColumn()
-    @OneToMany(type=>User, player=>player.game, {cascade:true})
+    @OneToMany(type=>User, player=>player.game)
     players: User[];
     
     @JoinColumn()
-    @OneToOne(type=>User, owner=>owner.hostGame, {cascade:true})
+    @OneToOne(type=>User, owner=>owner.hostGame)
     owner: User;
 
     @Column({nullable:true})
     dateCreation: Date;
+
+    @Column({nullable:false})
+    code: String;
 }
