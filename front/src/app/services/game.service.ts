@@ -29,19 +29,19 @@ export class GameService {
     }
 
     async addUserToGame(gameId: string, userId: number): Promise<any> {
-      return await this.http.put(`${this.API_URL}/game/${gameId}/adduser/${userId}`, this.httpOptions).pipe(catchError(this.handleError));
+      return await this.http.put(`${this.API_URL}/game/${gameId}/adduser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async removeUserToGame(gameId: string, userId: number): Promise<any> {
-      return await this.http.put(`${this.API_URL}/game/${gameId}/removeuser/${userId}`, this.httpOptions).pipe(catchError(this.handleError));
+      return await this.http.put(`${this.API_URL}/game/${gameId}/removeuser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async createGame(dto: any): Promise<any> {
-      return await this.http.post(`${this.API_URL}/game/create`, dto, this.httpOptions).pipe(catchError(this.handleError));
+      return await this.http.post(`${this.API_URL}/game/create`, dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async deleteGame(gameId: string): Promise<any> {
-      return await this.http.delete(`${this.API_URL}/game/delete/${gameId}`, this.httpOptions).pipe(catchError(this.handleError));
+      return await this.http.delete(`${this.API_URL}/game/delete/${gameId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     private handleError(error: HttpErrorResponse) {

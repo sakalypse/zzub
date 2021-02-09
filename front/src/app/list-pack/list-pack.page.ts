@@ -255,7 +255,7 @@ export class ListPackPage implements OnInit {
                pack : this.listPacksHost};
     try{
       let gameCreated = await this.gameService.createGame(dto);
-        this.router.navigate(["/lobby/"+gameCreated.code]);
+      this.router.navigate(["/lobby/"+gameCreated.code]);
     }
     catch(e){
         this.toastController.create({
