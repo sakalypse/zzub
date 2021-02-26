@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Res, Body, HttpStatus, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, HttpStatus, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { GameService } from './game.service';
 import { CreateGameDTO } from './game.dto';
 import { User } from 'src/user/user.entity';
+import { GameGuard } from 'src/auth/game.guard';
 
 @Controller('game')
 export class GameController {
@@ -17,7 +18,7 @@ export class GameController {
       })
     }
   
-    //TODO Guard handle security
+    @UseGuards(GameGuard)
     @Put(':gameId/adduser/:userId')
     async addUserToGame(@Res() res, @Param('gameId') gameId, @Param('userId') userId){
       const userRes = await this.gameService.
@@ -26,6 +27,7 @@ export class GameController {
       return res.status(HttpStatus.OK).json("User : " + userRes.userId + " successfully added to the game")
     }
 
+    @UseGuards(GameGuard)
     @Put(':gameId/removeuser/:userId') 
     async removeUserToGame(@Res() res, @Param('gameId') gameId, @Param('userId') userId){
       const userRes = await this.gameService.
@@ -41,17 +43,18 @@ export class GameController {
       return res.status(HttpStatus.OK).json(game)
     }
 
-    @Get('/code/:id')
-    async getGameByCode(@Res() res, @Param('id') id){
+    @Get('/code/:code')
+    async getGameByCode(@Res() res, @Param('code') code){
       const game = await this.gameService.
-                        getGameByCode(id);
+                        getGameByCode(code);
       return res.status(HttpStatus.OK).json(game)
     }
   
-    @Delete('/delete/:id')
-    async deleteGame(@Res() res,  @Param('id') id){
-      const categories = await this.gameService.deleteGameById(id);
-          return res.status(HttpStatus.OK).json({message:"Game " + id + " successfully deleted"});
+    @UseGuards(GameGuard)
+    @Delete('/delete/:gameId')
+    async deleteGame(@Res() res,  @Param('gameId') gameId){
+      const categories = await this.gameService.deleteGameById(gameId);
+          return res.status(HttpStatus.OK).json({message:"Game " + gameId + " successfully deleted"});
     }
   
     @Get('')
