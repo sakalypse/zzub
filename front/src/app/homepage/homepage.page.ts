@@ -12,6 +12,10 @@ export class HomepagePage implements OnInit {
   codeForm: FormGroup;
   code: FormControl;
 
+  animationCreatePacks : object;
+  animationConnectToPeople : object;
+  animationRocketLaunch : object;
+
   constructor(public router: Router) { }
 
   ngOnInit() {
@@ -19,6 +23,10 @@ export class HomepagePage implements OnInit {
     this.codeForm = new FormGroup({
       code: this.code
     });
+
+    this.animationCreatePacks = {path: '/assets/animations/CreatePacks.json'};
+    this.animationConnectToPeople = {path: '/assets/animations/ConnectToPeople.json'};
+    this.animationRocketLaunch = {path: '/assets/animations/RocketLaunch.json'};
   }
 
   joinLobby(){
@@ -26,5 +34,13 @@ export class HomepagePage implements OnInit {
       return;
     }
     this.router.navigateByUrl("/lobby/"+this.codeForm.value['code']);
+  }
+
+  redirectToPacks(){
+    this.router.navigateByUrl("/editpack");
+  }
+
+  redirectToHostGame(){
+    this.router.navigateByUrl("/selectpack");
   }
 }

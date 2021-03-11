@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { environment } from 'src/environments/environment';
 import { GameService } from './services/game.service';
+import { LottieAnimationViewModule } from 'ng-lottie';
 
 const config: SocketIoConfig = { url: environment.API_URL_DEV, options: {}};
 
@@ -23,7 +24,8 @@ const config: SocketIoConfig = { url: environment.API_URL_DEV, options: {}};
     IonicModule.forRoot(),
     IonicStorageModule.forRoot(),
     SocketIoModule.forRoot(config),
-    AppRoutingModule
+    AppRoutingModule,
+    LottieAnimationViewModule.forRoot()
   ],
   providers: [
     StatusBar,
