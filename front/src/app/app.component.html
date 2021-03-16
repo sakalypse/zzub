@@ -5,6 +5,15 @@
           <ion-title slot="start">ZZUB</ion-title>
 
           <ion-list class="main-menu--desktop" slot="end">
+            <div class="menu-link" [routerDirection]="'root'"
+                 [routerLink]="'lobby/'+this.gameService.codeGame"
+                  *ngIf="this.authService.isConnected() && this.gameService.hasGame">
+              <ion-icon slot="start" [name]="football"></ion-icon>
+              <span>
+                Current Game
+              </span>
+            </div>
+            
             <div *ngFor="let p of appPages">
               <div class="menu-link" [routerDirection]="'root'" [routerLink]="[p.url]">
                 <ion-icon slot="start" [name]="p.icon"></ion-icon>
@@ -45,6 +54,16 @@
       <ion-content>
         <div class="background closed" (click)="toggleMobileMenu()"></div>   
         <ion-list (swipeleft)="toggleMobileMenu()" (click)="toggleMobileMenu()" class="main-menu--mobile closed">
+            <div class="menu-link" [routerDirection]="'root'"
+                [routerLink]="'lobby/'+this.gameService.codeGame"
+                *ngIf="this.authService.isConnected() && this.gameService.hasGame">
+                <ion-icon slot="start" name="football"></ion-icon>
+                <span>
+                  Current Game
+                </span>
+                <ion-icon class="arrow-right" name="chevron-forward"></ion-icon>
+            </div>
+
             <div *ngFor="let p of appPages">
               <div class="menu-link" [routerDirection]="'root'" [routerLink]="[p.url]">
                 <ion-icon slot="start" [name]="p.icon"></ion-icon>

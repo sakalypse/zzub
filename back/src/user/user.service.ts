@@ -7,6 +7,7 @@ import * as bcrypt from "bcryptjs";
 import { validate } from 'class-validator';
 import { Pack } from 'src/pack/pack.entity';
 import { Role } from 'src/shared/role.enum';
+import { Game } from 'src/game/game.entity';
 
 //let role = require("src/shared/role.enum");
 
@@ -272,5 +273,13 @@ export class UserService {
         const userSaved = await this.userRepository.save(user);
         const { password, ...result } = userSaved;
         return result;
+    }
+
+
+    async getGameOfUser(userId): Promise<Game>{
+        const user = await this.userRepository.findOne({
+        relations: ["game"],
+        where:{userId}});
+        return user.game;
     }
 }

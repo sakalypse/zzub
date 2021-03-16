@@ -5,6 +5,7 @@ import { PackService } from 'src/pack/pack.service';
 import { RoundService } from 'src/round/round.service';
 import { ChoiceService } from 'src/choice/choice.service';
 import { ExtraService } from 'src/extra/extra.service';
+import { Console } from 'console';
 
 @Injectable()
 export class UserGuard implements CanActivate {

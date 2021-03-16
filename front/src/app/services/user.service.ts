@@ -28,6 +28,10 @@ export class UserService {
       return await this.http.get<any>(`${this.API_URL}/user/safeinfo/${id}`).pipe(catchError(this.handleError)).toPromise();
     }
 
+    async getCurrentGame(id:number): Promise<any> {
+      return await this.http.get<any>(`${this.API_URL}/user/${id}/game`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+    }
+
     private handleError(error: HttpErrorResponse) {
       if (error.error instanceof ErrorEvent) {
         // A client-side or network error occurred. Handle it accordingly.

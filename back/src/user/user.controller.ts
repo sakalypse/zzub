@@ -91,6 +91,13 @@ export class UserController {
         return res.status(HttpStatus.OK).json(packs);
     }
 
+    @UseGuards(UserGuard)
+    @Get('/:id/game')
+    async getGameOfUser(@Res() res, @Param('id') userId){
+        const pack = await this.userService.getGameOfUser(userId);
+        return res.status(HttpStatus.OK).json(pack);
+    }
+
     /*
     @UseGuards(UserGuard)
     @Put('/:id/pack/:packId')

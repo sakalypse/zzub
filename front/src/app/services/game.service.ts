@@ -1,10 +1,11 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { EventEmitter, Inject, Injectable, Output } from '@angular/core';
 import { Observable, throwError,  } from 'rxjs';
 import { catchError } from 'rxjs/internal/operators';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,14 @@ export class GameService {
     private API_URL = environment.API_URL_DEV;
     private httpOptions;
     
+    //Service properties
+    public hasGame:boolean;
+    public codeGame:string;
+
     constructor(@Inject(AuthService)
                 public authService: AuthService,
+                @Inject(UserService)
+                public userService: UserService,
                 private http: HttpClient,) {
       this.httpOptions = {
         headers: new HttpHeaders({
@@ -22,26 +29,47 @@ export class GameService {
           'Authorization': 'Bearer ' + this.authService.getToken()
         })
       };
+      this.initHasCurrentGameMenu();
     }
-  
+    
     async getGameByCode(code: string): Promise<any> {
       return await this.http.get<any>(`${this.API_URL}/game/code/${code}`).pipe(catchError(this.handleError)).toPromise();
     }
 
     async addUserToGame(gameId: string, userId: number): Promise<any> {
-      return await this.http.put(`${this.API_URL}/game/${gameId}/adduser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      let res = await this.http.put(`${this.API_URL}/game/${gameId}/adduser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      this.initHasCurrentGameMenu();
+      return res;
     }
 
     async removeUserToGame(gameId: string, userId: number): Promise<any> {
-      return await this.http.put(`${this.API_URL}/game/${gameId}/removeuser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      let res = await this.http.put(`${this.API_URL}/game/${gameId}/removeuser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      this.initHasCurrentGameMenu();
+      return res;
     }
 
     async createGame(dto: any): Promise<any> {
-      return await this.http.post(`${this.API_URL}/game/create`, dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      let res = await this.http.post(`${this.API_URL}/game/create`, dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      this.initHasCurrentGameMenu();
+      return res;
     }
 
     async deleteGame(gameId: string): Promise<any> {
-      return await this.http.delete(`${this.API_URL}/game/delete/${gameId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      let res = await this.http.delete(`${this.API_URL}/game/delete/${gameId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      this.initHasCurrentGameMenu();
+      return res;
+    }
+
+    async initHasCurrentGameMenu(){
+      if(this.authService.isConnected()){
+        let game = await this.userService.getCurrentGame(this.authService.getLoggedUser().userId);
+        if(game != null && game.code != ""){
+          this.hasGame = true;
+          this.codeGame = game.code;
+          return;
+        }
+      }
+      this.hasGame = false;
     }
 
     private handleError(error: HttpErrorResponse) {

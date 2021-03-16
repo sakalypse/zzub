@@ -46,7 +46,6 @@ export class PackService {
     }
 
     async savePack(packId: number, dto: any): Promise<any> {
-      console.log(dto);
       return await this.http.put<any>(`${this.API_URL}/pack/${packId}`,
                     dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
