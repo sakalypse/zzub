@@ -15,20 +15,19 @@ export class UserService {
     
     constructor(@Inject(AuthService)
                 public authService: AuthService,
-                private http: HttpClient,) {
-      this.httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type':  'application/json',
-          'Authorization': 'Bearer ' + this.authService.getToken()
-        })
-      };
-    }
+                private http: HttpClient,) {}
   
     async getSafeInfoUser(id: number): Promise<any> {
       return await this.http.get<any>(`${this.API_URL}/user/safeinfo/${id}`).pipe(catchError(this.handleError)).toPromise();
     }
 
     async getCurrentGame(id:number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.get<any>(`${this.API_URL}/user/${id}/game`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 

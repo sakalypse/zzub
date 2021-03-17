@@ -36,7 +36,8 @@ export class GameService {
             game.players = [user];
             //user.game = game;
             createGame.pack.forEach(async newPack => {
-                game.pack.push(await this.packService.getPackById(newPack.packId));
+                game.pack.push(newPack);
+                //game.pack.push(await this.packService.getPackById(newPack.packId));
             });
             //await this.userService.updateUser(user.userId, user);
         }).catch(error => {throw new

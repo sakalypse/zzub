@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,8 @@ export class LoginPage implements OnInit {
   constructor(
     @Inject(AuthService)
     public authService: AuthService,
+    @Inject(GameService)
+    public gameService: GameService,
     public toastController: ToastController,
     public router: Router) { }
 
@@ -46,6 +49,7 @@ export class LoginPage implements OnInit {
         }).then(toast=>toast.present());
       },
       () => {
+        this.gameService.initHasCurrentGameMenu();
         this.toastController.create({
           message: 'Login successful',
           duration: 2000

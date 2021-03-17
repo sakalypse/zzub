@@ -15,91 +15,192 @@ export class PackService {
     
     constructor(@Inject(AuthService)
                 public authService: AuthService,
-                private http: HttpClient,) {
+                private http: HttpClient,) {}
+    
+    //PACKS
+    async createPack(dto: any): Promise<any> {
       this.httpOptions = {
         headers: new HttpHeaders({
           'Content-Type':  'application/json',
           'Authorization': 'Bearer ' + this.authService.getToken()
         })
       };
-    }
-    
-    //PACKS
-    async createPack(dto: any): Promise<any> {
       return await this.http.post(`${this.API_URL}/pack`, dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async getAllPublicPacks(): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.get<any>(`${this.API_URL}/pack/public`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async getAllPrivatePacks(userId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.get<any>(`${this.API_URL}/user/${userId}/pack`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async getPack(userId: number, packId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.get<any>(`${this.API_URL}/user/${userId}/pack/${packId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async getAllTags(): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.get<any>(`${this.API_URL}/tag`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async savePack(packId: number, dto: any): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.put<any>(`${this.API_URL}/pack/${packId}`,
                     dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async deletePack(packId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.delete(`${this.API_URL}/pack/${packId}`,this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     //FAVORITES
     async getFavorites(userId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.get(`${this.API_URL}/user/${userId}/favorite`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
     
     async addFavorite(userId: number, packId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.put(`${this.API_URL}/user/${userId}/favorite/${packId}`, null, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async deleteFavorite(userId: number, packId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.delete(`${this.API_URL}/user/${userId}/favorite/${packId}`,this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     //ROUNDS
     async createRound(dto: any): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.post<any>(`${this.API_URL}/round`,dto,this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async saveRound(roundId: number, dto: any): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       this.http.put<any>(`${this.API_URL}/round/${roundId}`,
                           dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async deleteRound(roundId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.delete<any>(`${this.API_URL}/round/${roundId}`,this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
     
     async createExtra(dto: any): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.post<any>(`${this.API_URL}/extra`,dto,this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async saveExtra(extraId: number, dto: any): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.put<any>(`${this.API_URL}/extra/${extraId}`,
                     dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async createChoice(dto: any): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.post<any>(`${this.API_URL}/choice`,dto,this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async saveChoice(choiceId: number, dto: any): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.put<any>(`${this.API_URL}/choice/${choiceId}`,
                     dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
     async deleteChoice(choiceId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       return await this.http.delete<any>(`${this.API_URL}/choice/${choiceId}`,this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 

@@ -23,12 +23,6 @@ export class GameService {
                 @Inject(UserService)
                 public userService: UserService,
                 private http: HttpClient,) {
-      this.httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type':  'application/json',
-          'Authorization': 'Bearer ' + this.authService.getToken()
-        })
-      };
       this.initHasCurrentGameMenu();
     }
     
@@ -37,24 +31,48 @@ export class GameService {
     }
 
     async addUserToGame(gameId: string, userId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       let res = await this.http.put(`${this.API_URL}/game/${gameId}/adduser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
       this.initHasCurrentGameMenu();
       return res;
     }
 
     async removeUserToGame(gameId: string, userId: number): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       let res = await this.http.put(`${this.API_URL}/game/${gameId}/removeuser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
       this.initHasCurrentGameMenu();
       return res;
     }
 
     async createGame(dto: any): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       let res = await this.http.post(`${this.API_URL}/game/create`, dto, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
       this.initHasCurrentGameMenu();
       return res;
     }
 
     async deleteGame(gameId: string): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
       let res = await this.http.delete(`${this.API_URL}/game/delete/${gameId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
       this.initHasCurrentGameMenu();
       return res;
