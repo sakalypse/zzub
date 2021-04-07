@@ -172,12 +172,12 @@
                       <label class="custom-label label-w-icon">Image (URL)<ion-icon name="image-outline"></ion-icon></label>
                       <ion-input class="custom-input" type="text" formControlName="url"></ion-input>
                       <ion-row>
-                        <ion-col class="preview-container" *ngFor="let image of images" size-xs="12" size-sm="4">
+                        <!--<ion-col class="preview-container" *ngFor="let image of images" size-xs="12" size-sm="4">-->
                           <div class="preview img-preview">
-                            <div class="delete-extra"><ion-icon slot="center" name="close"></ion-icon></div>
-                              <img src="" alt="">
+                            <!--<div class="delete-extra"><ion-icon slot="center" name="close"></ion-icon></div>-->
+                              <img [src]="this.questionsForms.get('questions').get(''+i).value.url" alt="">
                           </div>
-                        </ion-col>
+                        <!--</ion-col>-->
                       </ion-row>
                     </div>
                   </div>
