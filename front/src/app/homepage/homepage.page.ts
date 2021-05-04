@@ -37,7 +37,7 @@ export class HomepagePage implements OnInit {
   }
 
   redirectToPacks(){
-    this.router.navigateByUrl("/editpack");
+    this.router.navigateByUrl("/pack");
   }
 
   redirectToHostGame(){

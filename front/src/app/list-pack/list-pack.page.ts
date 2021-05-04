@@ -7,6 +7,7 @@ import { AlertController, ToastController } from '@ionic/angular';
 import { PackService } from '../services/pack.service';
 import { GameService } from '../services/game.service';
 
+
 @Component({
   selector: 'app-list-pack',
   templateUrl: './list-pack.page.html',
@@ -268,6 +269,7 @@ export class ListPackPage implements OnInit {
   toggleSelectedPacks(){
     let gameInfos = document.querySelector('.game-infos') as HTMLElement;
     gameInfos.classList.toggle('showMobile');
+    gameInfos.classList.toggle('hideMobile');
   }
   
   //#endregion

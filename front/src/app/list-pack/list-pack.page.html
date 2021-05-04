@@ -1,7 +1,7 @@
 <ion-content>
   <div class="big-container">
     <div *ngIf="!editMode" class="pre-lobby">
-      <div class="game-infos">
+      <div class="game-infos hideMobile">
         <div class="host-container">
           <div class="host-button" (click)="hostGame()"><span>Host game</span></div>
           <div class="list-mobile-button" (click)="toggleSelectedPacks()"><span>Show selected packs<ion-icon name="chevron-up-outline"></ion-icon></span></div>
@@ -17,32 +17,22 @@
       </div>
     </div>
     <div class="list-page" *ngIf="packs">
-      <ion-grid>
         <div class="search-container">
-          <ion-row>
-            <ion-col size-xs="12" size-md="4">
-              <div *ngIf="editMode" class="create-button" (click)="create()"><span>Create a new pack</span><ion-icon name="add"></ion-icon></div>
-            </ion-col>
-            <ion-col size-xs="12" offset-md="3" size-md="1">
-              <div class="filters-button" (click)="toggleFilters()"><span>Filters</span></div>
-            </ion-col>
-            <ion-col size-xs="12" size-md="4">
+          <div class="search-row">
+              <div *ngIf="editMode" class="search-row-button create-button" (click)="create()"><span>Create a new pack</span><ion-icon name="add"></ion-icon></div>
+              <div class="search-row-button filters-button" (click)="toggleFilters()">Filters</div>
               <ion-searchbar type="text" debounce="500" (ionInput)="filterName($event)"></ion-searchbar>
-            </ion-col>
-          </ion-row>
+          </div>
           <div class="filters-mega-container">
-          <ion-row>
-            <ion-col class="filters-container" size-xs="12" size-md="4">
-            <h2 class="filter-title">Themes</h2>
+            <div class="filter-container">
               <ion-item>
                 <ion-label>Themes</ion-label>
                 <ion-select multiple [(ngModel)]="tagFilter" (ngModelChange)="filter()"okText="Okay" cancelText="Cancel">
                   <ion-select-option *ngFor="let tag of tags" value="{{tag.name}}">{{tag.name}}</ion-select-option>
                 </ion-select>
               </ion-item>
-            </ion-col>
-            <ion-col class="filters-container" size-xs="12" size-md="4">
-              <h2 class="filter-title">Sort by</h2>
+            </div>
+            <!--<div class="filter-container">
               <ion-item>
                 <ion-label>Sort by</ion-label>
                 <ion-select value="" okText="Okay" cancelText="Cancel">
@@ -52,75 +42,66 @@
                   <ion-select-option value="A-Z">A-Z</ion-select-option>
                 </ion-select>
               </ion-item>
-            </ion-col>
-            <ion-col class="filters-container" size-xs="12" size-md="4">
-              <h2 class="filter-title">Favorites/My packs</h2>
-                <ion-row>
-                  <ion-col> 
-                    <div class="button-filter" (click)="filterFavorite()">
-                      <ion-icon name="star" *ngIf="favoriteFilter"></ion-icon>
-                      <ion-icon name="star-outline" *ngIf="!favoriteFilter"></ion-icon>
-                      Favorites</div>
-                  </ion-col>
-                  <ion-col *ngIf="!editMode">
-                    <div class="button-filter"(click)="filterOwnPacks()" >
-                      <ion-icon *ngIf="!ownPackFilter" name="person-outline"></ion-icon>
-                      <ion-icon *ngIf="ownPackFilter" name="person"></ion-icon>My packs</div>
-                  </ion-col>
-                </ion-row>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <div class="filters-button apply" (click)="toggleFilters()"><span>Apply filters</span></div>
-            </ion-col>
-          </ion-row>
-        </div>
-        </div>
-        <div class="pack-list" data-simplebar>
-          <div class="pack" *ngFor="let pack of packs">
-            <!--<div *ngIf="editMode" class="delete-pack" (click)="alertConfirmDelete(pack.packId)">
-              <ion-icon slot="center" name="close"></ion-icon>
             </div>-->
-            <div class="pack-topbar">
-              <div class="tag">{{pack.tag.name}}</div>
-              <div class="flag-lang"><img src="..\assets\Images\flags\002-france.svg" alt=""></div>
+            <div class="filter-container">
+                <div class="button-filter" (click)="filterFavorite()">
+                  <ion-icon name="star" *ngIf="favoriteFilter"></ion-icon>
+                  <ion-icon name="star-outline" *ngIf="!favoriteFilter"></ion-icon>
+                  Favorites
+                </div>
             </div>
-            <div class="pack-name-container pack-{{pack.tag.name}}">
-              <div class="pack-name">
-                {{pack.name}}
+            <div class="filter-container">
+              <div *ngIf="!editMode" class="button-filter"(click)="filterOwnPacks()" >
+                <ion-icon *ngIf="!ownPackFilter" name="person-outline"></ion-icon>
+                <ion-icon *ngIf="ownPackFilter" name="person"></ion-icon>My packs
               </div>
             </div>
-  
-            
-            <div class="pack-bottombar">
-              <div class="infos-container">
-                <div class="pack-author">
-                  By {{pack.author.username}}
+            <div class="filters-button apply" (click)="toggleFilters()"><span>Apply filters</span></div>
+          </div>
+        </div>
+        <div class="pack-list-wrapper" id="pack-list-wrapper" data-simplebar>
+          <div class="pack-list">
+            <div class="pack" *ngFor="let pack of packs">
+              <!--<div *ngIf="editMode" class="delete-pack" (click)="alertConfirmDelete(pack.packId)">
+                <ion-icon slot="center" name="close"></ion-icon>
+              </div>-->
+              <div class="pack-topbar">
+                <div class="tag">{{pack.tag.name}}</div>
+                <div class="flag-lang"><img src="..\assets\Images\flags\002-france.svg" alt=""></div>
+              </div>
+              <div class="pack-name-container pack-{{pack.tag.name}}">
+                <div class="pack-name">
+                  {{pack.name}}
                 </div>
-                <div class="pack-subinfos">
-                  <div class="pack-nbquestions">
-                    {{pack.rounds.length}} questions
-                  </div>
-                  <!--<div class="pack-author">
+              </div>
+              <div class="pack-bottombar">
+                <div class="infos-container">
+                  <div class="pack-author">
                     By {{pack.author.username}}
-                  </div>-->
+                  </div>
+                  <div class="pack-subinfos">
+                    <div class="pack-nbquestions">
+                      {{pack.rounds.length}} questions
+                    </div>
+                    <!--<div class="pack-author">
+                      By {{pack.author.username}}
+                    </div>-->
+                  </div>
                 </div>
-              </div>
-              <div class="actions-container">
-                <div class="play"><ion-icon name="play-outline"></ion-icon></div>
-                <div class="play-count">1.3k</div>
-                <div class="likes"><ion-icon name="heart"></ion-icon></div>
-                <div class="likes-count">1.7k</div>
-                <div class="fav" (click)="favPack(pack.packId)"><ion-icon name="star" class="selected" *ngIf="listFavorites && listFavorites.includes(pack.packId)" ></ion-icon>
-                                                                <ion-icon name="star" *ngIf="listFavorites && !listFavorites.includes(pack.packId)" ></ion-icon></div>
-                <div *ngIf="editMode" class="edit-pack" (click)="edit(pack.packId)"><ion-icon name="create-outline"></ion-icon></div>
-                <div *ngIf="!editMode" class="add-pack" (click)="addToListPacksHost(pack.packId)"><ion-icon name="add-circle-outline"></ion-icon></div>
+                <div class="actions-container">
+                  <div class="play"><ion-icon name="play-outline"></ion-icon></div>
+                  <div class="play-count">1.3k</div>
+                  <div class="likes"><ion-icon name="heart"></ion-icon></div>
+                  <div class="likes-count">1.7k</div>
+                  <div class="fav" (click)="favPack(pack.packId)"><ion-icon name="star" class="selected" *ngIf="listFavorites && listFavorites.includes(pack.packId)" ></ion-icon>
+                                                                  <ion-icon name="star" *ngIf="listFavorites && !listFavorites.includes(pack.packId)" ></ion-icon></div>
+                  <div *ngIf="editMode" class="edit-pack" (click)="edit(pack.packId)"><ion-icon name="create-outline"></ion-icon></div>
+                  <div *ngIf="!editMode" class="add-pack" (click)="addToListPacksHost(pack.packId)"><ion-icon name="add-circle-outline"></ion-icon></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </ion-grid>
     </div>
   </div>
 </ion-content>
