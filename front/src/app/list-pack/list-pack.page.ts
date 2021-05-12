@@ -233,12 +233,23 @@ export class ListPackPage implements OnInit {
 
   //#region List pack to host
   addToListPacksHost(packId){
+    let addButton = document.querySelector('#pack-add-'+packId) as HTMLElement;
+    let addButtonIcon = document.querySelector('#pack-add-'+packId+' ion-icon') as HTMLElement;
+
     if(this.listPacksHost.length == 0 || !this.listPacksHost.some(x => x.packId == packId))
+      addButton.classList.add('added');
+      addButtonIcon.setAttribute('name', 'checkmark-outline');
       this.listPacksHost.push(this.packs.find(x => x.packId == packId));
   }
 
+
   removeToListPacksHost(packId){
+    let addButton = document.querySelector('#pack-add-'+packId) as HTMLElement;
+    let addButtonIcon = document.querySelector('#pack-add-'+packId+' ion-icon') as HTMLElement;
+
     if(this.listPacksHost.length != 0 && this.listPacksHost.some(x => x.packId == packId))
+      addButton.classList.remove('added');
+      addButtonIcon.setAttribute('name', 'add-circle-outline');
       this.listPacksHost.splice(this.listPacksHost.indexOf(this.listPacksHost.find(x => x.packId == packId)), 1);
   }
 
@@ -268,8 +279,15 @@ export class ListPackPage implements OnInit {
 
   toggleSelectedPacks(){
     let gameInfos = document.querySelector('.game-infos') as HTMLElement;
+    let showButtonText = document.querySelector('.show-button-text') as HTMLElement;
     gameInfos.classList.toggle('showMobile');
     gameInfos.classList.toggle('hideMobile');
+    if (gameInfos.classList.contains('hideMobile')){
+      showButtonText.innerHTML = 'Show selected packs';
+    }
+    if (gameInfos.classList.contains('showMobile')){
+      showButtonText.innerHTML = 'Return to pack selection';
+    }
   }
   
   //#endregion

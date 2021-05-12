@@ -4,7 +4,7 @@
       <div class="game-infos hideMobile">
         <div class="host-container">
           <div class="host-button" (click)="hostGame()"><span>Host game</span></div>
-          <div class="list-mobile-button" (click)="toggleSelectedPacks()"><span>Show selected packs<ion-icon name="chevron-up-outline"></ion-icon></span></div>
+          <div class="list-mobile-button" (click)="toggleSelectedPacks()"><span><span class="show-button-text">Show selected packs</span><ion-icon name="chevron-up-outline"></ion-icon></span></div>
         </div>
         <div class="game-pack-list" *ngIf="listPacksHost && listPacksHost.length!=0">
           <div class="game-pack" *ngFor="let pack of listPacksHost">
@@ -96,7 +96,7 @@
                   <div class="fav" (click)="favPack(pack.packId)"><ion-icon name="star" class="selected" *ngIf="listFavorites && listFavorites.includes(pack.packId)" ></ion-icon>
                                                                   <ion-icon name="star" *ngIf="listFavorites && !listFavorites.includes(pack.packId)" ></ion-icon></div>
                   <div *ngIf="editMode" class="edit-pack" (click)="edit(pack.packId)"><ion-icon name="create-outline"></ion-icon></div>
-                  <div *ngIf="!editMode" class="add-pack" (click)="addToListPacksHost(pack.packId)"><ion-icon name="add-circle-outline"></ion-icon></div>
+                  <div *ngIf="!editMode" class="add-pack" id="pack-add-{{pack.packId}}" (click)="addToListPacksHost(pack.packId)"><ion-icon name="add-circle-outline"></ion-icon></div>
                 </div>
               </div>
             </div>
