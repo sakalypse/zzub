@@ -9,12 +9,14 @@ import { Pack } from 'src/pack/pack.entity';
 import { PackService } from 'src/pack/pack.service';
 import { Tag } from 'src/tag/tag.entity';
 import { GameGateway } from './game.gateway';
+import { GuestService } from 'src/guest/guest.service';
+import { Guest } from 'src/guest/guest.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Game, User, Pack, Tag]),
+    TypeOrmModule.forFeature([Game, User, Guest, Pack, Tag]),
   ],
   controllers: [GameController],
-  providers: [GameService, UserService, PackService, GameGateway]
+  providers: [GameService, UserService, GuestService, PackService, GameGateway]
 })
 export class GameModule {}

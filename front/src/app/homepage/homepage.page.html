@@ -22,6 +22,16 @@
                                 [width]="600"
                                 [height]="400"></lottie-animation-view>
         <form [formGroup]="codeForm" padding-right>
+            <ion-item *ngIf="!this.authService.isConnected()">
+                <ion-label position="floating">Username</ion-label>
+                <ion-input type="text" formControlName="username" required></ion-input>
+                <div *ngIf="code.invalid && (code.dirty || code.touched) || code.hasError('minlength') || code.hasError('maxlength')"
+                    class="alert alert-danger p-2">
+                <div *ngIf="code.errors.required">
+                    Enter a valid username
+                </div>
+                </div>
+            </ion-item>
             <ion-item>
                 <ion-label position="floating">Room Code</ion-label>
                 <ion-input type="text" formControlName="code" required></ion-input>

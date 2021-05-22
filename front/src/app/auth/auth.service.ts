@@ -30,6 +30,11 @@ export class AuthService {
             .pipe(catchError(this.handleError));
   }
 
+  public registerGuest(data: any): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/auth/registerGuest`, data)
+            .pipe(catchError(this.handleError));
+  }
+
   public setToken(data: any) {
     localStorage.setItem('token', JSON.stringify(data));
   }
