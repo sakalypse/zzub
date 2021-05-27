@@ -1,12 +1,13 @@
 import { Controller, Post, Res, Body, HttpStatus, Get, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDTO, UpdateUserDTO } from './user.dto';
+import { CreateUserDTO, UpdateUserDTO, CreateGuestDTO, ReturnedGuestDTO } from './user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserGuard } from 'src/auth/user.guard';
 import { UpdatePackDTO } from 'src/pack/pack.dto';
 import { PackService } from 'src/pack/pack.service';
 import { UserBodyGuard } from 'src/auth/user-body.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
+import { GuestGuard } from 'src/auth/guest.guard';
 
 @Controller('user')
 export class UserController {
@@ -115,4 +116,31 @@ export class UserController {
         return res.status(HttpStatus.OK).json(deleteResult);
     }
     */
+
+    //#region Guest
+    @Post('/guest/')
+    async createGuest(@Res() res, @Body() createGuestDTO: CreateGuestDTO){
+        const guest = await this.userService.createGuest(createGuestDTO);
+        return res.status(HttpStatus.OK).json(guest);
+    }
+
+    @Get('/guest/bygame/:id')
+    async getAllGuestsByGame(@Res() res, @Param('id') gameId){
+        const guests = await this.userService.getAllGuestsByGame(gameId);
+        return res.status(HttpStatus.OK).json(guests);
+    }
+
+    @Get('/guest/:id')
+    async getGuest(@Res() res, @Param('id') guestId){
+        const guest = await this.userService.getGuestById(guestId);
+        return res.status(HttpStatus.OK).json(guest);
+    }
+
+    @UseGuards(GuestGuard)
+    @Delete('/guest/:id')
+    async deleteGuest(@Res() res, @Param('id') guestId){
+        const deleteResult = await this.userService.deleteGuest(guestId);
+        return res.status(HttpStatus.OK).json(deleteResult);
+    }
+    //#endregion
 }

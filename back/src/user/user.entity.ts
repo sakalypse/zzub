@@ -5,8 +5,6 @@ import { Pack } from 'src/pack/pack.entity';
 import { Game } from 'src/game/game.entity';
 
 @Entity()
-@Unique(["username"])
-@Unique(["email"])
 export class User {
     @PrimaryGeneratedColumn()
     userId: number;

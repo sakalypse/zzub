@@ -3,6 +3,7 @@ import { GameService } from './game.service';
 import { CreateGameDTO } from './game.dto';
 import { User } from 'src/user/user.entity';
 import { GameGuard } from 'src/auth/game.guard';
+import { GameOwnerGuard } from 'src/auth/gameOwner.guard';
 
 @Controller('game')
 export class GameController {
@@ -50,7 +51,7 @@ export class GameController {
       return res.status(HttpStatus.OK).json(game)
     }
   
-    @UseGuards(GameGuard)
+    @UseGuards(GameOwnerGuard)
     @Delete('/delete/:gameId')
     async deleteGame(@Res() res,  @Param('gameId') gameId){
       const categories = await this.gameService.deleteGameById(gameId);

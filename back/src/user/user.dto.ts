@@ -28,3 +28,14 @@ export class SafeInfoUserDTO{
     readonly game:Game;
     readonly hostGame:Game;
 }
+
+export class CreateGuestDTO{
+    username:string;
+    game:Game;
+}
+
+export class ReturnedGuestDTO{
+    readonly userId:number;
+    readonly username:string;
+    readonly game:Game;
+}

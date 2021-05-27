@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot } from "@angular/router";
+import { Role } from '../services/role.enum';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -16,7 +17,7 @@ export class AuthGuardService {
       authenticated: (this.authService.isConnected())
     };
 
-    if (!authInfo.authenticated) {
+    if (!authInfo.authenticated || this.authService.getLoggedUser().role == Role.guest) {
       this.authService.clearStorage();
       this.router.navigate(["login"]);
       return false;

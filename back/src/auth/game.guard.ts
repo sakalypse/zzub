@@ -5,8 +5,7 @@ import { GameService } from 'src/game/game.service';
 
 @Injectable()
 export class GameGuard implements CanActivate {
-  constructor(
-    private gameService: GameService){}
+  constructor(){}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: any = context.switchToHttp().getRequest();
     const authHeaders: any = request.headers.authorization;
@@ -19,12 +18,6 @@ export class GameGuard implements CanActivate {
       //check user ID with params
       if(request.params.userId){
         if(decoded.userId != request.params.userId)
-          throw new UnauthorizedException();
-      }
-      //check userId from game's owner
-      if(request.params.gameId){
-        const game = await this.gameService.getgameById(request.params.gameId);
-        if(decoded.userId != game.owner.userId)
           throw new UnauthorizedException();
       }
       return true;

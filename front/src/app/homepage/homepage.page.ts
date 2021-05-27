@@ -31,10 +31,19 @@ export class HomepagePage implements OnInit {
   ngOnInit() {
     this.code = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]);
     this.username = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]);
-    this.codeForm = new FormGroup({
-      code: this.code,
-      username: this.username
-    });
+    if(!this.authService.isConnected())
+    {
+      this.codeForm = new FormGroup({
+        code: this.code,
+        username: this.username
+      });
+    }
+    else
+    {
+      this.codeForm = new FormGroup({
+        code: this.code,
+      });
+    }
 
     this.animationCreatePacks = {path: '/assets/animations/CreatePacks.json'};
     this.animationConnectToPeople = {path: '/assets/animations/ConnectToPeople.json'};

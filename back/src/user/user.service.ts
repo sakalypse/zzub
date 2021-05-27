@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, LessThan, Not } from 'typeorm';
 import { User } from './user.entity';
-import { CreateUserDTO, ReturnedUserDTO } from './user.dto';
+import { CreateUserDTO, ReturnedUserDTO, CreateGuestDTO, ReturnedGuestDTO } from './user.dto';
 import * as bcrypt from "bcryptjs";
-import { validate } from 'class-validator';
+import { NotEquals, validate } from 'class-validator';
 import { Pack } from 'src/pack/pack.entity';
 import { Role } from 'src/shared/role.enum';
 import { Game } from 'src/game/game.entity';
@@ -57,9 +57,9 @@ export class UserService {
         let { username, email, password } = dto;
         username = username.toLowerCase();
         email = email.toLowerCase();
-        // check uniqueness of username/email
-        const userSearched = await this.userRepository.
-                    findOne({ username: username, email: email });
+        // check uniqueness of username/email for non guest user (notequals 3)
+        const userSearched = await this.userRepository
+                    .findOne({ where: [{username: username, role: Not(3)}, {email: email, role: Not(3)}]});
         if (userSearched) {
             const errors = {username: 'Username and/or email already taken.'};
             throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
@@ -282,4 +282,53 @@ export class UserService {
         where:{userId}});
         return user.game;
     }
+
+
+    
+    //#region Guest
+    /*
+    * Create a new Guest with the data received
+    * @param  dto : Contains guest's data
+    * @return       the saved guest
+    */
+   async createGuest(dto: CreateGuestDTO): Promise<ReturnedGuestDTO>{
+        let { username, game } = dto;
+        username = username.toLowerCase();
+        
+        // create new guest
+        let newGuest = new User();
+        newGuest.username = username;
+        newGuest.email = "";
+        newGuest.password = "";
+        newGuest.game = game;
+        newGuest.role = Role.guest;
+
+        return await this.userRepository.save(newGuest);
+    }
+
+    /*
+    * Get all guests by game
+    * @return   All saved guests
+    */
+    async getAllGuestsByGame(idGame): Promise<ReturnedGuestDTO[]>{
+        return await this.userRepository.find({game: idGame});
+    }
+
+    /*
+    * Get guest by id
+    * @return  guest
+    */
+    async getGuestById(id): Promise<ReturnedGuestDTO>{
+        return await this.userRepository.findOne(id,{relations: ["game"]});
+    }
+
+    /*
+    * Delete a guest by the id given
+    * @param  guestId
+    * @return the DeleteResult
+    */
+    async deleteGuest(guestId): Promise<DeleteResult>{
+        return await this.userRepository.delete(guestId);
+    }
+    //#endregion
 }

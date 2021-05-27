@@ -37,7 +37,7 @@ export class GameService {
           'Authorization': 'Bearer ' + this.authService.getToken()
         })
       };
-      let res = await this.http.put(`${this.API_URL}/game/${gameId}/adduser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      let res = await this.http.put(`${this.API_URL}/game/${gameId}/adduser/${userId}`, null, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
       this.initHasCurrentGameMenu();
       return res;
     }
@@ -49,7 +49,7 @@ export class GameService {
           'Authorization': 'Bearer ' + this.authService.getToken()
         })
       };
-      let res = await this.http.put(`${this.API_URL}/game/${gameId}/removeuser/${userId}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      let res = await this.http.put(`${this.API_URL}/game/${gameId}/removeuser/${userId}`, null, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
       this.initHasCurrentGameMenu();
       return res;
     }

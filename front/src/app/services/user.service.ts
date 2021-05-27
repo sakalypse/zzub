@@ -31,6 +31,16 @@ export class UserService {
       return await this.http.get<any>(`${this.API_URL}/user/${id}/game`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
 
+    async deleteGuest(id:number): Promise<any>{
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
+      return await this.http.delete<any>(`${this.API_URL}/user/guest/${id}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+    }
+
     private handleError(error: HttpErrorResponse) {
       if (error.error instanceof ErrorEvent) {
         // A client-side or network error occurred. Handle it accordingly.

@@ -7,6 +7,7 @@ import { AlertController, ToastController } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { GameService } from '../services/game.service';
 import { UserService } from '../services/user.service';
+import { Role } from '../services/role.enum';
 
 @Component({
   selector: 'app-lobby',
@@ -48,6 +49,7 @@ export class LobbyPage implements OnInit {
   }
 
   async init() {
+    //Init id user // id guest
     this.userId = this.authService.getLoggedUser().userId;
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
     this.room = await this.gameService.getGameByCode(this.roomCode);
@@ -83,18 +85,29 @@ export class LobbyPage implements OnInit {
     //listen for session killed
     this.socket.fromEvent('killGame').
     subscribe(async id => {
+      //Delete itself if guest
+      if(this.authService.getLoggedUser().role == Role.guest){
+        await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
+        this.authService.clearStorage();
+      }
+      
       this.router.navigate(["/homepage/"]);
     });
   }
 
   async exitRoom(){
     await this.gameService.removeUserToGame(this.room.gameId, this.userId);
+    if(this.authService.getLoggedUser().role == Role.guest){
+      await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
+      this.authService.clearStorage();
+    }
+
     this.socket.emit('quitGame', this.userId, this.roomCode);
     this.router.navigate(["/homepage/"]);
   }
 
   async deleteRoom(){
-    await this.gameService.deleteGame(this.room.gameId);
+    await this.gameService.deleteGame(this.room.gameId); 
     this.socket.emit('killGame', this.roomCode);
     this.router.navigate(["/homepage/"]);
   }

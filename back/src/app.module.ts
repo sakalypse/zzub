@@ -13,7 +13,6 @@ import { ExtraModule } from './extra/extra.module';
 import { UserService } from './user/user.service';
 import { TagService } from './tag/tag.service';
 import { GameModule } from './game/game.module';
-import { GuestModule } from './guest/guest.module';
 
 @Module({
   imports: [
@@ -26,8 +25,7 @@ import { GuestModule } from './guest/guest.module';
     RoundModule,
     ChoiceModule,
     ExtraModule,
-    GameModule,
-    GuestModule],
+    GameModule],
   controllers: [AppController],
   providers: [AppService],
 })
