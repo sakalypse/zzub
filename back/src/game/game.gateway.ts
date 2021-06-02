@@ -42,4 +42,10 @@ export class GameGateway implements  OnGatewayConnection,
 
         clientSocket.leave(gameId);
     }
+    
+    @SubscribeMessage('startGame')
+    async onStartGame(clientSocket, gameId){
+        clientSocket.broadcast.
+            to(gameId).emit('startGame', gameId);
+    }
 }

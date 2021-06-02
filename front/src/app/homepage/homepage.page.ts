@@ -63,7 +63,7 @@ export class HomepagePage implements OnInit {
       if (this.codeForm.invalid) {
         return;
       }
-      
+
       this.authService.registerGuest(this.codeForm.value).subscribe(
         result => {
           this.authService.setToken(result.access_token)

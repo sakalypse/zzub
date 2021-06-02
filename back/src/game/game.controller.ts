@@ -54,8 +54,15 @@ export class GameController {
     @UseGuards(GameOwnerGuard)
     @Delete('/delete/:gameId')
     async deleteGame(@Res() res,  @Param('gameId') gameId){
-      const categories = await this.gameService.deleteGameById(gameId);
-          return res.status(HttpStatus.OK).json({message:"Game " + gameId + " successfully deleted"});
+      const game = await this.gameService.deleteGameById(gameId);
+      return res.status(HttpStatus.OK).json({message:"Game " + gameId + " successfully deleted"});
+    }
+
+    @UseGuards(GameOwnerGuard)
+    @Put('/start/:gameId')
+    async startGame(@Res() res,  @Param('gameId') gameId){
+      const game = await this.gameService.startGameById(gameId);
+      return res.status(HttpStatus.OK).json({message:"Game " + gameId + " successfully started"});
     }
   
     @Get('')

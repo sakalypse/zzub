@@ -293,14 +293,12 @@ export class UserService {
     */
    async createGuest(dto: CreateGuestDTO): Promise<ReturnedGuestDTO>{
         let { username, game } = dto;
-        username = username.toLowerCase();
-        
         // create new guest
         let newGuest = new User();
-        newGuest.username = username;
+        newGuest.username = username.toLowerCase();
         newGuest.email = "";
         newGuest.password = "";
-        newGuest.game = game;
+        //newGuest.game = game;
         newGuest.role = Role.guest;
 
         return await this.userRepository.save(newGuest);

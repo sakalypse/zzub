@@ -8,6 +8,7 @@
   
 <ion-content *ngIf="this.room!=null">
   <div>Lobby : {{roomCode}}</div>
+  <button (click)="startRoom()" *ngIf="this.owner && this.players.length>=1">Start room</button>
   <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
   <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
   

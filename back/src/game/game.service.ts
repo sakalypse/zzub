@@ -34,6 +34,7 @@ export class GameService {
             game.owner = user;
             game.pack = [];
             game.players = [user];
+            game.isStarted = false;
             //user.game = game;
             createGame.pack.forEach(async newPack => {
                 game.pack.push(newPack);
@@ -99,6 +100,11 @@ export class GameService {
         const game = await this.gameRepository
                                 .findOne(gameId,
                                     {relations: ["players"]});
+
+        //Can't add user if game started
+        if(game.isStarted)
+            throw new HttpException('Game started', HttpStatus.FORBIDDEN);
+        
         let user;
         await this.userService.getUserByIdForAuth(userId).
         then(result=>{
@@ -159,5 +165,15 @@ export class GameService {
         await this.gameRepository.save(game);         
                     
         await this.gameRepository.remove(game);
+    }
+
+    async startGameById(gameId){
+        const game = await this.gameRepository
+                                .findOne(gameId,
+                                    {relations: ["players","owner","pack"]});
+
+        //update current games of each user to null
+        game.isStarted = true;
+        await this.gameRepository.save(game);         
     }
 }

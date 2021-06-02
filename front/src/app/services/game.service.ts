@@ -78,6 +78,16 @@ export class GameService {
       return res;
     }
 
+    async startGame(gameId: string): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
+      return await this.http.put(`${this.API_URL}/game/start/${gameId}`, null, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+    }
+
     async initHasCurrentGameMenu(){
       if(this.authService.isConnected()){
         let game = await this.userService.getCurrentGame(this.authService.getLoggedUser().userId);

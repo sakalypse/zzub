@@ -25,7 +25,10 @@ import { GameModule } from './game/game.module';
     RoundModule,
     ChoiceModule,
     ExtraModule,
-    GameModule],
+    GameModule,
+    TypeOrmModule.forRoot({
+      autoLoadEntities: true,
+    })],
   controllers: [AppController],
   providers: [AppService],
 })

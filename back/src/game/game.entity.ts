@@ -25,4 +25,7 @@ export class Game {
 
     @Column({nullable:false})
     code: String;
+
+    @Column({nullable:false})
+    isStarted: boolean;
 }

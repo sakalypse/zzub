@@ -10,18 +10,16 @@ import { UserService } from '../services/user.service';
 import { Role } from '../services/role.enum';
 
 @Component({
-  selector: 'app-lobby',
-  templateUrl: './lobby.page.html',
-  styleUrls: ['./lobby.page.scss'],
+  selector: 'app-game',
+  templateUrl: './game.page.html',
+  styleUrls: ['./game.page.scss'],
 })
-export class LobbyPage implements OnInit {
-  API_URL = environment.API_URL_DEV;
-  httpOptions;
+export class GamePage implements OnInit {
+
   roomCode;
   room;
-  owner;
-  players;
   userId;
+  owner;
 
   constructor(
     @Inject(AuthService)
@@ -37,7 +35,7 @@ export class LobbyPage implements OnInit {
     public alertController: AlertController,
     public toastController: ToastController,
     public socket:Socket
-  ){
+  ) { 
     this.http = new HttpClient(handler);
     activatedRoute.params.subscribe(val => {
       this.init();
@@ -48,57 +46,13 @@ export class LobbyPage implements OnInit {
     this.init();
   }
 
-  async init() {
-    //Init id user // id guest
+  async init(){
     this.userId = await this.authService.getLoggedUser().userId;
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
     this.room = await this.gameService.getGameByCode(this.roomCode);
-    this.players = this.room.players;
     this.owner = (this.room.owner.userId == this.userId) ? true : false;
-
-    //Add user in game if not already in
-    if(!this.room.players.some(x=>x.userId == this.userId)){
-      await this.gameService.addUserToGame(this.room.gameId, this.userId);
-      this.players.push(await this.userService.getSafeInfoUser(this.userId));
-    }
-
-    //initialize socket
-    this.socket.emit('joinLobby', this.authService.getLoggedUser().userId, this.roomCode);
-
-    //listen for new player
-    this.socket.fromEvent('joinLobby').
-    subscribe(async (id:number) => {
-      let newUser:any = await this.userService.getSafeInfoUser(id);
-      if(!this.players.some(x=>x.userId == newUser.userId))
-      {
-        this.players.push(newUser);
-      }
-    });
-
-    //listen for player quitting
-    this.socket.fromEvent('quitGame').
-    subscribe(async id => {
-      this.players = this.players.
-                        filter(x => x.userId !== id);
-    });
-
-    //listen for session killed
-    this.socket.fromEvent('killGame').
-    subscribe(async id => {
-      //Delete itself if guest
-      if(this.authService.getLoggedUser().role == Role.guest){
-        await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
-        this.authService.clearStorage();
-      }
-      this.router.navigate(["/homepage/"]);
-    });
-
-    //listen for session start
-    this.socket.fromEvent('startGame').
-    subscribe(async id => {
-      this.router.navigateByUrl("/game/"+this.roomCode);
-    });
   }
+
 
   async exitRoom(){
     await this.gameService.removeUserToGame(this.room.gameId, this.userId);
@@ -115,11 +69,5 @@ export class LobbyPage implements OnInit {
     await this.gameService.deleteGame(this.room.gameId); 
     this.socket.emit('killGame', this.roomCode);
     this.router.navigate(["/homepage/"]);
-  }
-
-  async startRoom(){
-    await this.gameService.startGame(this.room.gameId); 
-    this.socket.emit('startGame', this.roomCode);
-    this.router.navigateByUrl("/game/"+this.roomCode);
   }
 }

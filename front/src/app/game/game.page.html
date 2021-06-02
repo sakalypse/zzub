@@ -1,0 +1,11 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>game</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div>Lobby : {{roomCode}}</div>
+  <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
+  <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
+</ion-content>
