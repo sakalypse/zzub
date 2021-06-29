@@ -44,6 +44,7 @@ export class HomepagePage implements OnInit {
         code: this.code,
       });
     }
+    
 
     this.animationCreatePacks = {path: '/assets/animations/CreatePacks.json'};
     this.animationConnectToPeople = {path: '/assets/animations/ConnectToPeople.json'};
@@ -53,7 +54,7 @@ export class HomepagePage implements OnInit {
   async joinLobby(){
     if (this.codeForm.invalid) {
       return;
-    }
+    } 
 
     //Create guest
     if(!this.authService.isConnected())

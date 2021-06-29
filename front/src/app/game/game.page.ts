@@ -42,9 +42,7 @@ export class GamePage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.init();
-  }
+  ngOnInit() { }
 
   async init(){
     this.userId = await this.authService.getLoggedUser().userId;

@@ -44,9 +44,7 @@ export class LobbyPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.init();
-  }
+  ngOnInit() {}
 
   async init() {
     //Init id user // id guest

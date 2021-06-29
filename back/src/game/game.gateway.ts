@@ -48,4 +48,46 @@ export class GameGateway implements  OnGatewayConnection,
         clientSocket.broadcast.
             to(gameId).emit('startGame', gameId);
     }
+
+    //#region During Game
+    @SubscribeMessage('sendChoices')
+    async onSendChoice(clientSocket, data){
+        const sessionId = data.sessionId;
+        const choices = data.choices;
+        clientSocket.broadcast.
+            to(sessionId).emit('sendChoices', choices);
+    }
+
+    @SubscribeMessage('sendResponse')
+    async onSendResponse(clientSocket, data){
+        const sessionId = data.sessionId;
+        const response = data.response;
+        clientSocket.broadcast.
+            to(sessionId).emit('sendResponse', response);
+    }
+
+    @SubscribeMessage('sendResult')
+    async onSendResult(clientSocket, data){
+        const sessionId = data.sessionId;
+        const result = data.result;
+        clientSocket.broadcast.
+            to(sessionId).emit('sendResult', result);
+    }
+
+    @SubscribeMessage('sendEndOfQuestion')
+    async onSendEndOfQuestion(clientSocket, sessionId){
+        clientSocket.broadcast.
+            to(sessionId).emit('sendEndOfQuestion', sessionId);
+    }
+
+    @SubscribeMessage('sendScore')
+    async onScore(clientSocket, data){
+        const sessionId = data.sessionId;
+        const username = data.username;
+        const score = data.score;
+        clientSocket.broadcast.
+            to(sessionId).emit('sendScore',
+            {username: username, score:score});
+    } 
+    //#endregion
 }
