@@ -19,75 +19,50 @@ export class GameGateway implements  OnGatewayConnection,
     @SubscribeMessage('joinLobby')
     async onJoinLobby(clientSocket, data){
         const userId=data[0];
-        const gameId=data[1];
-        clientSocket.join(gameId);
+        const roomCode=data[1];
+        clientSocket.join(roomCode);
         clientSocket.broadcast.
-            to(gameId).emit('joinLobby', userId);
+            to(roomCode).emit('joinLobby', userId);
     }
 
     @SubscribeMessage('quitGame')
     async onQuitGame(clientSocket, data){
         const userId=data[0];
-        const gameId=data[1];
+        const roomCode=data[1];
         clientSocket.broadcast.
-            to(gameId).emit('quitGame', userId);
+            to(roomCode).emit('quitGame', userId);
 
-        clientSocket.leave(gameId);
+        clientSocket.leave(roomCode);
     }
 
     @SubscribeMessage('killGame')
-    async onKillGame(clientSocket, gameId){
+    async onKillGame(clientSocket, roomCode){
         clientSocket.broadcast.
-            to(gameId).emit('killGame', gameId);
+            to(roomCode).emit('killGame', roomCode);
 
-        clientSocket.leave(gameId);
+        clientSocket.leave(roomCode);
     }
     
     @SubscribeMessage('startGame')
-    async onStartGame(clientSocket, gameId){
+    async onStartGame(clientSocket, roomCode){
         clientSocket.broadcast.
-            to(gameId).emit('startGame', gameId);
+            to(roomCode).emit('startGame', roomCode);
     }
 
     //#region During Game
-    @SubscribeMessage('sendChoices')
+    @SubscribeMessage('sendQuestion')
     async onSendChoice(clientSocket, data){
-        const sessionId = data.sessionId;
-        const choices = data.choices;
-        clientSocket.broadcast.
-            to(sessionId).emit('sendChoices', choices);
+        this.server.in(data.roomCode).emit('sendQuestion', {question: data.question, choices:data.choices});
     }
 
-    @SubscribeMessage('sendResponse')
+    @SubscribeMessage('playerSendChoice')
     async onSendResponse(clientSocket, data){
-        const sessionId = data.sessionId;
-        const response = data.response;
-        clientSocket.broadcast.
-            to(sessionId).emit('sendResponse', response);
+        this.server.in(data.roomCode).emit('playerSendChoice', {userId: data.userId, choiceId:data.choiceId});
     }
 
-    @SubscribeMessage('sendResult')
-    async onSendResult(clientSocket, data){
-        const sessionId = data.sessionId;
-        const result = data.result;
-        clientSocket.broadcast.
-            to(sessionId).emit('sendResult', result);
+    @SubscribeMessage('endOfRound')
+    async onEndOfRound(clientSocket, data){
+        this.server.in(data.roomCode).emit('endOfRound', {userId: data.userId});
     }
-
-    @SubscribeMessage('sendEndOfQuestion')
-    async onSendEndOfQuestion(clientSocket, sessionId){
-        clientSocket.broadcast.
-            to(sessionId).emit('sendEndOfQuestion', sessionId);
-    }
-
-    @SubscribeMessage('sendScore')
-    async onScore(clientSocket, data){
-        const sessionId = data.sessionId;
-        const username = data.username;
-        const score = data.score;
-        clientSocket.broadcast.
-            to(sessionId).emit('sendScore',
-            {username: username, score:score});
-    } 
     //#endregion
 }

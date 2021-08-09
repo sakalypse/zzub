@@ -264,7 +264,7 @@ export class ListPackPage implements OnInit {
 
     //Trying to create a room
     let dto = {owner : this.authService.getLoggedUser().userId,
-               pack : this.listPacksHost};
+               packs : this.listPacksHost};
     try{
       let gameCreated = await this.gameService.createGame(dto);
       this.router.navigate(["/lobby/"+gameCreated.code]);

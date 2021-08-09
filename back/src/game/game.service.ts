@@ -32,12 +32,12 @@ export class GameService {
 
             //user.hostGame = game;
             game.owner = user;
-            game.pack = [];
+            game.packs = [];
             game.players = [user];
             game.isStarted = false;
             //user.game = game;
-            createGame.pack.forEach(async newPack => {
-                game.pack.push(newPack);
+            createGame.packs.forEach(async newPack => {
+                game.packs.push(newPack);
                 //game.pack.push(await this.packService.getPackById(newPack.packId));
             });
             //await this.userService.updateUser(user.userId, user);
@@ -60,7 +60,7 @@ export class GameService {
                         findOne(gameId,
                                 {relations: ["owner",
                                             "players" ,
-                                            "pack"]});
+                                            "packs"]});
         if(game!=null){                           
             game.owner.password = "";
             game.players.forEach(player => {
@@ -76,7 +76,9 @@ export class GameService {
                         .findOne({ code: code},
                                     {relations: ["owner",
                                                 "players" ,
-                                                "pack"]});
+                                                "packs",
+                                                "packs.rounds",
+                                                "packs.rounds.choices"]});
         if(game!=null){
             game.owner.password = "";
             game.players.forEach(player => {
@@ -92,7 +94,7 @@ export class GameService {
         return await this.gameRepository.
                         find({relations: ["owner",
                                         "players",
-                                        "pack"]});
+                                        "packs"]});
     }
 
     //Add a user to a game
@@ -143,7 +145,7 @@ export class GameService {
     async deleteGameById(gameId){
         const game = await this.gameRepository
                                 .findOne(gameId,
-                                    {relations: ["players","owner","pack"]});
+                                    {relations: ["players","owner","packs"]});
 
         //delete users that are guests
         /*
@@ -161,7 +163,7 @@ export class GameService {
                                             
         game.players = [];
         game.owner = null;
-        game.pack = [];
+        game.packs = [];
         await this.gameRepository.save(game);         
                     
         await this.gameRepository.remove(game);
@@ -170,7 +172,7 @@ export class GameService {
     async startGameById(gameId){
         const game = await this.gameRepository
                                 .findOne(gameId,
-                                    {relations: ["players","owner","pack"]});
+                                    {relations: ["players","owner","packs"]});
 
         //update current games of each user to null
         game.isStarted = true;

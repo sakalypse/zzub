@@ -13,7 +13,7 @@
   <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
   
   <div><br/>Packs :</div>
-  <div *ngFor ="let pack of this.room.pack" >
+  <div *ngFor ="let pack of this.room.packs" >
     <div>{{pack.name}}</div>
   </div>
 

@@ -10,7 +10,7 @@ export class Game {
     
     @JoinTable()
     @ManyToMany(type => Pack, pack => pack.packId, { cascade: true })
-    pack:Pack[];
+    packs:Pack[];
 
     @JoinColumn()
     @OneToMany(type=>User, player=>player.game)

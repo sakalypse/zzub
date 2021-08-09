@@ -1,7 +1,7 @@
 build:
   docker:
-    front: ./front/Dockerfile
-    back: ./back/Dockerfile
+    front: front/Dockerfile
+    back: back/Dockerfile
 run:
   front: bundle exec puma -C config/puma.rb
   back: bundle exec puma -C config/puma.rb

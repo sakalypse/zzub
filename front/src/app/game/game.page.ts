@@ -8,6 +8,7 @@ import { Socket } from 'ngx-socket-io';
 import { GameService } from '../services/game.service';
 import { UserService } from '../services/user.service';
 import { Role } from '../services/role.enum';
+import { PackService } from '../services/pack.service';
 
 @Component({
   selector: 'app-game',
@@ -20,6 +21,16 @@ export class GamePage implements OnInit {
   room;
   userId;
   owner;
+  listPlayerScore;
+
+  indexCurrentPack = 0;
+  currentPack;
+  indexCurrentRound = 0;
+
+  currentQuestion;
+  currentChoices;
+
+  showQuestion = true;
 
   constructor(
     @Inject(AuthService)
@@ -28,6 +39,8 @@ export class GamePage implements OnInit {
     private gameService:GameService,
     @Inject(UserService)
     private userService:UserService,
+    @Inject(PackService)
+    private packService:PackService,
     public http: HttpClient,
     handler: HttpBackend,
     public router: Router,
@@ -49,8 +62,101 @@ export class GamePage implements OnInit {
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
     this.room = await this.gameService.getGameByCode(this.roomCode);
     this.owner = (this.room.owner.userId == this.userId) ? true : false;
+
+    this.listPlayerScore = [];
+    this.room.players.forEach(player => {
+      this.listPlayerScore.push({ 'userId': player.userId, 'username': player.username, 'score': 0 });
+    });
+
+    console.log(this.listPlayerScore);
+
+    this.initPlayer();
+
+    if(this.owner)
+      this.initHost();
   }
 
+  async initPlayer(){
+    //listen for questions
+    this.socket.fromEvent('sendQuestion').
+    subscribe(async (data:any) => {
+      //Remove score scene
+      this.showQuestion = true;
+
+      this.currentQuestion = data.question;
+      this.currentChoices = data.choices;
+    });
+
+    //Listen for end of round
+    this.socket.fromEvent('endOfRound').
+    subscribe(async (data:any) => {
+      console.log(data.userId);
+      //Add point to winner
+      let player = this.listPlayerScore.find(x => x.userId == data.userId);
+      console.log(player);
+      player.score++;
+
+      //Show score scene
+      this.showQuestion = false;
+    });
+  }
+
+  //#region Host
+  async initHost(){
+    this.currentPack = this.room.packs[this.indexCurrentPack];
+    //listen for response
+    this.socket.fromEvent('playerSendChoice').
+    subscribe(async (data:any) => {
+      if(this.currentChoices.find(x => x.isAnswer == true).choiceId == data.choiceId){
+        //Right response. End the round and emit the winner userId to all 
+        this.socket.emit('endOfRound',
+        { roomCode: this.roomCode,
+          userId: data.userId});
+      }
+      else{
+        //Wrong
+        //TODO Disable vote for the user
+      }
+    });
+  }
+
+  async sendNextQuestion(){
+    if(this.owner){
+      //TODO : below not tested 
+      //Init question to send
+      if(this.indexCurrentRound>=this.currentPack.length){
+        //next pack
+        if(this.indexCurrentPack>=this.room.packs.length){
+          //TODO
+          console.log("finito pipo");
+        }
+        this.currentPack = this.room.packs[++this.indexCurrentPack];
+      }
+      var round = this.currentPack.rounds[this.indexCurrentRound++];
+
+      //shuffle choices
+      for (let i = round.choices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [round.choices[i], round.choices[j]] = [round.choices[j], round.choices[i]];
+      }
+
+      //Emit question
+      this.socket.emit('sendQuestion',
+        { roomCode: this.roomCode,
+          question: round.question,
+          choices: round.choices});
+    }
+  }
+  //#endregion
+
+  //#region Player
+  async playerSendChoice(choiceId){
+    this.socket.emit('playerSendChoice',
+        { roomCode: this.roomCode,
+          choiceId: choiceId,
+          userId: this.userId});
+  }
+  //#endregion
 
   async exitRoom(){
     await this.gameService.removeUserToGame(this.room.gameId, this.userId);
