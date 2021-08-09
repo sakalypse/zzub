@@ -1,0 +1,4 @@
+build:
+  docker:
+    front: ./front/Dockerfile
+    back: ./back/Dockerfile
