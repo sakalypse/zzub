@@ -13,7 +13,9 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 80
+#EXPOSE 80
+EXPOSE 4200
 
 #CMD [ "ionic", "serve --external -p 80"]
-CMD ["ng", "serve","--host", "0.0.0.0", "--port", "80"]
+CMD ["ng", "serve","--host", "0.0.0.0"]
+#, "--port", "80"]
