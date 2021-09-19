@@ -31,6 +31,7 @@ export class GamePage implements OnInit {
   currentChoices;
 
   showQuestion = true;
+  canVote;
 
   constructor(
     @Inject(AuthService)
@@ -82,6 +83,7 @@ export class GamePage implements OnInit {
     subscribe(async (data:any) => {
       //Remove score scene
       this.showQuestion = true;
+      this.canVote = true;
 
       this.currentQuestion = data.question;
       this.currentChoices = data.choices;
@@ -115,7 +117,7 @@ export class GamePage implements OnInit {
       }
       else{
         //Wrong
-        //TODO Disable vote for the user
+        this.canVote = false;
       }
     });
   }
@@ -151,10 +153,12 @@ export class GamePage implements OnInit {
 
   //#region Player
   async playerSendChoice(choiceId){
-    this.socket.emit('playerSendChoice',
-        { roomCode: this.roomCode,
-          choiceId: choiceId,
-          userId: this.userId});
+    if(this.canVote){
+      this.socket.emit('playerSendChoice',
+          { roomCode: this.roomCode,
+            choiceId: choiceId,
+            userId: this.userId});
+    }
   }
   //#endregion
 
