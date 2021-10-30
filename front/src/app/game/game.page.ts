@@ -31,7 +31,7 @@ export class GamePage implements OnInit {
   currentChoices;
 
   showQuestion = true;
-  canVote;
+  canAnswer;
 
   constructor(
     @Inject(AuthService)
@@ -83,7 +83,7 @@ export class GamePage implements OnInit {
     subscribe(async (data:any) => {
       //Remove score scene
       this.showQuestion = true;
-      this.canVote = true;
+      this.canAnswer = true;
 
       this.currentQuestion = data.question;
       this.currentChoices = data.choices;
@@ -117,22 +117,25 @@ export class GamePage implements OnInit {
       }
       else{
         //Wrong
-        this.canVote = false;
+        this.canAnswer = false;
       }
     });
   }
 
   async sendNextQuestion(){
     if(this.owner){
-      //TODO : below not tested 
       //Init question to send
-      if(this.indexCurrentRound>=this.currentPack.length){
-        //next pack
-        if(this.indexCurrentPack>=this.room.packs.length){
-          //TODO
-          console.log("finito pipo");
+      if(this.indexCurrentRound>=this.currentPack.rounds.length){
+          console.log("next pack");
+          //next pack
+        if(this.indexCurrentPack>=this.room.packs.length-1){
+          //TODO : Scene end game 
+          //Show winner
+          console.log(this.listPlayerScore.sort((x,y) => x.score > y.score ? 1 : -1)[this.listPlayerScore.length-1]);
+          return;
         }
         this.currentPack = this.room.packs[++this.indexCurrentPack];
+        this.indexCurrentRound = 0;
       }
       var round = this.currentPack.rounds[this.indexCurrentRound++];
 
@@ -153,7 +156,7 @@ export class GamePage implements OnInit {
 
   //#region Player
   async playerSendChoice(choiceId){
-    if(this.canVote){
+    if(this.canAnswer){
       this.socket.emit('playerSendChoice',
           { roomCode: this.roomCode,
             choiceId: choiceId,
