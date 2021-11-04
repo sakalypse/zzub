@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  API_URL_DEV: 'http://localhost:3000'
+  API_URL_DEV: 'http://localhost:3000' //https://zzub.herokuapp.com
 };
 
 /*

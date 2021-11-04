@@ -22,4 +22,10 @@ export class AppController {
   async login(@Request() req) {
     return this.authService.login(req.user);
   }
+
+  @Post('auth/registerGuest')
+  async registerGuest(@Request() req) {
+    return this.authService.registerGuest(req.body);
+  }
+
 }

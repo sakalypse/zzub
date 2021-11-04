@@ -21,6 +21,8 @@ services:
       - "80:80"
     expose:
       - '80'
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
   sqldb:
     image: mysql:5.7
     restart: always

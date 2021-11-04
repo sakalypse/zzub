@@ -13,6 +13,31 @@ export class TagService {
     ) {}
 
     /*
+    * Create Default tags
+    */
+   async initDefaultTags(){
+    //check if tags are not already created
+    const tagSearched = await this.tagRepository.
+                findOne({ name: "Sport" });
+    if(tagSearched){
+        console.log("Tags already created");
+        return;
+    }
+
+    let tags = [
+        "Sport",
+        "Music",
+        "History",
+        "Cinema"
+    ]
+    tags.forEach(tag => {
+        let tagToSave = new Tag();
+        tagToSave.name = tag;
+        this.tagRepository.save(tagToSave);
+    });
+}
+
+    /*
     * Create a new Tag with the data received
     * @param  dto : Contains tag's data
     * @return       the saved tag

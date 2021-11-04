@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuardService } from './auth/auth-guard.service';
+import { GameGuardService } from './auth/game-guard.service';
 
 const routes: Routes = [
   {
@@ -21,15 +22,31 @@ const routes: Routes = [
     loadChildren: () => import('./sign/sign.module').then( m => m.SignPageModule)
   },
   {
-    path: 'edit-pack/:id',
+    path: 'pack/edit/:id',
     loadChildren: () => import('./edit-pack/edit-pack.module').then( m => m.EditPackPageModule),
     canActivate: [AuthGuardService]
   },
   {
-    path: 'list-pack',
+    path: 'pack',
     loadChildren: () => import('./list-pack/list-pack.module').then( m => m.ListPackPageModule),
     canActivate: [AuthGuardService]
+  },
+  {
+    path: 'selectpack',
+    loadChildren: () => import('./list-pack/list-pack.module').then( m => m.ListPackPageModule),
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'lobby/:code',
+    loadChildren: () => import('./lobby/lobby.module').then( m => m.LobbyPageModule)
+  },
+  {
+    path: 'game/:code',
+    loadChildren: () => import('./game/game.module').then( m => m.GamePageModule),
+    canActivate: [GameGuardService]
   }
+  //TODO Guard pour lobby et game
+
 ];
 
 @NgModule({

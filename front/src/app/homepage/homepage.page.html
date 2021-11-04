@@ -1,4 +1,61 @@
-
 <div class="page">
-    <p>Coucou</p>
+    <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <lottie-animation-view  [options]="animationCreatePacks"
+                                [width]="600"
+                                [height]="400"></lottie-animation-view>
+        <ion-button 
+            style="font-size:large;"
+            size="large"
+            color="primary" 
+            expand="block" 
+            (click)="redirectToPacks()">Create your own funny/interesting questions pack</ion-button>              
+    </div>
+
+    <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+        <ion-button 
+            style="font-size:large;"
+            size="large"
+            color="primary" 
+            expand="block" 
+            (click)="redirectToHostGame()">Host a game</ion-button>
+        <lottie-animation-view  [options]="animationConnectToPeople"
+                                [width]="600"
+                                [height]="400"></lottie-animation-view>
+        <form [formGroup]="codeForm" padding-right>
+            <ion-item *ngIf="!this.authService.isConnected()">
+                <ion-label position="floating">Username</ion-label>
+                <ion-input type="text" formControlName="username" required></ion-input>
+                <div *ngIf="code.invalid && (code.dirty || code.touched) || code.hasError('minlength') || code.hasError('maxlength')"
+                    class="alert alert-danger p-2">
+                <div *ngIf="code.errors.required">
+                    Enter a valid username
+                </div>
+                </div>
+            </ion-item>
+            <ion-item>
+                <ion-label position="floating">Room Code</ion-label>
+                <ion-input type="text" formControlName="code" required></ion-input>
+                <div *ngIf="code.invalid && (code.dirty || code.touched) || code.hasError('minlength') || code.hasError('maxlength')"
+                    class="alert alert-danger p-2">
+                <div *ngIf="code.errors.required">
+                    Enter a valid code
+                </div>
+                </div>
+            </ion-item>
+            <ion-button 
+                    style="font-size:large;"
+                    size="large"
+                    color="primary" 
+                    expand="block" 
+                    [disabled]="!codeForm.valid" 
+                    (click)="joinLobby()">Join</ion-button>
+        </form>
+    </div>
+
+    <div style="display:flex; flex-direction: column; justify-content: center; align-items: center">
+        <p style="font-size: xx-large;">Have fun !</p>
+        <lottie-animation-view  [options]="animationRocketLaunch"
+                                [width]="600"
+                                [height]="400"></lottie-animation-view>
+    </div>
 </div>

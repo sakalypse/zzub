@@ -228,7 +228,33 @@
   }
 }
 
-//Custom colors
+//Custom variables
 :root{
+  //Custom Gradients
   --custom-color-gradient: linear-gradient(145deg, rgba(112,26,197,1) 0%, rgba(26,123,197,1) 100%);
+  --custom-gradient-pink: linear-gradient(145deg, #C51162 0%, #F50057 100%);
+  --custom-gradient-orange: linear-gradient(145deg, #FF9100 0%, #FF6D00 100%);
+  --custom-gradient-red: linear-gradient(145deg, #D50000 0%, #FF1744 100%);
+
+  //Custom Colors
+  --custom-color-background: #F6F7FB;
+  --custom-color-primary: #1a7bc5;
+  --custom-color-primary-light: #2e95e3;
+  --custom-color-primary-dark: #145f98;
+  --custom-color-secondary: #701ac5;
+  --custom-color-secondary-light: #8a2ee3;
+  --custom-color-secondary-dark: #561498;
+  --custom-color-gray: #5A5A5A;
+
+  //Custom Shadows
+  --custom-shadow-primary: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+  //Material Shadows
+  --material-shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  --material-shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  --material-shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  --material-shadow-4: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  --material-shadow-5: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+  
+    $breakpoint-tablet: 400px;
 }

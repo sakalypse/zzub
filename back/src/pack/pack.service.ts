@@ -1,10 +1,12 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult, In } from 'typeorm';
+import { Repository, DeleteResult, In, Not } from 'typeorm';
 import { Pack } from './pack.entity';
 import { Tag } from 'src/tag/tag.entity';
 import { CreatePackDTO, UpdatePackDTO } from './pack.dto';
 import { validate } from 'class-validator';
+import { User } from 'src/user/user.entity';
+import { stringify } from 'querystring';
 
 @Injectable()
 export class PackService {
@@ -12,7 +14,9 @@ export class PackService {
         @InjectRepository(Pack)
         private packRepository : Repository<Pack>,
         @InjectRepository(Tag)
-        private tagRepository : Repository<Tag>
+        private tagRepository : Repository<Tag>,
+        @InjectRepository(User)
+        private userRepository : Repository<User>
     ) {}
 
     /*
@@ -21,24 +25,25 @@ export class PackService {
     * @return       the saved pack
     */
     async createPack(dto: CreatePackDTO): Promise<Pack>{
-        const { name, author, tag, isPublic } = dto;
-
-        // check uniqueness of name
-        const packSearched = await this.packRepository.
-                    findOne({ name: name });
-        if (packSearched) {
-            const errors = {name: 'Name already taken.'};
-            throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
-        }
+        const author = await this.userRepository.findOne(dto.author);
 
         // create new pack
         let newPack = new Pack();
-        newPack.name = name;
-        newPack.author = author;
-        newPack.isPublic = isPublic;
+        let idName = 0;
+        newPack.name = author.username;
+        newPack.author = dto.author;
+        newPack.isPublic = false;
+        newPack.language = 0;
         newPack.rounds = [];
-        newPack.tag = tag;
+        newPack.tag = await this.tagRepository.findOne(1);
         
+        let packSearched;
+        do{
+            idName++;
+            newPack.name=author.username+idName.toString();
+            packSearched = await this.packRepository.
+            findOne({where:{ name: newPack.name}});
+        }while(packSearched!=null)
 
         const errors = await validate(newPack);
         if (errors.length > 0) {
@@ -54,7 +59,33 @@ export class PackService {
     * @return   All saved packs
     */
     async getAllPacks(): Promise<Pack[]>{
-        return await this.packRepository.find({relations: ["author", "tag"]});
+        const packs = await this.packRepository.find({relations: ["author", "tag"]});
+
+        //remove hashed password from returned data
+        packs.forEach(pack => {
+            pack.author.password = "";
+        });
+
+        return packs;
+    }
+
+    /*
+    * Get all public packs
+    * @return   All saved packs that are public
+    */
+    async getAllPublicPacks(): Promise<Pack[]>{
+        const packs = await this.packRepository.find({
+            where: {
+                isPublic: true
+            },
+            relations: ["author", "rounds", "tag"]});
+
+        //remove hashed password from returned data
+        packs.forEach(pack => {
+            pack.author.password = "";
+        });
+
+        return packs;
     }
 
     /*
@@ -84,9 +115,22 @@ export class PackService {
     async updatePack(packId, dto: UpdatePackDTO): Promise<Pack>{
         let packToUpdate = await this.packRepository.findOne(packId);
         
+        // check uniqueness of name
+        if(packToUpdate.name != dto.name){
+            const packSearched = await this.packRepository.
+            findOne({where:{ name: dto.name}});
+            if (packSearched) {
+            const errors = {name: 'Name already taken.'};
+            throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
+            }
+        }
+
         packToUpdate.name = dto.name;
         packToUpdate.tag = dto.tag;
         packToUpdate.isPublic = dto.isPublic;
+        if(dto.language<0||dto.language>3)
+            throw new HttpException({message: 'Language not valid'}, HttpStatus.BAD_REQUEST);
+        packToUpdate.language = dto.language;
 
         return await this.packRepository.save(packToUpdate);
     }

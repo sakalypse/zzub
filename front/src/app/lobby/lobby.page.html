@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>lobby</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+<ion-content *ngIf="this.room!=null">
+  <div>Lobby : {{roomCode}}</div>
+  <button (click)="startRoom()" *ngIf="this.owner && this.players.length>=1">Start room</button>
+  <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
+  <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
+  
+  <div><br/>Packs :</div>
+  <div *ngFor ="let pack of this.room.packs" >
+    <div>{{pack.name}}</div>
+  </div>
+
+  <div><br/>Players :</div>
+  <ion-card *ngFor ="let player of this.players" >
+    <ion-card-content>
+      {{player.username}}
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,11 +1,11 @@
-FROM node:10
+FROM node:latest
 
 # Create app directory
 RUN mkdir -p /usr/src/front
 WORKDIR /usr/src/front
 
 # Install app dependencies
-RUN npm install -g @ionic/cli
+RUN npm install -g @angular/cli
 COPY package*.json ./
 RUN npm install
 
@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE 80
 
-CMD [ "ionic", "serve", "--port=80", "--address", "0.0.0.0" ]
+CMD ["ng", "serve","--host", "0.0.0.0", "--port", "80"]

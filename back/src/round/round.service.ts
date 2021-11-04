@@ -4,6 +4,7 @@ import { Repository, DeleteResult, In } from 'typeorm';
 import { Round } from './round.entity';
 import { CreateRoundDTO, UpdateRoundDTO } from './round.dto';
 import { validate } from 'class-validator';
+import { Extra } from 'src/extra/extra.entity';
 
 @Injectable()
 export class RoundService {
@@ -18,25 +19,15 @@ export class RoundService {
     * @return       the saved round
     */
     async createRound(dto: CreateRoundDTO): Promise<Round>{
-        const { pack, question, isMultipleChoice, answerSingleChoice } = dto;
-
         // create new round
         let newRound = new Round();
-        newRound.pack = pack;
-        newRound.question = question;
-        newRound.isMultipleChoice = isMultipleChoice;
-        if(!newRound.isMultipleChoice && answerSingleChoice)
-            newRound.answerSingleChoice = answerSingleChoice;
+        newRound.pack = dto.pack;
+        newRound.question = "Question";
+        newRound.isMultipleChoice = true;
         newRound.choices = [];
-        newRound.extras = [];
-
-        const errors = await validate(newRound);
-        if (errors.length > 0) {
-            const _errors = {name: 'Round input is not valid.'};
-            throw new HttpException({message: 'Input data validation failed', _errors}, HttpStatus.BAD_REQUEST);
-        } else {
-            return await this.roundRepository.save(newRound);
-        }
+        newRound.extra = null;
+        
+        return await this.roundRepository.save(newRound);
     }
   
     /*
@@ -44,7 +35,7 @@ export class RoundService {
     * @return   All saved rounds
     */
     async getAllRounds(): Promise<Round[]>{
-        return await this.roundRepository.find({relations: ["choices", "extras"]});
+        return await this.roundRepository.find({relations: ["choices", "extra"]});
     }
 
     /*
@@ -54,7 +45,7 @@ export class RoundService {
     */
     async getRoundById(roundId): Promise<Round>{
         return await this.roundRepository.
-                     findOne(roundId, {relations: ["choices", "extras"]});
+                     findOne(roundId, {relations: ["choices", "extra", "pack"]});
     }
 
     /*
@@ -67,8 +58,6 @@ export class RoundService {
         let roundToUpdate = await this.roundRepository.findOne(roundId);
         roundToUpdate.question = dto.question;
         roundToUpdate.isMultipleChoice = dto.isMultipleChoice;
-        if(!roundToUpdate.isMultipleChoice && dto.answerSingleChoice)
-            roundToUpdate.answerSingleChoice = dto.answerSingleChoice;
         return await this.roundRepository.save(roundToUpdate);
     }
 

@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>game</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div>Lobby : {{roomCode}}</div>
+  <button (click)="sendNextQuestion()" *ngIf="this.owner">Send next question</button>
+  <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
+  <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
+
+  <div *ngIf="showQuestion">
+    <ion-card>
+      <ion-card-content>
+        {{currentQuestion}}
+      </ion-card-content>
+    </ion-card>
+    <div *ngFor="let choice of currentChoices">
+      <button (click)="playerSendChoice(choice.choiceId)" >{{choice.choice}}</button>
+    </div>
+  </div>
+
+  <div *ngIf="!showQuestion">
+    <ion-card *ngFor="let playerScore of listPlayerScore">
+      <ion-card-content>
+        {{playerScore.username}} : {{playerScore.score}}
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

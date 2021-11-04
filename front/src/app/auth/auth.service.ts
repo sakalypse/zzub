@@ -15,7 +15,7 @@ export class AuthService {
 
   constructor(
     private handler: HttpBackend, 
-    private http: HttpClient) {
+    private http: HttpClient,) {
     this.http = new HttpClient(handler);
     this.helper = new JwtHelperService();
   }
@@ -27,6 +27,11 @@ export class AuthService {
 
   public signup(data: any): Observable<any> {
     return this.http.post<any>(`${this.API_URL}/user`, data)
+            .pipe(catchError(this.handleError));
+  }
+
+  public registerGuest(data: any): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/auth/registerGuest`, data)
             .pipe(catchError(this.handleError));
   }
 

@@ -1,3 +1,200 @@
 <ion-content>
-  <p>Edit pack : {{id}}</p>
+<div class="edit-page" *ngIf="pack && tags">
+  <ion-grid>
+    <ion-row>
+      <ion-col class="edit-mega-container">
+        <form [formGroup]="packForm">
+          <!-- TITLE -->
+          <div class="subtitle">Title<ion-icon slot="end" name="create-outline"></ion-icon></div>
+          <ion-input class="custom-input" type="text" formControlName="name" required></ion-input>
+          <div class="subtitle">Settings<ion-icon slot="end" name="settings-outline"></ion-icon></div>
+              <!-- Language SELECTION -->
+              <ion-item>
+                <ion-label>Select a language</ion-label>
+                <ion-select formControlName="language" value="{{language.value}}"
+                okText="Okay" cancelText="Dismiss">
+                  <ion-select-option value='0'>English</ion-select-option>
+                  <ion-select-option value='1'>French</ion-select-option>
+                  <ion-select-option value='2'>German</ion-select-option>
+                  <ion-select-option value='3'>Spanish</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- THEME SELECTION -->
+              <!--
+              <ion-list class="theme-list">
+                <ion-radio-group formControlName="tag" value="{{tag.value}}" required>
+                  <ion-item *ngFor="let radioTag of tags">
+                    <ion-label>{{radioTag.name}}</ion-label>
+                    <ion-radio slot="start" value="{{radioTag.tagId}}"></ion-radio>
+                  </ion-item>
+                </ion-radio-group>
+              </ion-list>
+              -->
+              <ion-item>
+                <ion-label>Select a theme</ion-label>
+                <ion-select formControlName="tag" value="{{tag.value}}" okText="Okay" cancelText="Dismiss" required>
+                  <ion-select-option *ngFor="let radioTag of tags" value="{{radioTag.tagId}}">{{radioTag.name}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+            <!-- IsPublic SELECTION -->
+              <ion-item>
+                <ion-label>Public</ion-label>
+                <ion-toggle color="primary" formControlName="isPublic"
+                  checked="{{isPublic.value}}"></ion-toggle>
+              </ion-item>
+            </form>
+          <!-- QUESTIONS-->
+          <div class="subtitle">Questions<ion-icon slot="end" name="help-circle-outline"></ion-icon></div>
+          <form [formGroup]="questionsForms">
+            <div formArrayName="questions">
+              <div *ngFor="let round of questionsForms.get('questions').controls; let i = index">
+                <button (click)="expandAccordion($event)" class="accordion">Question {{i+1}}<div class="delete-question"><ion-icon slot="end" name="trash" (click)="removeQuestion(round.controls.roundId.value)"></ion-icon></div><div class="accordion-arrow"><ion-icon slot="end" name="chevron-up"></ion-icon></div></button>
+                <div class="panel">
+                  <div [formGroupName]="i">
+                    <div class="question-title">
+                      <label class="custom-label">Title of the question</label>
+                      <ion-input class="custom-input" type="text" formControlName="question" required></ion-input>
+                    </div>
+                    <!-- Answer type toggle -->
+                    <div class="toggle">
+                      <div id="multiple" (click)="toggleAnswerType($event, i)"
+                          class="toggle-choice"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.isMultipleChoice}">Multiple Choice</div>
+                      <div id="single" (click)="toggleAnswerType($event, i)"
+                          class="toggle-choice"
+                          [ngClass]="{'selected': !this.questionsForms.get('questions')
+                          .get(''+i).value.isMultipleChoice}">Typed Answer</div>
+                    </div>
+                    <!-- Multiple Answers-->
+                    <div *ngIf="this.questionsForms.get('questions').get(''+i)
+                    .value.isMultipleChoice" class="answer-edit" formArrayName="choices">
+                      <div *ngFor="let choice of this.questionsForms.get('questions').get(''+i)
+                        .get('choices').controls; let indexChoice = index"
+                      [formGroupName]="indexChoice">
+                        <div *ngIf="choice.value.isAnswer">
+                          <label class="custom-label label-w-icon correct-label">Correct Answer<ion-icon name="checkmark"></ion-icon></label>
+                          <ion-input class="custom-input" type="text" formControlName="choice"></ion-input>
+                        </div>
+                        <div *ngIf="!choice.value.isAnswer" >                            
+                          <label class="custom-label label-w-icon wrong-label" position="floating">Wrong Answer #{{indexChoice}}<ion-icon name="close"></ion-icon></label>
+                          <div class="custom-input-wrong-container">
+                              <ion-input class="custom-input wrong" type="text"
+                                formControlName="choice"></ion-input>
+                              <button
+                                class="delete-wrong"
+                                color="danger" 
+                                (click)="removeChoice(i,
+                                        indexChoice,
+                                        this.questionsForms.get('questions').get(''+i)
+                                        .get('choices').get(''+indexChoice).value.choiceId)"><ion-icon name="trash"></ion-icon></button>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="add-answer margin-bottom-0"
+                      [disabled]="!this.questionsForms.get('questions')
+                      .get(''+i).value.isMultipleChoice" 
+                      (click)="addChoice(i, this.questionsForms.get('questions')
+                        .get(''+i).value.roundId)"
+                      *ngIf="this.questionsForms.get('questions').get(''+i)
+                      .get('choices').length < 4" ><span>Add Answer</span><ion-icon slot="end" name="add"></ion-icon></button>
+                    </div>
+                    <!-- Single Answer-->
+                    <div *ngIf="!this.questionsForms.get('questions').get(''+i)
+                    .value.isMultipleChoice" class="answer-edit" formArrayName="choices">
+                      <div *ngFor="let choice of this.questionsForms.get('questions').get(''+i)
+                        .get('choices').controls; let indexChoice = index"
+                      [formGroupName]="indexChoice">
+                        <div *ngIf="choice.value.isAnswer">
+                          <label class="custom-label label-w-icon correct-label">Correct Answer<ion-icon name="checkmark"></ion-icon></label>
+                          <ion-input class="custom-input" type="text" formControlName="choice"></ion-input>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Extra type toggle -->
+                    <div class="toggle">
+                      <div id="noExtra" (click)="toggleExtraType($event,i)"
+                          class="toggle-choice toggle-extra"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.extraType==0}">No extra</div>
+                      <!--<div id="audio" (click)="toggleExtraType($event,i)"
+                          class="toggle-choice toggle-extra"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.extraType==1}">Audio</div>
+                      <div id="video" (click)="toggleExtraType($event,i)"
+                          class="toggle-choice toggle-extra"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.extraType==2}">Video</div>-->
+                      <div id="img" (click)="toggleExtraType($event,i)"
+                          class="toggle-choice toggle-extra"
+                          [ngClass]="{'selected': this.questionsForms.get('questions')
+                          .get(''+i).value.extraType==3}">Image</div>
+                    </div>
+                    <!-- No extra -->
+                    <div id="extra-noExtra" class="extra-edit"
+                        *ngIf="this.questionsForms.get('questions').get(''+i)
+                          .value.extraType==0">
+                    </div>
+                    <!-- Audio extra -->
+                    <div id="extra-audio" class="extra-edit"
+                        *ngIf="this.questionsForms.get('questions').get(''+i)
+                          .value.extraType==1">
+                      <ion-item>
+                        <ion-label position="floating">Audio (Youtube URL)</ion-label>
+                        <ion-input type="text" formControlName="url"></ion-input>
+                      </ion-item>
+                      <ion-row>
+                        <ion-col class="preview-container" size-xs="12" size-sm="4">
+                          <div class="preview sound-preview">
+                            <ion-icon slot="center" name="volume-high"></ion-icon>
+                          </div>
+                        </ion-col>
+                      </ion-row>
+                    </div>
+                    <!-- Video extra -->
+                    <div id="extra-video" class="extra-edit"
+                        *ngIf="this.questionsForms.get('questions').get(''+i)
+                          .value.extraType==2">
+                      <ion-item>
+                        <ion-label position="floating">Video (Youtube URL)</ion-label>
+                        <ion-input type="text" name="video-input" formControlName="url"></ion-input>
+                      </ion-item>
+                      <div class="preview-container">
+                        <div class="preview video-preview">
+                          <iframe width="560" height="315" src="" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Img extra -->
+                    <div id="extra-img" class="extra-edit"
+                        *ngIf="this.questionsForms.get('questions').get(''+i)
+                          .value.extraType==3">
+                      <label class="custom-label label-w-icon">Image (URL)<ion-icon name="image-outline"></ion-icon></label>
+                      <ion-input class="custom-input" type="text" formControlName="url"></ion-input>
+                      <ion-row>
+                        <!--<ion-col class="preview-container" *ngFor="let image of images" size-xs="12" size-sm="4">-->
+                          <div class="preview img-preview">
+                            <!--<div class="delete-extra"><ion-icon slot="center" name="close"></ion-icon></div>-->
+                              <img [src]="this.questionsForms.get('questions').get(''+i).value.url" alt="">
+                          </div>
+                        <!--</ion-col>-->
+                      </ion-row>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <ion-row>
+            <ion-col size-xs="12" offset-sm="3" size-sm="6" offset-lg="4" size-lg="4">
+              <div class="add-question" (click)="addQuestion()"><span>Add Question</span><ion-icon slot="end" name="add"></ion-icon></div>
+            </ion-col>
+          </ion-row>
+
+          <button class="button-custom button-secondary" [disabled]="packForm.invalid || questionsForms.invalid" (click)="savePack()">Save pack<ion-icon slot="end" name="save"></ion-icon></button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
 </ion-content>
