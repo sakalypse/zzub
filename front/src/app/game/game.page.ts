@@ -30,8 +30,10 @@ export class GamePage implements OnInit {
   currentQuestion;
   currentChoices;
 
-  showQuestion = true;
+  showQuestion = false;
   canAnswer;
+
+  roundIsMultipleChoice;
 
   constructor(
     @Inject(AuthService)
@@ -69,8 +71,6 @@ export class GamePage implements OnInit {
       this.listPlayerScore.push({ 'userId': player.userId, 'username': player.username, 'score': 0 });
     });
 
-    console.log(this.listPlayerScore);
-
     this.initPlayer();
 
     if(this.owner)
@@ -85,6 +85,8 @@ export class GamePage implements OnInit {
       this.showQuestion = true;
       this.canAnswer = true;
 
+      this.roundIsMultipleChoice = data.roundIsMultipleChoice;
+
       this.currentQuestion = data.question;
       this.currentChoices = data.choices;
     });
@@ -92,21 +94,28 @@ export class GamePage implements OnInit {
     //Listen for end of round
     this.socket.fromEvent('endOfRound').
     subscribe(async (data:any) => {
-      console.log(data.userId);
       //Add point to winner
       let player = this.listPlayerScore.find(x => x.userId == data.userId);
-      console.log(player);
       player.score++;
 
       //Show score scene
       this.showQuestion = false;
+    });
+
+    //Listen for false answer
+    this.socket.fromEvent('disableCanAnswer').
+    subscribe(async (data:any) => {
+      if(this.userId == data.userId){
+        this.canAnswer = false;
+      }
     });
   }
 
   //#region Host
   async initHost(){
     this.currentPack = this.room.packs[this.indexCurrentPack];
-    //listen for response
+    //---Listen for responses
+    //Multiple answer
     this.socket.fromEvent('playerSendChoice').
     subscribe(async (data:any) => {
       if(this.currentChoices.find(x => x.isAnswer == true).choiceId == data.choiceId){
@@ -117,7 +126,26 @@ export class GamePage implements OnInit {
       }
       else{
         //Wrong
-        this.canAnswer = false;
+        this.socket.emit('disableCanAnswer',
+        { roomCode: this.roomCode,
+          userId: data.userId});
+      }
+    });
+
+    //Typed answer
+    this.socket.fromEvent('playerSendInputChoice').
+    subscribe(async (data:any) => {
+      if(this.currentChoices.find(x => x.isAnswer == true).choice.toLowerCase() == data.inputChoice.toLowerCase()){
+        //Right response. End the round and emit the winner userId to all 
+        this.socket.emit('endOfRound',
+        { roomCode: this.roomCode,
+          userId: data.userId});
+      }
+      else{
+        //Wrong
+        this.socket.emit('disableCanAnswer',
+        { roomCode: this.roomCode,
+          userId: data.userId});
       }
     });
   }
@@ -126,12 +154,11 @@ export class GamePage implements OnInit {
     if(this.owner){
       //Init question to send
       if(this.indexCurrentRound>=this.currentPack.rounds.length){
-          console.log("next pack");
           //next pack
         if(this.indexCurrentPack>=this.room.packs.length-1){
           //TODO : Scene end game 
           //Show winner
-          console.log(this.listPlayerScore.sort((x,y) => x.score > y.score ? 1 : -1)[this.listPlayerScore.length-1]);
+          //console.log(this.listPlayerScore.sort((x,y) => x.score > y.score ? 1 : -1)[this.listPlayerScore.length-1]);
           return;
         }
         this.currentPack = this.room.packs[++this.indexCurrentPack];
@@ -139,16 +166,19 @@ export class GamePage implements OnInit {
       }
       var round = this.currentPack.rounds[this.indexCurrentRound++];
 
-      //shuffle choices
-      for (let i = round.choices.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [round.choices[i], round.choices[j]] = [round.choices[j], round.choices[i]];
+      if(round.isMultipleChoice){
+        //shuffle choices
+        for (let i = round.choices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [round.choices[i], round.choices[j]] = [round.choices[j], round.choices[i]];
+        }
       }
 
       //Emit question
       this.socket.emit('sendQuestion',
         { roomCode: this.roomCode,
           question: round.question,
+          roundIsMultipleChoice: round.isMultipleChoice,
           choices: round.choices});
     }
   }
@@ -160,6 +190,15 @@ export class GamePage implements OnInit {
       this.socket.emit('playerSendChoice',
           { roomCode: this.roomCode,
             choiceId: choiceId,
+            userId: this.userId});
+    }
+  }
+
+  async playerSendInputChoice(inputChoice){
+    if(this.canAnswer){
+      this.socket.emit('playerSendInputChoice',
+          { roomCode: this.roomCode,
+            inputChoice: inputChoice,
             userId: this.userId});
     }
   }

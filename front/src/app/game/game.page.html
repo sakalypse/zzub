@@ -16,9 +16,15 @@
         {{currentQuestion}}
       </ion-card-content>
     </ion-card>
-    <div *ngFor="let choice of currentChoices">
-      <button (click)="playerSendChoice(choice.choiceId)" >{{choice.choice}}</button>
-    </div>
+    <ng-container *ngIf="roundIsMultipleChoice">
+      <div *ngFor="let choice of currentChoices">
+        <button (click)="playerSendChoice(choice.choiceId)" >{{choice.choice}}</button>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!roundIsMultipleChoice">
+      <input type="text" #inputChoice />
+      <button (click)="playerSendInputChoice(inputChoice.value)" >OK</button>
+    </ng-container>
   </div>
 
   <div *ngIf="!showQuestion">
