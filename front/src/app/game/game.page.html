@@ -25,6 +25,12 @@
       <input type="text" #inputChoice />
       <button (click)="playerSendInputChoice(inputChoice.value)" >OK</button>
     </ng-container>
+
+    <ng-container *ngIf="currentExtra != null && currentExtra.extraType == enumExtraType.img">
+      <div class="preview img-preview">
+          <img [src]="currentExtra.url" alt="" />
+      </div>
+    </ng-container>
   </div>
 
   <div *ngIf="!showQuestion">

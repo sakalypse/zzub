@@ -78,7 +78,8 @@ export class GameService {
                                                 "players" ,
                                                 "packs",
                                                 "packs.rounds",
-                                                "packs.rounds.choices"]});
+                                                "packs.rounds.choices",
+                                                "packs.rounds.extra"]});
         if(game!=null){
             game.owner.password = "";
             game.players.forEach(player => {

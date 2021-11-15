@@ -52,7 +52,7 @@ export class GameGateway implements  OnGatewayConnection,
     //#region During Game
     @SubscribeMessage('sendQuestion')
     async onSendChoice(clientSocket, data){
-        this.server.in(data.roomCode).emit('sendQuestion', {question: data.question, roundIsMultipleChoice: data.roundIsMultipleChoice, choices:data.choices});
+        this.server.in(data.roomCode).emit('sendQuestion', {question: data.question, roundIsMultipleChoice: data.roundIsMultipleChoice, choices:data.choices, extra:data.extra});
     }
 
     @SubscribeMessage('playerSendChoice')
@@ -65,9 +65,9 @@ export class GameGateway implements  OnGatewayConnection,
         this.server.in(data.roomCode).emit('playerSendInputChoice', {userId: data.userId, inputChoice:data.inputChoice});
     }
 
-    @SubscribeMessage('disableCanAnswer')
+    @SubscribeMessage('playerWrong')
     async onDisableCanAnswer(clientSocket, data){
-        this.server.in(data.roomCode).emit('disableCanAnswer', {userId: data.userId});
+        this.server.in(data.roomCode).emit('playerWrong', {userId: data.userId});
     }
 
     @SubscribeMessage('endOfRound')

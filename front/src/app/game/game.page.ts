@@ -9,6 +9,7 @@ import { GameService } from '../services/game.service';
 import { UserService } from '../services/user.service';
 import { Role } from '../services/role.enum';
 import { PackService } from '../services/pack.service';
+import { ExtraType } from '../services/shared.enum';
 
 @Component({
   selector: 'app-game',
@@ -16,6 +17,7 @@ import { PackService } from '../services/pack.service';
   styleUrls: ['./game.page.scss'],
 })
 export class GamePage implements OnInit {
+  enumExtraType = ExtraType;
 
   roomCode;
   room;
@@ -29,6 +31,7 @@ export class GamePage implements OnInit {
 
   currentQuestion;
   currentChoices;
+  currentExtra;
 
   showQuestion = false;
   canAnswer;
@@ -50,7 +53,7 @@ export class GamePage implements OnInit {
     private activatedRoute:ActivatedRoute,
     public alertController: AlertController,
     public toastController: ToastController,
-    public socket:Socket
+    public socket:Socket,
   ) { 
     this.http = new HttpClient(handler);
     activatedRoute.params.subscribe(val => {
@@ -89,6 +92,8 @@ export class GamePage implements OnInit {
 
       this.currentQuestion = data.question;
       this.currentChoices = data.choices;
+
+      this.currentExtra = data.extra;
     });
 
     //Listen for end of round
@@ -103,7 +108,7 @@ export class GamePage implements OnInit {
     });
 
     //Listen for false answer
-    this.socket.fromEvent('disableCanAnswer').
+    this.socket.fromEvent('playerWrong').
     subscribe(async (data:any) => {
       if(this.userId == data.userId){
         this.canAnswer = false;
@@ -126,7 +131,7 @@ export class GamePage implements OnInit {
       }
       else{
         //Wrong
-        this.socket.emit('disableCanAnswer',
+        this.socket.emit('playerWrong',
         { roomCode: this.roomCode,
           userId: data.userId});
       }
@@ -143,7 +148,7 @@ export class GamePage implements OnInit {
       }
       else{
         //Wrong
-        this.socket.emit('disableCanAnswer',
+        this.socket.emit('playerWrong',
         { roomCode: this.roomCode,
           userId: data.userId});
       }
@@ -179,7 +184,8 @@ export class GamePage implements OnInit {
         { roomCode: this.roomCode,
           question: round.question,
           roundIsMultipleChoice: round.isMultipleChoice,
-          choices: round.choices});
+          choices: round.choices,
+          extra: round.extra});
     }
   }
   //#endregion
