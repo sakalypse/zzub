@@ -4,6 +4,7 @@ import { CreateGameDTO } from './game.dto';
 import { User } from 'src/user/user.entity';
 import { GameGuard } from 'src/auth/game.guard';
 import { GameOwnerGuard } from 'src/auth/gameOwner.guard';
+import { AdminGuard } from 'src/auth/admin.guard';
 
 @Controller('game')
 export class GameController {
@@ -65,6 +66,7 @@ export class GameController {
       return res.status(HttpStatus.OK).json({message:"Game " + gameId + " successfully started"});
     }
   
+    @UseGuards(AdminGuard)
     @Get('')
     async findAll(@Res() res) {
       const games = await this.gameService.getAllGame();

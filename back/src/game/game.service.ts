@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { CreateGameDTO } from './game.dto';
 import { User } from 'src/user/user.entity';
 import { PackService } from 'src/pack/pack.service';
+import { Role } from 'src/shared/role.enum';
 var randomstring = require("randomstring");
 
 @Injectable()
@@ -13,6 +14,8 @@ export class GameService {
     constructor(
         @InjectRepository(Game)
         private readonly gameRepository : Repository<Game>,
+        @InjectRepository(User)
+        private readonly userRepository : Repository<User>,
         @Inject(UserService)
         private readonly userService : UserService,
         @Inject(PackService)
@@ -149,13 +152,11 @@ export class GameService {
                                     {relations: ["players","owner","packs"]});
 
         //delete users that are guests
-        /*
         game.players.forEach(async player => {
-            if(player.guest){
-                await this.userService.deleteUserById(player.userId)
+            if(player.role == Role.guest){
+                await this.userService.deleteUser(player.userId)
             }
         });
-        */
 
         //update current games of each user to null
         game.owner.hostGame=null;

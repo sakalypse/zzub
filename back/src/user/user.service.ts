@@ -319,14 +319,5 @@ export class UserService {
     async getGuestById(id): Promise<ReturnedGuestDTO>{
         return await this.userRepository.findOne(id,{relations: ["game"]});
     }
-
-    /*
-    * Delete a guest by the id given
-    * @param  guestId
-    * @return the DeleteResult
-    */
-    async deleteGuest(guestId): Promise<DeleteResult>{
-        return await this.userRepository.delete(guestId);
-    }
     //#endregion
 }

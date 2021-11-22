@@ -100,6 +100,19 @@ export class GameService {
       this.hasGame = false;
     }
 
+    //#region Admin
+    async getAllGames(): Promise<any> {
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
+      let res = await this.http.get(`${this.API_URL}/game`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+      return res;
+    }
+    //#endregion
+    
     private handleError(error: HttpErrorResponse) {
       if (error.error instanceof ErrorEvent) {
         // A client-side or network error occurred. Handle it accordingly.

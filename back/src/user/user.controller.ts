@@ -142,7 +142,7 @@ export class UserController {
     @UseGuards(GuestGuard)
     @Delete('/guest/:id')
     async deleteGuest(@Res() res, @Param('id') guestId){
-        const deleteResult = await this.userService.deleteGuest(guestId);
+        const deleteResult = await this.userService.deleteUser(guestId);
         return res.status(HttpStatus.OK).json(deleteResult);
     }
     //#endregion
