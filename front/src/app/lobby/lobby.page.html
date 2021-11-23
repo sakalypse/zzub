@@ -1,26 +1,52 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>lobby</ion-title>
-  </ion-toolbar>
-</ion-header>
+ <ion-content *ngIf="this.room!=null">
 
-<ion-content>
-  
-<ion-content *ngIf="this.room!=null">
-  <div>Lobby : {{roomCode}}</div>
-  <button (click)="startRoom()" *ngIf="this.owner && this.players.length>=1">Start room</button>
-  <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
-  <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
-  
-  <div><br/>Packs :</div>
-  <div *ngFor ="let pack of this.room.packs" >
-    <div>{{pack.name}}</div>
+  <div class="lobby">
+
+    <div class="header-container">
+      <div class="code-container">
+        <div class="sup-code">
+            Join the game with room code :
+        </div>
+        <div class="code">{{roomCode}}</div>
+      </div>
+        
+    </div>
+
+    <div class="main-lobby">
+
+      <div class="players-section">
+        <div class="players-title">Players</div>
+        <div class="players-simplebar" data-simplebar>
+          <div class="players">
+            <div class="player" *ngFor ="let player of this.players">
+              <div class="player-img"><img src="../assets/Images/avatars/dinosaur.png" alt="avatar"></div>
+              <div class="player-name">{{player.username}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="packs-section">
+        <div class="packs-title">Game's themes</div>
+        <div class="packs-simplebar" data-simplebar>
+          <div class="packs">
+            <div class="pack" *ngFor ="let pack of this.room.packs">
+              <div class="pack-name">
+                {{pack.name}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <div class="toolbar-section">
+      <div class="primary-button" (click)="startRoom()" *ngIf="this.owner && this.players.length>=1">Start quiz</div>
+      <div class="secondary-button" (click)="deleteRoom()" *ngIf="this.owner">Delete room</div>
+      <div class="secondary-button" (click)="exitRoom()" *ngIf="!this.owner">Exit room</div>
+    </div>    
+
   </div>
-
-  <div><br/>Players :</div>
-  <ion-card *ngFor ="let player of this.players" >
-    <ion-card-content>
-      {{player.username}}
-    </ion-card-content>
-  </ion-card>
+  
 </ion-content>

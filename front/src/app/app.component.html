@@ -8,7 +8,7 @@
             <div class="menu-link" [routerDirection]="'root'"
                  [routerLink]="'lobby/'+this.gameService.codeGame"
                   *ngIf="this.authService.isConnected() && this.gameService.hasGame">
-              <ion-icon slot="start" [name]="football"></ion-icon>
+              <ion-icon slot="start" name="football"></ion-icon>
               <span>
                 Current Game
               </span>
@@ -16,7 +16,7 @@
             
             <div *ngFor="let p of appPages">
               <div class="menu-link" [routerDirection]="'root'" [routerLink]="[p.url]">
-                <ion-icon slot="start" [name]="p.icon"></ion-icon>
+                <ion-icon slot="start" name="p.icon"></ion-icon>
                 <span>
                   {{p.title}}
                 </span>
@@ -25,7 +25,7 @@
             <div class="menu-link" [routerDirection]="'root'"
                   [routerLink]="'login'"
                   *ngIf="!this.authService.isConnected()">
-              <ion-icon slot="start" [name]="log-in"></ion-icon>
+              <ion-icon slot="start" name="log-in"></ion-icon>
               <span>
                 Login
               </span>
@@ -33,7 +33,7 @@
             <div class="menu-link" [routerDirection]="'root'"
                  [routerLink]="'sign'"
                   *ngIf="!this.authService.isConnected()">
-              <ion-icon slot="start" [name]="pencil"></ion-icon>
+              <ion-icon slot="start" name="pencil"></ion-icon>
               <span>
                 Sign-up
               </span>
@@ -41,7 +41,7 @@
             <div class="menu-link" [routerDirection]="'root'"
             [routerLink]="" (click)="logout()"
             *ngIf="this.authService.isConnected()">
-              <ion-icon slot="start" [name]="exit-outline"></ion-icon>
+              <ion-icon slot="start" name="exit-outline"></ion-icon>
               <span>
                 Logout
               </span>
@@ -66,7 +66,7 @@
 
             <div *ngFor="let p of appPages">
               <div class="menu-link" [routerDirection]="'root'" [routerLink]="[p.url]">
-                <ion-icon slot="start" [name]="p.icon"></ion-icon>
+                <ion-icon slot="start" name="p.icon"></ion-icon>
                 <span>
                   {{p.title}}
                 </span>

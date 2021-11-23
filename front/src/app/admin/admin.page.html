@@ -1,0 +1,33 @@
+<ion-content>
+  <ion-grid>
+    <ion-row style="background:#72c0ff8f; font-weight: bold;">
+      <ion-col>Id</ion-col>
+      <ion-col>Username</ion-col>
+      <ion-col>Email</ion-col>
+      <ion-col>Role</ion-col>
+    </ion-row>
+
+    <ion-row *ngFor="let user of listUser">
+      <ion-col>{{ user.userId }}</ion-col>
+      <ion-col>{{ user.username }}</ion-col>
+      <ion-col>{{ user.email }}</ion-col>
+      <ion-col>{{ enumRole[user.role]}}</ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-grid>
+    <ion-row style="background:#93ff7e8f; font-weight: bold;">
+      <ion-col>Id</ion-col>
+      <ion-col>Owner</ion-col>
+      <ion-col>Date creation</ion-col>
+      <ion-col>Players</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let game of listGame">
+      <ion-col>{{ game.gameId }}</ion-col>
+      <ion-col>{{ game.owner.username }}</ion-col>
+      <ion-col>{{ game.dateCreation }}</ion-col>
+      <ion-col>{{ this.joinPlayersUsername(game.players) }}</ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

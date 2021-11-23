@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:16.13.0
 
 # Create app directory
 RUN mkdir -p /usr/src/front

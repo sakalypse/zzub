@@ -35,6 +35,7 @@ export class UserController {
         return res.status(HttpStatus.OK).json(user);
     }
 
+    @UseGuards(AdminGuard)
     @Get('/:id')
     async getUser(@Res() res, @Param('id') userId){
         const user = await this.userService.getUserById(userId);
@@ -124,12 +125,14 @@ export class UserController {
         return res.status(HttpStatus.OK).json(guest);
     }
 
+    @UseGuards(AdminGuard)
     @Get('/guest/bygame/:id')
     async getAllGuestsByGame(@Res() res, @Param('id') gameId){
         const guests = await this.userService.getAllGuestsByGame(gameId);
         return res.status(HttpStatus.OK).json(guests);
     }
 
+    @UseGuards(AdminGuard)
     @Get('/guest/:id')
     async getGuest(@Res() res, @Param('id') guestId){
         const guest = await this.userService.getGuestById(guestId);
@@ -139,7 +142,7 @@ export class UserController {
     @UseGuards(GuestGuard)
     @Delete('/guest/:id')
     async deleteGuest(@Res() res, @Param('id') guestId){
-        const deleteResult = await this.userService.deleteGuest(guestId);
+        const deleteResult = await this.userService.deleteUser(guestId);
         return res.status(HttpStatus.OK).json(deleteResult);
     }
     //#endregion
