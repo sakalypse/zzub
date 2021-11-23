@@ -46,9 +46,9 @@ export class HomepagePage implements OnInit {
     }
     
 
-    this.animationCreatePacks = {path: '/assets/animations/CreatePacks.json'};
-    this.animationConnectToPeople = {path: '/assets/animations/ConnectToPeople.json'};
-    this.animationRocketLaunch = {path: '/assets/animations/RocketLaunch.json'};
+    this.animationCreatePacks = {path: '/zzub/assets/animations/CreatePacks.json'};
+    this.animationConnectToPeople = {path: '/zzub/assets/animations/ConnectToPeople.json'};
+    this.animationRocketLaunch = {path: '/zzub/assets/animations/RocketLaunch.json'};
   }
 
   async joinLobby(){
