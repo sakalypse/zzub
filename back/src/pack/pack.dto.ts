@@ -12,4 +12,5 @@ export class UpdatePackDTO{
     readonly name:string;
     readonly tag:Tag;
     readonly isPublic:boolean;
-}
+    readonly language:number;
+} 
