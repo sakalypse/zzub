@@ -22,12 +22,12 @@ export class AppComponent implements OnInit {
   public appPages = [
     {
       title: 'Home',
-      url: 'homepage',
+      url: '',
       icon: 'home'
     },
     {
       title: 'How to play',
-      url: 'homepage',
+      url: '',
       icon: 'information'
     },
     {
