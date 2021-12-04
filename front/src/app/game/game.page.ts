@@ -218,12 +218,12 @@ export class GamePage implements OnInit {
     }
 
     this.socket.emit('quitGame', this.userId, this.roomCode);
-    this.router.navigate(["/homepage/"]);
+    this.router.navigate(["/"]);
   }
 
   async deleteRoom(){
     await this.gameService.deleteGame(this.room.gameId); 
     this.socket.emit('killGame', this.roomCode);
-    this.router.navigate(["/homepage/"]);
+    this.router.navigate(["/"]);
   }
 }
