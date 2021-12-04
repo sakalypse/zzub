@@ -18,7 +18,7 @@ export class AdminGuardService {
     };
 
     if (!authInfo.authenticated || this.authService.getLoggedUser().role != Role.admin) {
-      this.router.navigate(["homepage"]);
+      this.router.navigate([""]);
       return false;
     }
 

@@ -7,11 +7,6 @@ import { AdminGuardService } from './auth/admin-guard.service';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'homepage',
-    pathMatch: 'full'
-  },
-  {
-    path: 'homepage',
     loadChildren: () => import('./homepage/homepage.module').then( m => m.HomepagePageModule)
   },
   {
