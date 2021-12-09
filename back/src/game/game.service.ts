@@ -133,12 +133,11 @@ export class GameService {
         then(async userFound =>{
             user = userFound;
             user.game = null;
-            this.userService.updateUser(userId, user);
-            /*
-            if(user.guest){
-                await this.userService.deleteUserById(user.userId)
-            }
-            */
+            await this.userService.updateUser(userId, user).then( _ => {
+                if(user.role == Role.guest){
+                    this.userService.deleteUser(user.userId)
+                }
+            });
         }).catch(error => {throw new
             HttpException(error,
              HttpStatus.FORBIDDEN)});

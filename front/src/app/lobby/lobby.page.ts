@@ -100,11 +100,6 @@ export class LobbyPage implements OnInit {
 
   async exitRoom(){
     await this.gameService.removeUserToGame(this.room.gameId, this.userId);
-    if(this.authService.getLoggedUser().role == Role.guest){
-      await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
-      this.authService.clearStorage();
-    }
-
     this.socket.emit('quitGame', this.userId, this.roomCode);
     this.router.navigate(["/"]);
   }

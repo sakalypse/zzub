@@ -18,7 +18,7 @@
     </ion-card>
     <ng-container *ngIf="roundIsMultipleChoice">
       <div *ngFor="let choice of currentChoices">
-        <button (click)="playerSendChoice(choice.choiceId)" >{{choice.choice}}</button>
+        <button (click)="playerSendChoice(choice.choiceId)" [disabled]="!canAnswer" >{{choice.choice}}</button>
       </div>
     </ng-container>
     <ng-container *ngIf="!roundIsMultipleChoice">
