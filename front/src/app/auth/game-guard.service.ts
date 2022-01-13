@@ -19,8 +19,9 @@ export class GameGuardService {
 
     //If user is not a player of the game
     let game = await this.gameService.getGameByCode(roomCode);
-    if (!game.players.some(x=>x.userId == this.authService.getLoggedUser().userId)) {
-      this.router.navigate(["homepage"]);
+    if (game == null ||
+      !game.players.some(x=>x.userId == this.authService.getLoggedUser().userId)) {
+      this.router.navigate([""]);
       return false;
     }
 

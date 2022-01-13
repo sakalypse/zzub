@@ -2,16 +2,12 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuardService } from './auth/auth-guard.service';
 import { GameGuardService } from './auth/game-guard.service';
+import { LobbyGuardService } from './auth/lobby-guard.service';
 import { AdminGuardService } from './auth/admin-guard.service';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'homepage',
-    pathMatch: 'full'
-  },
-  {
-    path: 'homepage',
     loadChildren: () => import('./homepage/homepage.module').then( m => m.HomepagePageModule)
   },
   {
@@ -39,7 +35,8 @@ const routes: Routes = [
   },
   {
     path: 'lobby/:code',
-    loadChildren: () => import('./lobby/lobby.module').then( m => m.LobbyPageModule)
+    loadChildren: () => import('./lobby/lobby.module').then( m => m.LobbyPageModule),
+    canActivate: [LobbyGuardService]
   },
   {
     path: 'game/:code',

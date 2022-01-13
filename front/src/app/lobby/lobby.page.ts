@@ -88,7 +88,7 @@ export class LobbyPage implements OnInit {
         await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
         this.authService.clearStorage();
       }
-      this.router.navigate(["/homepage/"]);
+      this.router.navigate(["/"]);
     });
 
     //listen for session start
@@ -100,19 +100,14 @@ export class LobbyPage implements OnInit {
 
   async exitRoom(){
     await this.gameService.removeUserToGame(this.room.gameId, this.userId);
-    if(this.authService.getLoggedUser().role == Role.guest){
-      await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
-      this.authService.clearStorage();
-    }
-
     this.socket.emit('quitGame', this.userId, this.roomCode);
-    this.router.navigate(["/homepage/"]);
+    this.router.navigate(["/"]);
   }
 
   async deleteRoom(){
     await this.gameService.deleteGame(this.room.gameId); 
     this.socket.emit('killGame', this.roomCode);
-    this.router.navigate(["/homepage/"]);
+    this.router.navigate(["/"]);
   }
 
   async startRoom(){

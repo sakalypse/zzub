@@ -50,6 +50,11 @@ export class GameGateway implements  OnGatewayConnection,
     }
 
     //#region During Game
+    @SubscribeMessage('rejoin')
+    async onRejoin(clientSocket, roomCode){
+        clientSocket.join(roomCode);
+    }
+
     @SubscribeMessage('sendQuestion')
     async onSendChoice(clientSocket, data){
         this.server.in(data.roomCode).emit('sendQuestion', {question: data.question, roundIsMultipleChoice: data.roundIsMultipleChoice, choices:data.choices, extra:data.extra});

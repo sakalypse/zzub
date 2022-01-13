@@ -36,4 +36,12 @@ export class AdminPage implements OnInit {
   joinPlayersUsername(players:any){
     return players.map(o => o.username).join(', ')
   }
+
+  deleteGame(gameId:any){
+    this.gameService.deleteGame(gameId);
+  }
+
+  deleteUser(userId:any){
+    this.userService.deleteUserAsAdmin(userId);
+  }
 }

@@ -28,6 +28,14 @@ export class UserController {
         const users = await this.userService.getAllUsers();
         return res.status(HttpStatus.OK).json(users);
     }
+
+    @UseGuards(AdminGuard)
+    @Delete('/admin/:id')
+    async deleteUserAsAdmin(@Res() res, @Param('id') userId){
+        const deleteResult = await this.userService.deleteUser(userId);
+        return res.status(HttpStatus.OK).json(deleteResult);
+    }
+
     
     @Get('/safeinfo/:id')
     async getUserSafeInfo(@Res() res, @Param('id') userId){

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, HostListener } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpBackend } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
@@ -64,10 +64,13 @@ export class GamePage implements OnInit {
   ngOnInit() { }
 
   async init(){
-    this.userId = await this.authService.getLoggedUser().userId;
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
-    this.room = await this.gameService.getGameByCode(this.roomCode);
+    this.room = await this.gameService.getGameByCode(this.roomCode).then(res => { return res});
+    this.userId = this.authService.getLoggedUser().userId;
     this.owner = (this.room.owner.userId == this.userId) ? true : false;
+
+    //handle refresh
+    this.socket.emit('rejoin', this.roomCode);
 
     this.listPlayerScore = [];
     this.room.players.forEach(player => {
@@ -113,6 +116,25 @@ export class GamePage implements OnInit {
       if(this.userId == data.userId){
         this.canAnswer = false;
       }
+    });
+
+
+    //listen for player quitting
+    this.socket.fromEvent('quitGame').
+    subscribe(async id => {
+      this.listPlayerScore = this.listPlayerScore.
+                        filter(x => x.userId !== id);
+    });
+
+    //listen for session killed
+    this.socket.fromEvent('killGame').
+    subscribe(async id => {
+      //Delete itself if guest
+      if(this.authService.getLoggedUser().role == Role.guest){
+        await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
+        this.authService.clearStorage();
+      }
+      this.router.navigate(["/"]);
     });
   }
 
@@ -211,19 +233,14 @@ export class GamePage implements OnInit {
   //#endregion
 
   async exitRoom(){
-    await this.gameService.removeUserToGame(this.room.gameId, this.userId);
-    if(this.authService.getLoggedUser().role == Role.guest){
-      await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
-      this.authService.clearStorage();
-    }
-
     this.socket.emit('quitGame', this.userId, this.roomCode);
-    this.router.navigate(["/homepage/"]);
+    await this.gameService.removeUserToGame(this.room.gameId, this.userId);
+    this.router.navigate(["/"]);
   }
 
   async deleteRoom(){
-    await this.gameService.deleteGame(this.room.gameId); 
     this.socket.emit('killGame', this.roomCode);
-    this.router.navigate(["/homepage/"]);
+    await this.gameService.deleteGame(this.room.gameId); 
+    this.router.navigate(["/"]);
   }
 }
