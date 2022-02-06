@@ -1,10 +1,10 @@
-import { Component, OnInit, Inject, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, HostListener } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpBackend } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
-import { Socket } from 'ngx-socket-io';
+import { Socket, SocketIoModule, SocketIoConfig  } from 'ngx-socket-io';
 import { GameService } from '../services/game.service';
 import { UserService } from '../services/user.service';
 import { Role } from '../services/role.enum';
@@ -16,14 +16,14 @@ import { ExtraType } from '../services/shared.enum';
   templateUrl: './game.page.html',
   styleUrls: ['./game.page.scss'],
 })
-export class GamePage implements OnInit {
+export class GamePage implements OnInit, OnDestroy {
   enumExtraType = ExtraType;
 
   roomCode;
   room;
   userId;
   owner;
-  listPlayerScore;
+  listPlayer;
 
   indexCurrentPack = 0;
   currentPack;
@@ -32,6 +32,10 @@ export class GamePage implements OnInit {
   currentQuestion;
   currentChoices;
   currentExtra;
+
+  currentPackName;
+  currentNumberQuestion;
+  currentIndexQuestion = 1;
 
   showQuestion = false;
   canAnswer;
@@ -64,6 +68,9 @@ export class GamePage implements OnInit {
   ngOnInit() { }
 
   async init(){
+    const config: SocketIoConfig = { url: environment.API_URL_DEV, options: {}};
+    this.socket = new Socket(config);
+
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
     this.room = await this.gameService.getGameByCode(this.roomCode).then(res => { return res});
     this.userId = this.authService.getLoggedUser().userId;
@@ -72,9 +79,9 @@ export class GamePage implements OnInit {
     //handle refresh
     this.socket.emit('rejoin', this.roomCode);
 
-    this.listPlayerScore = [];
+    this.listPlayer = [];
     this.room.players.forEach(player => {
-      this.listPlayerScore.push({ 'userId': player.userId, 'username': player.username, 'score': 0 });
+      this.listPlayer.push({ 'userId': player.userId, 'username': player.username, 'score': 0, 'wrong': false });
     });
 
     this.initPlayer();
@@ -97,15 +104,23 @@ export class GamePage implements OnInit {
       this.currentChoices = data.choices;
 
       this.currentExtra = data.extra;
+
+      this.currentPackName = data.packName;
+      this.currentNumberQuestion = data.numberQuestion;
     });
 
     //Listen for end of round
     this.socket.fromEvent('endOfRound').
     subscribe(async (data:any) => {
       //Add point to winner
-      let player = this.listPlayerScore.find(x => x.userId == data.userId);
+      let player = this.listPlayer.find(x => x.userId == data.userId);
       player.score++;
+      //Sort list player by score before showing it
+      this.listPlayer.sort(function(x, y) {
+        return y.score - x.score;
+      });
 
+      this.currentIndexQuestion++;
       //Show score scene
       this.showQuestion = false;
     });
@@ -116,19 +131,23 @@ export class GamePage implements OnInit {
       if(this.userId == data.userId){
         this.canAnswer = false;
       }
+
+      this.listPlayer.find(x => x.userId == data.userId).wrong = true;
     });
 
 
     //listen for player quitting
     this.socket.fromEvent('quitGame').
     subscribe(async id => {
-      this.listPlayerScore = this.listPlayerScore.
+      this.listPlayer = this.listPlayer.
                         filter(x => x.userId !== id);
     });
 
     //listen for session killed
     this.socket.fromEvent('killGame').
     subscribe(async id => {
+      this.socket.emit('quitGame', this.userId, this.roomCode);
+
       //Delete itself if guest
       if(this.authService.getLoggedUser().role == Role.guest){
         await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
@@ -152,7 +171,8 @@ export class GamePage implements OnInit {
           userId: data.userId});
       }
       else{
-        //Wrong
+        //Wrong response
+        //Tell player that he is wrong
         this.socket.emit('playerWrong',
         { roomCode: this.roomCode,
           userId: data.userId});
@@ -201,13 +221,20 @@ export class GamePage implements OnInit {
         }
       }
 
+      //Reinit players capacity to vote
+      this.listPlayer.forEach(player => {
+        player.wrong = false;
+      });
+
       //Emit question
       this.socket.emit('sendQuestion',
         { roomCode: this.roomCode,
           question: round.question,
           roundIsMultipleChoice: round.isMultipleChoice,
           choices: round.choices,
-          extra: round.extra});
+          extra: round.extra,
+          packName: this.currentPack.name,
+          numberQuestion: this.currentPack.rounds.length});
     }
   }
   //#endregion
@@ -242,5 +269,10 @@ export class GamePage implements OnInit {
     this.socket.emit('killGame', this.roomCode);
     await this.gameService.deleteGame(this.room.gameId); 
     this.router.navigate(["/"]);
+  }
+
+  @HostListener('unloaded')
+  ngOnDestroy() {
+    this.socket.disconnect();
   }
 }

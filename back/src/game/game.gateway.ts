@@ -21,8 +21,7 @@ export class GameGateway implements  OnGatewayConnection,
         const userId=data[0];
         const roomCode=data[1];
         clientSocket.join(roomCode);
-        clientSocket.broadcast.
-            to(roomCode).emit('joinLobby', userId);
+        clientSocket.broadcast.to(roomCode).emit('joinLobby', userId);
     }
 
     @SubscribeMessage('quitGame')
@@ -37,9 +36,7 @@ export class GameGateway implements  OnGatewayConnection,
 
     @SubscribeMessage('killGame')
     async onKillGame(clientSocket, roomCode){
-        clientSocket.broadcast.
-            to(roomCode).emit('killGame', roomCode);
-
+        clientSocket.broadcast.to(roomCode).emit('killGame', roomCode);
         clientSocket.leave(roomCode);
     }
     
@@ -57,7 +54,15 @@ export class GameGateway implements  OnGatewayConnection,
 
     @SubscribeMessage('sendQuestion')
     async onSendChoice(clientSocket, data){
-        this.server.in(data.roomCode).emit('sendQuestion', {question: data.question, roundIsMultipleChoice: data.roundIsMultipleChoice, choices:data.choices, extra:data.extra});
+        this.server.in(data.roomCode).emit('sendQuestion',
+            {
+                question: data.question,
+                roundIsMultipleChoice: data.roundIsMultipleChoice,
+                choices:data.choices,
+                extra:data.extra,
+                packName:data.packName,
+                numberQuestion:data.numberQuestion
+            });
     }
 
     @SubscribeMessage('playerSendChoice')

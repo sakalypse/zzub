@@ -7,6 +7,10 @@
     <div class="game-container">
       <div class="question-container">
         <div *ngIf="showQuestion" class="question">
+
+          <div>{{currentPackName}}</div>
+          <div>{{currentIndexQuestion}} / {{currentNumberQuestion}}</div>
+
           <div class="question-text">{{currentQuestion}}</div>
           <div *ngIf="currentExtra != null && currentExtra.extraType == enumExtraType.img" class="question-asset">
             <img [src]="currentExtra.url" />
@@ -23,18 +27,19 @@
         </div>
       </div>
       <button (click)="sendNextQuestion()" *ngIf="this.owner" class="next-question">Send next question</button>
+
     </div>
       <div class="score-container">
         <div class="players">
-          <div class="player" *ngFor="let playerScore of listPlayerScore">
+          <div class="player" *ngFor="let player of listPlayer">
             <div class="player-frame">
               <div class="player-avatar">
                 <img src="../assets/Images/avatars/dinosaur.png" alt="avatar">
               </div>
             </div>
             <div class="player-infos">
-              <div class="player-name">{{playerScore.username}}</div>
-              <div class="player-score">{{playerScore.score}}</div>
+              <div class="player-name">{{player.username}}</div>
+              <div class="player-score">{{player.score}}</div>
             </div>
           </div>
         </div>
