@@ -10,6 +10,7 @@ import { UserService } from '../services/user.service';
 import { Role } from '../services/role.enum';
 import { PackService } from '../services/pack.service';
 import { ExtraType } from '../services/shared.enum';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-game',
@@ -41,6 +42,16 @@ export class GamePage implements OnInit, OnDestroy {
   canAnswer;
 
   roundIsMultipleChoice;
+
+  timerRoundSubscribe;
+  timerRoundForPlayerSubscribe;
+  roundTimer;
+  roundTimerForPlayer;
+  nextRoundTimer;
+
+  //CONST
+  TIME_FOR_ROUND = 7;
+  TIME_FOR_NEXT_ROUND = 3;
 
   constructor(
     @Inject(AuthService)
@@ -81,7 +92,7 @@ export class GamePage implements OnInit, OnDestroy {
 
     this.listPlayer = [];
     this.room.players.forEach(player => {
-      this.listPlayer.push({ 'userId': player.userId, 'username': player.username, 'score': 0, 'wrong': false });
+      this.listPlayer.push({ 'userId': player.userId, 'username': player.username, 'score': 0, 'answered': false, 'wrong': false });
     });
 
     this.initPlayer();
@@ -94,6 +105,22 @@ export class GamePage implements OnInit, OnDestroy {
     //listen for questions
     this.socket.fromEvent('sendQuestion').
     subscribe(async (data:any) => {
+      //Start timer for player
+      const source = timer(0, 1000);
+      this.roundTimerForPlayer = this.TIME_FOR_ROUND;
+      this.timerRoundForPlayerSubscribe = source.subscribe(val => {
+        this.roundTimerForPlayer = this.TIME_FOR_ROUND - val;
+        if(this.roundTimerForPlayer <= 0){
+          this.timerRoundForPlayerSubscribe.unsubscribe();
+        }
+      });
+
+      //Reinit players capacity to vote
+      this.listPlayer.forEach(player => {
+        player.answered = false;
+        player.wrong = false;
+      });
+
       //Remove score scene
       this.showQuestion = true;
       this.canAnswer = true;
@@ -112,27 +139,50 @@ export class GamePage implements OnInit, OnDestroy {
     //Listen for end of round
     this.socket.fromEvent('endOfRound').
     subscribe(async (data:any) => {
-      //Add point to winner
-      let player = this.listPlayer.find(x => x.userId == data.userId);
-      player.score++;
-      //Sort list player by score before showing it
-      this.listPlayer.sort(function(x, y) {
-        return y.score - x.score;
-      });
+      this.timerRoundForPlayerSubscribe.unsubscribe();
 
       this.currentIndexQuestion++;
       //Show score scene
       this.showQuestion = false;
+      this.canAnswer = false;
+
+      //Start timer for next question
+      const source = timer(0, 1000);
+      this.nextRoundTimer = this.TIME_FOR_NEXT_ROUND;
+      let timerSubscribe = source.subscribe(val => {
+        this.nextRoundTimer = this.TIME_FOR_NEXT_ROUND - val;
+        if(this.nextRoundTimer <= 0){
+          timerSubscribe.unsubscribe();
+
+          if(this.owner){
+            this.sendNextQuestion();
+          }
+        }
+      });
     });
 
     //Listen for false answer
-    this.socket.fromEvent('playerWrong').
-    subscribe(async (data:any) => {
+    this.socket.fromEvent('playerAnswered').
+    subscribe(async (data:any) => {      
       if(this.userId == data.userId){
         this.canAnswer = false;
       }
 
-      this.listPlayer.find(x => x.userId == data.userId).wrong = true;
+      let player = this.listPlayer.find(x => x.userId == data.userId);
+      let countPlayersRight = this.listPlayer.filter(x => x.answered == true && x.wrong == false).length
+      player.answered = true;
+      player.wrong = data.wrong;
+
+      //Add point to winner
+      if(player.wrong == false){
+        console.log(countPlayersRight);
+        player.score += this.listPlayer.length - countPlayersRight;
+      }
+      
+      //Sort list player by score
+      this.listPlayer.sort(function(x, y) {
+        return y.score - x.score;
+      });
     });
 
 
@@ -157,6 +207,7 @@ export class GamePage implements OnInit, OnDestroy {
     });
   }
 
+
   //#region Host
   async initHost(){
     this.currentPack = this.room.packs[this.indexCurrentPack];
@@ -164,37 +215,73 @@ export class GamePage implements OnInit, OnDestroy {
     //Multiple answer
     this.socket.fromEvent('playerSendChoice').
     subscribe(async (data:any) => {
+      let wrong;
+
       if(this.currentChoices.find(x => x.isAnswer == true).choiceId == data.choiceId){
-        //Right response. End the round and emit the winner userId to all 
-        this.socket.emit('endOfRound',
-        { roomCode: this.roomCode,
-          userId: data.userId});
+        wrong = false;
       }
       else{
-        //Wrong response
-        //Tell player that he is wrong
-        this.socket.emit('playerWrong',
+        wrong = true;
+      }
+
+      let countPlayersNotAnswered = this.listPlayer.filter(x => x.answered == false).length;
+
+      this.socket.emit('playerAnswered',
         { roomCode: this.roomCode,
-          userId: data.userId});
+          userId: data.userId,
+          wrong: wrong});
+
+      //End round if last player to answer
+      if(countPlayersNotAnswered == 1){
+        this.endOfROund();
       }
     });
 
     //Typed answer
     this.socket.fromEvent('playerSendInputChoice').
     subscribe(async (data:any) => {
+      let wrong;
+
       if(this.currentChoices.find(x => x.isAnswer == true).choice.toLowerCase() == data.inputChoice.toLowerCase()){
-        //Right response. End the round and emit the winner userId to all 
-        this.socket.emit('endOfRound',
-        { roomCode: this.roomCode,
-          userId: data.userId});
+        wrong = false;
       }
       else{
-        //Wrong
-        this.socket.emit('playerWrong',
+        wrong = true;
+      }
+
+      let countPlayersNotAnswered = this.listPlayer.filter(x => x.answered == false).length;
+
+      this.socket.emit('playerAnswered',
         { roomCode: this.roomCode,
-          userId: data.userId});
+          userId: data.userId,
+          wrong: wrong});
+
+      //End round if last player to answer
+      if(countPlayersNotAnswered == 1){
+        this.endOfROund();
       }
     });
+
+
+    //Start timer for first question
+    const source = timer(0, 1000);
+    this.nextRoundTimer = this.TIME_FOR_NEXT_ROUND;
+    let timerSubscribe = source.subscribe(val => {
+      this.nextRoundTimer = this.TIME_FOR_NEXT_ROUND - val;
+      if(this.nextRoundTimer <= 0){
+        timerSubscribe.unsubscribe();
+        this.sendNextQuestion();
+      }
+    });
+  }
+
+
+  //Handle timer and emit to all
+  endOfROund(){
+    this.timerRoundSubscribe.unsubscribe();
+    this.roundTimerForPlayer = 0;
+    this.socket.emit('endOfRound',
+      { roomCode: this.roomCode });
   }
 
   async sendNextQuestion(){
@@ -221,11 +308,6 @@ export class GamePage implements OnInit, OnDestroy {
         }
       }
 
-      //Reinit players capacity to vote
-      this.listPlayer.forEach(player => {
-        player.wrong = false;
-      });
-
       //Emit question
       this.socket.emit('sendQuestion',
         { roomCode: this.roomCode,
@@ -235,6 +317,16 @@ export class GamePage implements OnInit, OnDestroy {
           extra: round.extra,
           packName: this.currentPack.name,
           numberQuestion: this.currentPack.rounds.length});
+
+      //Start timer
+      const source = timer(0, 1000);
+      this.roundTimer = this.TIME_FOR_ROUND;
+      this.timerRoundSubscribe = source.subscribe(val => {
+        this.roundTimer = this.TIME_FOR_ROUND - val;
+        if(this.roundTimer <= 0){
+          this.endOfROund();
+        }
+      });
     }
   }
   //#endregion

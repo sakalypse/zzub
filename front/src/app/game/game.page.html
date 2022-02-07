@@ -2,6 +2,8 @@
   <div>Lobby : {{roomCode}}</div>
   <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
   <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
+  <div>Before next round : {{nextRoundTimer}}</div>
+  <div>Before end of round : {{roundTimerForPlayer}}</div>
 
   <div class="game-page-container">
     <div class="game-container">
@@ -21,12 +23,11 @@
         <div class="multiple-choice" *ngIf="roundIsMultipleChoice">
             <div class="choice" *ngFor="let choice of currentChoices" (click)="playerSendChoice(choice.choiceId)" [class.disabled]="!canAnswer" >{{choice.choice}}</div>
         </div>
-        <div class="type-answer" *ngIf="!roundIsMultipleChoice">
+        <div class="type-answer" *ngIf="!roundIsMultipleChoice" (keyup.enter)="playerSendInputChoice(inputChoice.value)">
           <input class="type-input" type="text" #inputChoice />
           <div (click)="playerSendInputChoice(inputChoice.value)" class="type-submit">Validate</div>
         </div>
       </div>
-      <button (click)="sendNextQuestion()" *ngIf="this.owner" class="next-question">Send next question</button>
 
     </div>
       <div class="score-container">

@@ -75,14 +75,14 @@ export class GameGateway implements  OnGatewayConnection,
         this.server.in(data.roomCode).emit('playerSendInputChoice', {userId: data.userId, inputChoice:data.inputChoice});
     }
 
-    @SubscribeMessage('playerWrong')
+    @SubscribeMessage('playerAnswered')
     async onDisableCanAnswer(clientSocket, data){
-        this.server.in(data.roomCode).emit('playerWrong', {userId: data.userId});
+        this.server.in(data.roomCode).emit('playerAnswered', {userId: data.userId, wrong: data.wrong});
     }
 
     @SubscribeMessage('endOfRound')
     async onEndOfRound(clientSocket, data){
-        this.server.in(data.roomCode).emit('endOfRound', {userId: data.userId});
+        this.server.in(data.roomCode).emit('endOfRound', {});
     }
     //#endregion
 }
