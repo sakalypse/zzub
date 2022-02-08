@@ -110,7 +110,10 @@ export class GamePage implements OnInit, OnDestroy {
       this.roundTimerForPlayer = this.TIME_FOR_ROUND;
       this.timerRoundForPlayerSubscribe = source.subscribe(val => {
         this.roundTimerForPlayer = this.TIME_FOR_ROUND - val;
+        (document.querySelector('.question-timer') as HTMLInputElement).style.transform = "translateX(-"+((val+1)/this.TIME_FOR_ROUND)*100+"%)";
+        console.log(val);
         if(this.roundTimerForPlayer <= 0){
+          (document.querySelector('.question-timer') as HTMLInputElement).style.transform = "translateX(0%)";
           this.timerRoundForPlayerSubscribe.unsubscribe();
         }
       });
@@ -139,6 +142,7 @@ export class GamePage implements OnInit, OnDestroy {
     //Listen for end of round
     this.socket.fromEvent('endOfRound').
     subscribe(async (data:any) => {
+      (document.querySelector('.question-timer') as HTMLInputElement).style.transform = "translateX(0%)";
       this.timerRoundForPlayerSubscribe.unsubscribe();
 
       this.currentIndexQuestion++;

@@ -2,27 +2,27 @@
   <div>Lobby : {{roomCode}}</div>
   <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
   <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
-  <div>Before next round : {{nextRoundTimer}}</div>
-  <div>Before end of round : {{roundTimerForPlayer}}</div>
 
   <div class="game-page-container">
     <div class="game-container">
       <div class="question-container">
+        <div class="question-timer-container">
+          <div class="question-timer"></div>
+        </div>
         <div *ngIf="showQuestion" class="question">
-
-          <div>{{currentPackName}}</div>
-          <div>{{currentIndexQuestion}} / {{currentNumberQuestion}}</div>
-
           <div class="question-text">{{currentQuestion}}</div>
           <div *ngIf="currentExtra != null && currentExtra.extraType == enumExtraType.img" class="question-asset">
             <img [src]="currentExtra.url" />
           </div>
           <div class="question-infos-container">
             <div class="question-infos">
-              <div class="info-pack-name">Politique</div>
-              <div class="info-question-index">1/24</div>
+              <div class="info-pack-name">{{currentPackName}}</div>
+              <div class="info-question-index">{{currentIndexQuestion}}/{{currentNumberQuestion}}</div>
             </div>
           </div>
+        </div>
+        <div *ngIf="!showQuestion" class="question">
+          <div class="question-text">Next round starts in : {{nextRoundTimer}}</div>
         </div>
       </div>
       <div *ngIf="showQuestion" class="answer-container">
