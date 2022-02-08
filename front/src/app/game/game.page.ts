@@ -1,29 +1,30 @@
-import { Component, OnInit, Inject, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, HostListener } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpBackend } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
-import { Socket } from 'ngx-socket-io';
+import { Socket, SocketIoModule, SocketIoConfig  } from 'ngx-socket-io';
 import { GameService } from '../services/game.service';
 import { UserService } from '../services/user.service';
 import { Role } from '../services/role.enum';
 import { PackService } from '../services/pack.service';
 import { ExtraType } from '../services/shared.enum';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.page.html',
   styleUrls: ['./game.page.scss'],
 })
-export class GamePage implements OnInit {
+export class GamePage implements OnInit, OnDestroy {
   enumExtraType = ExtraType;
 
   roomCode;
   room;
   userId;
   owner;
-  listPlayerScore;
+  listPlayer;
 
   indexCurrentPack = 0;
   currentPack;
@@ -33,10 +34,24 @@ export class GamePage implements OnInit {
   currentChoices;
   currentExtra;
 
+  currentPackName;
+  currentNumberQuestion;
+  currentIndexQuestion = 1;
+
   showQuestion = false;
   canAnswer;
 
   roundIsMultipleChoice;
+
+  timerRoundSubscribe;
+  timerRoundForPlayerSubscribe;
+  roundTimer;
+  roundTimerForPlayer;
+  nextRoundTimer;
+
+  //CONST
+  TIME_FOR_ROUND = 7;
+  TIME_FOR_NEXT_ROUND = 3;
 
   constructor(
     @Inject(AuthService)
@@ -64,6 +79,9 @@ export class GamePage implements OnInit {
   ngOnInit() { }
 
   async init(){
+    const config: SocketIoConfig = { url: environment.API_URL_DEV, options: {}};
+    this.socket = new Socket(config);
+
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
     this.room = await this.gameService.getGameByCode(this.roomCode).then(res => { return res});
     this.userId = this.authService.getLoggedUser().userId;
@@ -72,9 +90,9 @@ export class GamePage implements OnInit {
     //handle refresh
     this.socket.emit('rejoin', this.roomCode);
 
-    this.listPlayerScore = [];
+    this.listPlayer = [];
     this.room.players.forEach(player => {
-      this.listPlayerScore.push({ 'userId': player.userId, 'username': player.username, 'score': 0 });
+      this.listPlayer.push({ 'userId': player.userId, 'username': player.username, 'score': 0, 'answered': false, 'wrong': false });
     });
 
     this.initPlayer();
@@ -87,6 +105,22 @@ export class GamePage implements OnInit {
     //listen for questions
     this.socket.fromEvent('sendQuestion').
     subscribe(async (data:any) => {
+      //Start timer for player
+      const source = timer(0, 1000);
+      this.roundTimerForPlayer = this.TIME_FOR_ROUND;
+      this.timerRoundForPlayerSubscribe = source.subscribe(val => {
+        this.roundTimerForPlayer = this.TIME_FOR_ROUND - val;
+        if(this.roundTimerForPlayer <= 0){
+          this.timerRoundForPlayerSubscribe.unsubscribe();
+        }
+      });
+
+      //Reinit players capacity to vote
+      this.listPlayer.forEach(player => {
+        player.answered = false;
+        player.wrong = false;
+      });
+
       //Remove score scene
       this.showQuestion = true;
       this.canAnswer = true;
@@ -97,38 +131,73 @@ export class GamePage implements OnInit {
       this.currentChoices = data.choices;
 
       this.currentExtra = data.extra;
+
+      this.currentPackName = data.packName;
+      this.currentNumberQuestion = data.numberQuestion;
     });
 
     //Listen for end of round
     this.socket.fromEvent('endOfRound').
     subscribe(async (data:any) => {
-      //Add point to winner
-      let player = this.listPlayerScore.find(x => x.userId == data.userId);
-      player.score++;
+      this.timerRoundForPlayerSubscribe.unsubscribe();
 
+      this.currentIndexQuestion++;
       //Show score scene
       this.showQuestion = false;
+      this.canAnswer = false;
+
+      //Start timer for next question
+      const source = timer(0, 1000);
+      this.nextRoundTimer = this.TIME_FOR_NEXT_ROUND;
+      let timerSubscribe = source.subscribe(val => {
+        this.nextRoundTimer = this.TIME_FOR_NEXT_ROUND - val;
+        if(this.nextRoundTimer <= 0){
+          timerSubscribe.unsubscribe();
+
+          if(this.owner){
+            this.sendNextQuestion();
+          }
+        }
+      });
     });
 
     //Listen for false answer
-    this.socket.fromEvent('playerWrong').
-    subscribe(async (data:any) => {
+    this.socket.fromEvent('playerAnswered').
+    subscribe(async (data:any) => {      
       if(this.userId == data.userId){
         this.canAnswer = false;
       }
+
+      let player = this.listPlayer.find(x => x.userId == data.userId);
+      let countPlayersRight = this.listPlayer.filter(x => x.answered == true && x.wrong == false).length
+      player.answered = true;
+      player.wrong = data.wrong;
+
+      //Add point to winner
+      if(player.wrong == false){
+        console.log(countPlayersRight);
+        player.score += this.listPlayer.length - countPlayersRight;
+      }
+      
+      //Sort list player by score
+      this.listPlayer.sort(function(x, y) {
+        return y.score - x.score;
+      });
     });
 
 
     //listen for player quitting
     this.socket.fromEvent('quitGame').
     subscribe(async id => {
-      this.listPlayerScore = this.listPlayerScore.
+      this.listPlayer = this.listPlayer.
                         filter(x => x.userId !== id);
     });
 
     //listen for session killed
     this.socket.fromEvent('killGame').
     subscribe(async id => {
+      this.socket.emit('quitGame', this.userId, this.roomCode);
+
       //Delete itself if guest
       if(this.authService.getLoggedUser().role == Role.guest){
         await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
@@ -138,6 +207,7 @@ export class GamePage implements OnInit {
     });
   }
 
+
   //#region Host
   async initHost(){
     this.currentPack = this.room.packs[this.indexCurrentPack];
@@ -145,36 +215,73 @@ export class GamePage implements OnInit {
     //Multiple answer
     this.socket.fromEvent('playerSendChoice').
     subscribe(async (data:any) => {
+      let wrong;
+
       if(this.currentChoices.find(x => x.isAnswer == true).choiceId == data.choiceId){
-        //Right response. End the round and emit the winner userId to all 
-        this.socket.emit('endOfRound',
-        { roomCode: this.roomCode,
-          userId: data.userId});
+        wrong = false;
       }
       else{
-        //Wrong
-        this.socket.emit('playerWrong',
+        wrong = true;
+      }
+
+      let countPlayersNotAnswered = this.listPlayer.filter(x => x.answered == false).length;
+
+      this.socket.emit('playerAnswered',
         { roomCode: this.roomCode,
-          userId: data.userId});
+          userId: data.userId,
+          wrong: wrong});
+
+      //End round if last player to answer
+      if(countPlayersNotAnswered == 1){
+        this.endOfROund();
       }
     });
 
     //Typed answer
     this.socket.fromEvent('playerSendInputChoice').
     subscribe(async (data:any) => {
+      let wrong;
+
       if(this.currentChoices.find(x => x.isAnswer == true).choice.toLowerCase() == data.inputChoice.toLowerCase()){
-        //Right response. End the round and emit the winner userId to all 
-        this.socket.emit('endOfRound',
-        { roomCode: this.roomCode,
-          userId: data.userId});
+        wrong = false;
       }
       else{
-        //Wrong
-        this.socket.emit('playerWrong',
+        wrong = true;
+      }
+
+      let countPlayersNotAnswered = this.listPlayer.filter(x => x.answered == false).length;
+
+      this.socket.emit('playerAnswered',
         { roomCode: this.roomCode,
-          userId: data.userId});
+          userId: data.userId,
+          wrong: wrong});
+
+      //End round if last player to answer
+      if(countPlayersNotAnswered == 1){
+        this.endOfROund();
       }
     });
+
+
+    //Start timer for first question
+    const source = timer(0, 1000);
+    this.nextRoundTimer = this.TIME_FOR_NEXT_ROUND;
+    let timerSubscribe = source.subscribe(val => {
+      this.nextRoundTimer = this.TIME_FOR_NEXT_ROUND - val;
+      if(this.nextRoundTimer <= 0){
+        timerSubscribe.unsubscribe();
+        this.sendNextQuestion();
+      }
+    });
+  }
+
+
+  //Handle timer and emit to all
+  endOfROund(){
+    this.timerRoundSubscribe.unsubscribe();
+    this.roundTimerForPlayer = 0;
+    this.socket.emit('endOfRound',
+      { roomCode: this.roomCode });
   }
 
   async sendNextQuestion(){
@@ -207,7 +314,19 @@ export class GamePage implements OnInit {
           question: round.question,
           roundIsMultipleChoice: round.isMultipleChoice,
           choices: round.choices,
-          extra: round.extra});
+          extra: round.extra,
+          packName: this.currentPack.name,
+          numberQuestion: this.currentPack.rounds.length});
+
+      //Start timer
+      const source = timer(0, 1000);
+      this.roundTimer = this.TIME_FOR_ROUND;
+      this.timerRoundSubscribe = source.subscribe(val => {
+        this.roundTimer = this.TIME_FOR_ROUND - val;
+        if(this.roundTimer <= 0){
+          this.endOfROund();
+        }
+      });
     }
   }
   //#endregion
@@ -242,5 +361,10 @@ export class GamePage implements OnInit {
     this.socket.emit('killGame', this.roomCode);
     await this.gameService.deleteGame(this.room.gameId); 
     this.router.navigate(["/"]);
+  }
+
+  @HostListener('unloaded')
+  ngOnDestroy() {
+    this.socket.disconnect();
   }
 }
