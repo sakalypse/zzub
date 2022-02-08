@@ -11,6 +11,12 @@
           <div *ngIf="currentExtra != null && currentExtra.extraType == enumExtraType.img" class="question-asset">
             <img [src]="currentExtra.url" />
           </div>
+          <div class="question-infos-container">
+            <div class="question-infos">
+              <div class="info-pack-name">Politique</div>
+              <div class="info-question-index">1/24</div>
+            </div>
+          </div>
         </div>
       </div>
       <div *ngIf="showQuestion" class="answer-container">
