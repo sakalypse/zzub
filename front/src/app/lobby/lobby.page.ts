@@ -1,10 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, HostListener } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpBackend } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
-import { Socket } from 'ngx-socket-io';
+import { Socket, SocketIoModule, SocketIoConfig  } from 'ngx-socket-io';
 import { GameService } from '../services/game.service';
 import { UserService } from '../services/user.service';
 import { Role } from '../services/role.enum';
@@ -14,7 +14,7 @@ import { Role } from '../services/role.enum';
   templateUrl: './lobby.page.html',
   styleUrls: ['./lobby.page.scss'],
 })
-export class LobbyPage implements OnInit {
+export class LobbyPage implements OnInit, OnDestroy {
   API_URL = environment.API_URL_DEV;
   httpOptions;
   roomCode;
@@ -47,6 +47,10 @@ export class LobbyPage implements OnInit {
   ngOnInit() {}
 
   async init() {
+    const config: SocketIoConfig = { url: environment.API_URL_DEV, options: {}};
+    this.socket = new Socket(config);
+
+
     //Init id user // id guest
     this.userId = await this.authService.getLoggedUser().userId;
     this.roomCode = this.activatedRoute.snapshot.paramMap.get('code');
@@ -100,12 +104,8 @@ export class LobbyPage implements OnInit {
 
   async exitRoom(){
     await this.gameService.removeUserToGame(this.room.gameId, this.userId);
-    if(this.authService.getLoggedUser().role == Role.guest){
-      await this.userService.deleteGuest(this.authService.getLoggedUser().userId);
-      this.authService.clearStorage();
-    }
-
     this.socket.emit('quitGame', this.userId, this.roomCode);
+    this.socket.disconnect();
     this.router.navigate(["/"]);
   }
 
@@ -119,5 +119,10 @@ export class LobbyPage implements OnInit {
     await this.gameService.startGame(this.room.gameId); 
     this.socket.emit('startGame', this.roomCode);
     this.router.navigateByUrl("/game/"+this.roomCode);
+  }
+
+  @HostListener('unloaded')
+  ngOnDestroy() {
+    this.socket.disconnect();
   }
 }

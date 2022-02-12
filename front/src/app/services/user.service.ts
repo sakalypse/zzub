@@ -52,6 +52,16 @@ export class UserService {
       };
       return await this.http.get<any>(`${this.API_URL}/user`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
     }
+
+    async deleteUserAsAdmin(id:number): Promise<any>{
+      this.httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + this.authService.getToken()
+        })
+      };
+      return await this.http.delete<any>(`${this.API_URL}/user/admin/${id}`, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+    }
     //#endregion
 
     private handleError(error: HttpErrorResponse) {

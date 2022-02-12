@@ -1,43 +1,56 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>game</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
   <div>Lobby : {{roomCode}}</div>
-  <button (click)="sendNextQuestion()" *ngIf="this.owner">Send next question</button>
   <button (click)="deleteRoom()" *ngIf="this.owner">Delete room</button>
   <button (click)="exitRoom()" *ngIf="!this.owner">Exit room</button>
 
-  <div *ngIf="showQuestion">
-    <ion-card>
-      <ion-card-content>
-        {{currentQuestion}}
-      </ion-card-content>
-    </ion-card>
-    <ng-container *ngIf="roundIsMultipleChoice">
-      <div *ngFor="let choice of currentChoices">
-        <button (click)="playerSendChoice(choice.choiceId)" >{{choice.choice}}</button>
+  <div class="game-page-container">
+    <div class="game-container">
+      <div class="question-container">
+        <div class="question-timer-container">
+          <div class="question-timer"></div>
+        </div>
+        <div *ngIf="showQuestion" class="question">
+          <div class="question-text">{{currentQuestion}}</div>
+          <div *ngIf="currentExtra != null && currentExtra.extraType == enumExtraType.img" class="question-asset">
+            <img [src]="currentExtra.url" />
+          </div>
+          <div class="question-infos-container">
+            <div class="question-infos">
+              <div class="info-pack-name">{{currentPackName}}</div>
+              <div class="info-question-index">{{currentIndexQuestion}}/{{currentNumberQuestion}}</div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!showQuestion" class="question">
+          <div class="question-text">Next round starts in : {{nextRoundTimer}}</div>
+        </div>
       </div>
-    </ng-container>
-    <ng-container *ngIf="!roundIsMultipleChoice">
-      <input type="text" #inputChoice />
-      <button (click)="playerSendInputChoice(inputChoice.value)" >OK</button>
-    </ng-container>
+      <div *ngIf="showQuestion" class="answer-container">
+        <div class="multiple-choice" *ngIf="roundIsMultipleChoice">
+            <div class="choice" *ngFor="let choice of currentChoices" (click)="playerSendChoice(choice.choiceId)" [class.disabled]="!canAnswer" >{{choice.choice}}</div>
+        </div>
+        <div class="type-answer" *ngIf="!roundIsMultipleChoice" (keyup.enter)="playerSendInputChoice(inputChoice.value)">
+          <input class="type-input" type="text" #inputChoice />
+          <div (click)="playerSendInputChoice(inputChoice.value)" class="type-submit">Validate</div>
+        </div>
+      </div>
 
-    <ng-container *ngIf="currentExtra != null && currentExtra.extraType == enumExtraType.img">
-      <div class="preview img-preview">
-          <img [src]="currentExtra.url" alt="" />
-      </div>
-    </ng-container>
+    </div>
+      <div class="score-container">
+        <div class="players">
+          <div class="player" *ngFor="let player of listPlayer">
+            <div class="player-frame">
+              <div class="player-avatar">
+                <img src="../assets/Images/avatars/dinosaur.png" alt="avatar">
+              </div>
+            </div>
+            <div class="player-infos">
+              <div class="player-name">{{player.username}}</div>
+              <div class="player-score">{{player.score}}</div>
+            </div>
+          </div>
+        </div>
+      </div>    
   </div>
 
-  <div *ngIf="!showQuestion">
-    <ion-card *ngFor="let playerScore of listPlayerScore">
-      <ion-card-content>
-        {{playerScore.username}} : {{playerScore.score}}
-      </ion-card-content>
-    </ion-card>
-  </div>
 </ion-content>

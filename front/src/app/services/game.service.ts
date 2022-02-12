@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/internal/operators';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
+import { Role } from './role.enum';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -50,6 +51,11 @@ export class GameService {
         })
       };
       let res = await this.http.put(`${this.API_URL}/game/${gameId}/removeuser/${userId}`, null, this.httpOptions).pipe(catchError(this.handleError)).toPromise();
+
+      if(this.authService.getLoggedUser().role == Role.guest){
+        this.authService.clearStorage();
+      }
+      
       this.initHasCurrentGameMenu();
       return res;
     }
