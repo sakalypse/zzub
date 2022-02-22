@@ -319,7 +319,7 @@ ion-content{
             .button-filter{
                 margin: 10px;
                 text-align: center;
-                border: 2px solid var(--custom-color-secondary);
+                border: 1px solid var(--custom-color-secondary);
                 cursor: pointer;
                 //border-radius: 5px;
                 background-color: white;
@@ -488,7 +488,7 @@ ion-content{
     
                     *{
                         text-align: center;
-                        margin: 0 auto;
+                        margin: 0 5px;
                     }
     
                     ion-icon{

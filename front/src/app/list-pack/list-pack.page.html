@@ -89,10 +89,10 @@
                   </div>
                 </div>
                 <div class="actions-container">
-                  <div class="play"><ion-icon name="play-outline"></ion-icon></div>
+                  <!--<div class="play"><ion-icon name="play-outline"></ion-icon></div>
                   <div class="play-count">1.3k</div>
                   <div class="likes"><ion-icon name="heart"></ion-icon></div>
-                  <div class="likes-count">1.7k</div>
+                  <div class="likes-count">1.7k</div>-->
                   <div class="fav" (click)="favPack(pack.packId)"><ion-icon name="star" class="selected" *ngIf="listFavorites && listFavorites.includes(pack.packId)" ></ion-icon>
                                                                   <ion-icon name="star" *ngIf="listFavorites && !listFavorites.includes(pack.packId)" ></ion-icon></div>
                   <div *ngIf="editMode" class="edit-pack" (click)="edit(pack.packId)"><ion-icon name="create-outline"></ion-icon></div>
